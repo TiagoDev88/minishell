@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/19 16:48:58 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/06/19 17:56:25 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -20,10 +20,15 @@ int main(int argc, char *argv[], char **envp)
 	
 	char	*line;
 	t_token	*tokens;
+	char *dir = NULL;
+
+
+	dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
+	dir = ft_strjoin(dir, "$ ");
 
 	while (1)
 	{
-		line = readline("miniShell> ");
+		line = readline(dir);
 		if (!line)
 			break;
 		add_history(line);
@@ -31,11 +36,12 @@ int main(int argc, char *argv[], char **envp)
 		t_token *tmp = tokens;
 		while (tmp)
 		{
-			printf("Token: [%d] \"%s\"\n", tmp->type, tmp->value);
+			printf("Token: [%d] %s\n", tmp->type, tmp->value);
 			tmp = tmp->next;
 		}
 		free_tokens(tokens);
 		free(line);
 	}
+	return (0);
 }
 
