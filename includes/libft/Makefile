@@ -1,4 +1,4 @@
-# **************************************************************************** #
+#******************************************************************************#
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -6,9 +6,9 @@
 #    By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/18 11:42:53 by tfilipe-          #+#    #+#              #
-#    Updated: 2025/04/11 16:38:59 by tfilipe-         ###   ########.fr        #
+#    Updated: 2025/06/19 12:19:36 by tfilipe-         ###   ########.fr        #
 #                                                                              #
-# **************************************************************************** #
+#******************************************************************************#
 
 CC = cc
 NAME = libft.a
@@ -44,18 +44,18 @@ all: $(NAME)
 
 $(NAME):  $(OBJS)
 	@$(AR) $(ARFLAGS) $(NAME) $(OBJS)
-	@echo "Libft successfully compiled"
+	@echo "✅ Libft Compiled successfully!"
 
 bonus: $(OBJS) $(BONUS_OBJS)
-	$(AR) $(ARFLAGS) $(NAME) $(OBJS) $(BONUS_OBJS)
-	@echo "Libft + Bonus compiled"
+	@$(AR) $(ARFLAGS) $(NAME) $(OBJS) $(BONUS_OBJS)
+	@echo "✅ Libft + Bonus Compiled successfully!"
 
 clean:
-	$(RM) $(OBJS) $(BONUS_OBJS)
+	@$(RM) $(OBJS) $(BONUS_OBJS)
 	@echo "clean Objects removed"
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
 	@echo "fclean Archive removed"
 
 re: fclean all
