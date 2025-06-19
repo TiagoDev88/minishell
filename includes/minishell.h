@@ -10,6 +10,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <dirent.h>
+# include "../includes/libft/libft.h"
 
 
 
