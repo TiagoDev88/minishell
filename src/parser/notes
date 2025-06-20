@@ -1,0 +1,62 @@
+Algoritmo:
+Começar por limitador de espaço.
+Se tiver aspas e anterior nao tiver
+	Mudar delimitador
+	Copiar até encontrar delimitador
+	Se flag de aspas tiver a 0, mudar para 1
+Se tiver aspas e na anterior tiver aspas -> Concatenar com anterior
+	Mudar delimitador
+	Copiar ate encontrar delimitador
+Se nao tiver aspas
+	Copiar palavra ate encontrar espaço
+	Se flag de aspas tiver a 1, mudar para 0
+
+
+TESTES:
+1 - echo Hello          World
+2 - echo "Hello          World"
+3 - echo "Hello     ''     World"
+4 - echo "Hello     ""     World"
+5 - echo "Hello   'abc  '""     World"
+6 - echo "Hello   'abc  ""'     World"
+7 - echo "Hello   'abc"  "'     World"
+8 - echo "Hello   'abc"  "'     World'
+9 - echo "Hello   abc"  '     World'
+10 - echo "Hello  ' abc"  '   "  World'
+11 - echo "Hello  '" "abc"  '   "  World'
+
+
+NOVOS TESTES:
+
+edrei10@tivo01:~$ echo "/HELLO           "         /"WORLD"
+/HELLO            /WORLD
+edrei10@tivo01:~$ echo /"/HELLO           "         /"WORLD"
+//HELLO            /WORLD
+edrei10@tivo01:~$ echo /"/HELLO           "         /"WORLD"/
+//HELLO            /WORLD/
+edrei10@tivo01:~$ echo /"/HELLO           "/         /"WORLD"/
+//HELLO           / /WORLD/
+edrei10@tivo01:~$ echo /"/HELLO           /"/         /"WORLD"/
+//HELLO           // /WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "         "WORLD"/
+/HELLO            WORLD/
+edrei10@tivo01:~$ echo /"/HELLO           "         "WORLD"/
+//HELLO            WORLD/
+edrei10@tivo01:~$ echo /"HELLO           /"         "WORLD"/
+/HELLO           / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "         "WORLD"/
+/HELLO            WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "/         "WORLD"/
+/HELLO           / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           " /         "WORLD"/
+/HELLO            / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "    /         "WORLD"/
+/HELLO            / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "    / "WORLD"/
+/HELLO            / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "  / "WORLD"/
+/HELLO            / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           "/ "WORLD"/
+/HELLO           / WORLD/
+edrei10@tivo01:~$ echo /"HELLO           /" "WORLD"/
+/HELLO           / WORLD/
