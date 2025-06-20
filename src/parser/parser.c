@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/20 01:20:58 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/20 15:10:03 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	build_parser(char **parser, char *line, int tokens_count)
 		delimiter = ' ';
 		while (line[j] && line[j] == delimiter)
 			j++;
-		if (line[j] == '\'' | line[j] == '"')
+		if (line[j] == '\'' || line[j] == '"')
 		{
 			delimiter = line[j];
 			has_quotes = 1;
@@ -154,17 +154,18 @@ char	**parser(char *line)
 		printf("%s\n", parser[i]);
 		i++;
 	}
+	return (parser);
 }
 
-int main()
-{
-	while (1)
-	{
-		char *prompt = readline("> ");
-		parser(prompt);
-		//int i = 0;
+// int main()
+// {
+// 	while (1)
+// 	{
+// 		char *prompt = readline("> ");
+// 		parser(prompt);
+// 		//int i = 0;
 		
-			//printf("%c\n", prompt[i]);
-		add_history(prompt);
-	}
-}
+// 			//printf("%c\n", prompt[i]);
+// 		add_history(prompt);
+// 	}
+// }

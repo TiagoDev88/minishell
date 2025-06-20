@@ -17,7 +17,9 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
-	struct s_token	*next;
+	int				double_quote;
+	int 			sep_by_space;
+	struct s_token *next;
 }	t_token;
 
 
