@@ -12,7 +12,4 @@
 # include <dirent.h>
 # include "../includes/libft/libft.h"
 
-
-
-
 #endif

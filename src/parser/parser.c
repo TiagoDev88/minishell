@@ -6,165 +6,174 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/20 01:20:58 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/21 20:00:50 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/parser.h"
+#include "../../includes/token.h"
 
-// Change delimiter if we found a single or double quotes;
-// If flag has_quotes is 1, it means that precendent TOKEN was a TOKEN_WORD,
-// so if actual TOKEN is a TOKEN_WORD too, we
-// decrement tokens count because we increment before this function call;
-// And we handle too has_quotes variable in case delimiter is a space or not.
-void	handle_quotes(char *line, int *delimiter, int *tokens, int *has_quotes)
-{
-	if (line[0])
-	{
-		if (line[0] == '\'' || line[0] == '"')
-		{
-			*delimiter = line[0];
-			if (*has_quotes == 0)
-				*has_quotes = 1;
-			else
-			{
-				if (tokens)
-					(*tokens)--;
-			}
-		}
-		else
-			*has_quotes = 0;
-	}
-}
-
-// Sum the number of tokens in string *line. Handles single and double quotes.
-int	count_tokens(char *line)
-{
-	int		i;
-	int		tokens;
-	int		has_quotes;
-	int		delimiter;
-
-	i = 0;
-	tokens = 0;
-	has_quotes = 0;
-	while (line[i])
-	{
-		delimiter = ' ';
-		while (line[i] == delimiter)
-			i++;
-		if (line[i])
-			tokens++;
-		handle_quotes(line + i, &delimiter, &tokens, &has_quotes); // Function to reduce lines.
-		i++;
-		while (line[i] && line[i] != delimiter)
-			i++;
-		if (line[i] && line[i] != ' ')
-			i++;
-	}
-	return (tokens);
-}
-
-int	build_parser(char **parser, char *line, int tokens_count)
+void	clean_split(char **split)
 {
 	int	i;
-	int	j;
-	int k;
-	int	delimiter;
-	int	has_quotes;
 
+	if (!(*split))
+		return ;
 	i = 0;
-	j = 0;
-	has_quotes = 0;
-	while (line[j] && i < tokens_count)
+	while (split[i])
 	{
-		if (!parser[i])
-			printf("PARSER[%i] IS CLEAN\n", i);
-		else
-			printf("PARSER[%i] IS NOT CLEAN\n", i);
-		printf("LINE BEFORE: |%s|\n", line + j);
-		delimiter = ' ';
-		while (line[j] && line[j] == delimiter)
-			j++;
-		if (line[j] == '\'' | line[j] == '"')
-		{
-			delimiter = line[j];
-			has_quotes = 1;
-			j++;
-		}
-		else
-		{
-			if (has_quotes)
-				i++;
-			has_quotes = 0;
-		}
-		k = 0;
-		while (line[j + k] && line[j + k] != delimiter)
-			k++;
-		if (!has_quotes)
-		{
-			parser[i] = ft_substr(line, j, k);
-			printf("PARSER 1: %s\n", parser[i]);
-			i++;
-		}
-		else if (has_quotes && !parser[i])
-		{
-			parser[i] = ft_substr(line, j, k);
-			printf("PARSER 2: %s\n", parser[i]);
-		}
-		else if (has_quotes && parser[i])
-		{
-			char *temp = parser[i];
-			printf("TIME TO JOIN\n");
-			parser[i] = ft_strjoin(parser[i], " ");
-			temp = parser[i];
-			parser[i] = ft_strjoin(parser[i], ft_substr(line, j, k));
-			free(temp);
-			printf("PARSER 3: %s\n", parser[i]);
-		}
-		j += k + 1;
-		if (line[j])
-			printf("LINE AFTER: |%s|\n", line + j);
-	}
-	return (1);
-}
-
-char	**parser(char *line)
-{
-	int		tokens_count;
-	char	**parser;
-
-	if (!line || !line[0])
-		return (NULL);
-	// Count tokens
-	tokens_count = count_tokens(line);
-	printf("%i\n", tokens_count);
-	// Allocate memory for each token + NULL
-	parser = (char **)malloc(sizeof(char *) * (tokens_count + 1));
-	if (!parser)
-		return (NULL);
-	// Initiaite all indexes to NULL. Will be easier to clean in case of error.
-	ft_memset(parser, 0, sizeof(char **) * (tokens_count + 1));
-	// Build split parser.
-	if (!build_parser(parser, line, tokens_count))
-		return (NULL);
-	int i = 0;
-	while (parser[i])
-	{
-		printf("%s\n", parser[i]);
+		free(split[i]);
 		i++;
 	}
+	*split = NULL;
 }
 
-int main()
+int	clean_cmds(t_cmd **lst, int status)
 {
-	while (1)
+	t_cmd	*curr;
+	t_cmd	*tmp;
+
+	curr = *lst;
+	while (curr)
 	{
-		char *prompt = readline("> ");
-		parser(prompt);
-		//int i = 0;
-		
-			//printf("%c\n", prompt[i]);
-		add_history(prompt);
+		clean_split(curr->cmd);
+		tmp = curr;
+		curr = curr->next;
+		free(tmp);
 	}
+	return (status);
+}
+
+int clean(void *p1, void *p2, void *p3, int status)
+{
+	if (p1)
+		free(p1);
+	if (p2)
+		free(p2);
+	if (p3)
+		free(p3);
+	return (status);
+}
+
+char	*safe_join(char *join, char *to_join, t_token *token, int flag)
+{
+	char *temp;
+
+	if (!join || !to_join || !token)
+		return (NULL);
+	// Verify token sep_by_space FLAG
+	// If sep_by_space = 1
+	if (flag)
+	{
+		temp = join;
+		join = ft_strjoin(join, " ");
+		if (!join)
+		{
+			free(temp);
+			return (NULL);
+		}
+		free(temp);
+	}
+	// Point temp to join
+	temp = join;
+	// Call strjoin to join (*join + *to_join)
+	join = ft_strjoin(join, to_join);
+	// Free temp
+	free(temp);
+	return (join);
+} 
+
+int	is_cmd(t_token *prev)
+{
+	if (!prev)
+	{
+		printf("PREV IS NULL\n");
+		return (1);
+	}
+	if (prev->type == TOKEN_PIPE)
+	{
+		printf("PREV IS NULL2\n");
+		return (1);
+	}
+	return (0);
+}
+
+void add_back(t_cmd **lst, t_cmd *new)
+{
+	t_cmd	*curr;
+
+	if (!new)
+		return ;
+	if (!(*lst))
+		*lst = new;
+	else
+	{
+		curr = *lst;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = new;
+	}
+}
+
+t_cmd *create_node(void)
+{
+	t_cmd *new;
+
+	new = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!new)
+		return (0);
+	ft_memset(new, 0, sizeof(t_cmd));
+	return (new);
+}
+
+int	build(t_cmd **lst, t_token **curr)
+{
+	t_cmd	*new;
+	t_token *prev;
+	char	*clean_cmd;
+
+	new = create_node();
+	if (!new)
+		return (0);
+	prev = NULL;
+	while (*curr && (*curr)->type == TOKEN_WORD)
+	{
+		if (!prev) // Quer dizer que é o primeiro comando.
+			clean_cmd = ft_strdup((*curr)->value);
+		else
+			clean_cmd = safe_join(clean_cmd, (*curr)->value, *curr, 1);
+		if (!clean_cmd)
+			return (0);
+		prev = *curr;
+		*curr = (*curr)->next;
+	}
+	new->cmd = ft_split(clean_cmd, ' ');
+	if (!new->cmd)
+		return (clean(clean_cmd, NULL, NULL, 0));
+	add_back(lst, new);
+	return (clean(clean_cmd, NULL, NULL, 1));
+}
+
+// Percorre os TOKENS TODOS e forma uma lista linkada de comandos ou um ARRAY
+// Para ter um array, o ideal seria fazer a contagem de comandos na formatacao dos tokens.
+int build_cmds(t_cmd **lst, t_token *head)
+{
+	t_token	*curr;
+	t_token *prev;
+
+	curr = head;
+	prev = NULL;
+	while (curr)
+	{
+		if (curr->type == TOKEN_WORD)
+			if (is_cmd(prev))
+				if (!build(lst, &curr))
+					return (clean_cmds(lst, 0));
+		if (curr)
+		{
+			prev = curr;
+			curr = curr->next;
+		}
+	}
+	return (1);
 }

@@ -26,37 +26,45 @@ TESTES:
 11 - echo "Hello  '" "abc"  '   "  World'
 
 
-NOVOS TESTES:
+IDEIAS para implementar.
 
-edrei10@tivo01:~$ echo "/HELLO           "         /"WORLD"
-/HELLO            /WORLD
-edrei10@tivo01:~$ echo /"/HELLO           "         /"WORLD"
-//HELLO            /WORLD
-edrei10@tivo01:~$ echo /"/HELLO           "         /"WORLD"/
-//HELLO            /WORLD/
-edrei10@tivo01:~$ echo /"/HELLO           "/         /"WORLD"/
-//HELLO           / /WORLD/
-edrei10@tivo01:~$ echo /"/HELLO           /"/         /"WORLD"/
-//HELLO           // /WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "         "WORLD"/
-/HELLO            WORLD/
-edrei10@tivo01:~$ echo /"/HELLO           "         "WORLD"/
-//HELLO            WORLD/
-edrei10@tivo01:~$ echo /"HELLO           /"         "WORLD"/
-/HELLO           / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "         "WORLD"/
-/HELLO            WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "/         "WORLD"/
-/HELLO           / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           " /         "WORLD"/
-/HELLO            / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "    /         "WORLD"/
-/HELLO            / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "    / "WORLD"/
-/HELLO            / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "  / "WORLD"/
-/HELLO            / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           "/ "WORLD"/
-/HELLO           / WORLD/
-edrei10@tivo01:~$ echo /"HELLO           /" "WORLD"/
-/HELLO           / WORLD/
+Criar estrutura principal para albergar todas as outras necessarias por uma questao de acesso e menos uso de declaracao
+de variaveis no codigo.
+
+
+Fazer contagem de elementos:
+-> Comandos; Ajuda na alocacao de N estruturas de comandos.
+-> Pipes; Na validacao da linha. Para cada pipe, COMANDOS = N pipes + 1. E abertura de pipes antes dos forks.
+-> redirects.
+-> appends.
+
+Quando pode ser um infile como primeiro. PROBLEMA: TOKEN -> FILES sao TOKEN_WORDS.
+- Para ser um ficheiro como primeiro TOKEN, antes do ficheiro tem que vir um REDIRECT, APPEND, HERE_DOC.
+- Ou mudamos, na atribuicao de TOKENS ou mudo na atribuicao de comandos.
+
+Criacao de lista linkada com estrutura a representar o comando NAO esta feita.
+- O que pode e tem que ser feito ainda, mas mais para a parte da execuçao?
+- Criar campo na estrutura *t_cmd para receber stdion e stdout file descriptores caso haja
+redireccionamento de dados para pipes ou ficheiros, através da execucao de comandos.
+
+Resumo: 3 coisas importantes para falar com o Tiago:
+
+- Falar sobre criar uma estrutura principal na "minishell.h" que tem acesso as outras estruturas dentro dos respectivos headers,
+por uma questao de organizacao e acesso dentro de outros ficheiros.
+- 
+
+Para fazer:
+- Receber TOKENS
+- Construir lista estrutura t_cmd
+- Valido a linha
+
+Parser:
+
+Recebe os tokens do lexer.
+
+Analisa a sintaxe.
+
+Constrói uma estrutura lógica dos comandos (ex: t_command *, árvore binária, etc.)
+
+Verifica erros de sintaxe.
+
