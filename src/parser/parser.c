@@ -6,18 +6,20 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/21 20:00:50 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/23 00:21:35 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/parser.h"
 #include "../../includes/token.h"
 
+/* T_cmd Struct Utils */
+
 void	clean_split(char **split)
 {
 	int	i;
 
-	if (!(*split))
+	if (*split)
 		return ;
 	i = 0;
 	while (split[i])
@@ -28,77 +30,62 @@ void	clean_split(char **split)
 	*split = NULL;
 }
 
-int	clean_cmds(t_cmd **lst, int status)
+int clean_cmds(t_cmd **lst, int status)
 {
 	t_cmd	*curr;
 	t_cmd	*tmp;
 
-	curr = *lst;
-	while (curr)
+	if (*lst)
 	{
-		clean_split(curr->cmd);
-		tmp = curr;
-		curr = curr->next;
-		free(tmp);
-	}
-	return (status);
-}
-
-int clean(void *p1, void *p2, void *p3, int status)
-{
-	if (p1)
-		free(p1);
-	if (p2)
-		free(p2);
-	if (p3)
-		free(p3);
-	return (status);
-}
-
-char	*safe_join(char *join, char *to_join, t_token *token, int flag)
-{
-	char *temp;
-
-	if (!join || !to_join || !token)
-		return (NULL);
-	// Verify token sep_by_space FLAG
-	// If sep_by_space = 1
-	if (flag)
-	{
-		temp = join;
-		join = ft_strjoin(join, " ");
-		if (!join)
+		curr = *lst;
+		while (curr)
 		{
-			free(temp);
-			return (NULL);
+			clean_split(curr->cmd);
+			tmp = curr->next;
+			free(curr);
+			curr = tmp;
 		}
-		free(temp);
 	}
-	// Point temp to join
-	temp = join;
-	// Call strjoin to join (*join + *to_join)
-	join = ft_strjoin(join, to_join);
-	// Free temp
-	free(temp);
-	return (join);
-} 
-
-int	is_cmd(t_token *prev)
-{
-	if (!prev)
-	{
-		printf("PREV IS NULL\n");
-		return (1);
-	}
-	if (prev->type == TOKEN_PIPE)
-	{
-		printf("PREV IS NULL2\n");
-		return (1);
-	}
-	return (0);
+	return (status);
 }
 
-void add_back(t_cmd **lst, t_cmd *new)
+t_cmd	*create_node(t_token **curr)
+{
+	t_cmd	*node;
+	t_token	*tmp;
+	int		cmd_args;
+	int		i;
+
+	if (!(*curr))
+		return (NULL);
+	node = malloc(sizeof(t_cmd));
+	if (!node)
+		return (NULL);
+	node->next = NULL;
+	tmp = *curr;
+	cmd_args = 0;
+	while (tmp && tmp->type == TOKEN_WORD) // Calculate amount of args cmd will have - CMD + ARGS OR FLAGS
+	{
+		cmd_args++;
+		tmp = tmp->next;
+	}
+	node->cmd = malloc(sizeof(char *) * (cmd_args + 1)); // Allocate **cmd to receive cmd + args or flags
+	if (!node->cmd)
+		return (NULL);
+	i = 0;
+	while ((*curr) && (*curr)->type == TOKEN_WORD) // Copy token values to array of strings -> **cmd.
+	{
+		node->cmd[i] = ft_strdup((*curr)->value);
+		if (!node->cmd[i])
+			return (NULL);
+		i++;
+		*curr = (*curr)->next;
+	}
+	node->cmd[cmd_args] = NULL;
+	return (node);
+}
+
+void	add_back(t_cmd	**lst, t_cmd *new)
 {
 	t_cmd	*curr;
 
@@ -115,65 +102,95 @@ void add_back(t_cmd **lst, t_cmd *new)
 	}
 }
 
-t_cmd *create_node(void)
-{
-	t_cmd *new;
 
-	new = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new)
-		return (0);
-	ft_memset(new, 0, sizeof(t_cmd));
-	return (new);
+/*
+
+	// TOKEN_PIPE can't be the first or last token
+	// TOKEN_PIPE prev token must be a TOKEN WORD
+	// TOKEN_PIPE next can't be a token. All the rest is valid
+	// TOKEN_PIPE next token can be a redirect, append or heredoc but must be followed by a TOKEN WORD..
+	// ..that will be a filename and a command that will be a TOKEN WORD too.
+
+*/
+int	is_valid_pipe(t_token *prev, t_token *curr)
+{
+	if (!prev || !curr->next)
+			return (0);
+	if (prev->type != TOKEN_WORD || curr->next->type == TOKEN_PIPE)
+			return (0);
+	if (curr->next->type >= TOKEN_REDIR_OUT && curr->next->type <= TOKEN_HEREDOC)
+	{
+		if (!curr->next->next || curr->next->next->type != TOKEN_WORD)
+			return (0);
+		if (!curr->next->next->next || curr->next->next->next->type != TOKEN_WORD)
+			return (0);
+	}
+	return (1);
 }
 
-int	build(t_cmd **lst, t_token **curr)
+int	sum_parser_counts(t_token *prev, t_token **curr, t_parser *parser, t_cmd **lst)
 {
 	t_cmd	*new;
-	t_token *prev;
-	char	*clean_cmd;
 
-	new = create_node();
-	if (!new)
-		return (0);
-	prev = NULL;
-	while (*curr && (*curr)->type == TOKEN_WORD)
+	if ((*curr)->type == TOKEN_WORD)
 	{
-		if (!prev) // Quer dizer que é o primeiro comando.
-			clean_cmd = ft_strdup((*curr)->value);
-		else
-			clean_cmd = safe_join(clean_cmd, (*curr)->value, *curr, 1);
-		if (!clean_cmd)
-			return (0);
-		prev = *curr;
-		*curr = (*curr)->next;
+		if (!prev || prev->type == TOKEN_PIPE || prev->type == TOKEN_WORD)
+		{
+			new = create_node(curr);
+			if (!new)
+				return (0);
+			add_back(lst, new);
+			parser->cmds++;
+		}
 	}
-	new->cmd = ft_split(clean_cmd, ' ');
-	if (!new->cmd)
-		return (clean(clean_cmd, NULL, NULL, 0));
-	add_back(lst, new);
-	return (clean(clean_cmd, NULL, NULL, 1));
+	else if ((*curr)->type == TOKEN_PIPE)
+		parser->pipes++;
+	else if ((*curr)->type == TOKEN_APPEND)
+		parser->appends++;
+	else if ((*curr)->type == TOKEN_HEREDOC)
+		parser->heredoc++;
+	else if ((*curr)->type == TOKEN_REDIR_IN)
+		parser->redir_in++;
+	else if ((*curr)->type == TOKEN_REDIR_OUT)
+		parser->redir_out++;
+	return (1);
 }
 
-// Percorre os TOKENS TODOS e forma uma lista linkada de comandos ou um ARRAY
-// Para ter um array, o ideal seria fazer a contagem de comandos na formatacao dos tokens.
-int build_cmds(t_cmd **lst, t_token *head)
+int	check_line_sintax(t_token *tokens, t_parser *parser, t_cmd **lst)
 {
 	t_token	*curr;
-	t_token *prev;
+	t_token	*prev;
 
-	curr = head;
+	if (!tokens)
+		return (0);
+	curr = tokens;
 	prev = NULL;
 	while (curr)
 	{
-		if (curr->type == TOKEN_WORD)
-			if (is_cmd(prev))
-				if (!build(lst, &curr))
-					return (clean_cmds(lst, 0));
+		// Validating pipes
+		if (curr->type == TOKEN_PIPE)
+			if (!is_valid_pipe(prev, curr))
+				return (0);
+		else if (curr->type >= TOKEN_REDIR_OUT && curr->type <= TOKEN_HEREDOC)
+			if (!curr->next || curr->next->type != TOKEN_WORD)
+				return (0);
+		if (!sum_parser_counts(prev, &curr, parser, lst))
+			return (0);
 		if (curr)
 		{
 			prev = curr;
 			curr = curr->next;
 		}
 	}
+	return (1);
+}
+
+int	parser(t_cmd **lst, t_token *tokens)
+{
+	t_parser parser;
+
+	ft_memset(&parser, 0, sizeof(parser));
+	if (!check_line_sintax(tokens, &parser, lst))
+		return (clean_cmds(lst, 0));
 	return (1);
 }
