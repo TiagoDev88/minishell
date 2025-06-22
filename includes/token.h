@@ -25,5 +25,8 @@ typedef struct s_token
 
 t_token	*tokenize(char *input);
 void	free_tokens(t_token *tokens);
+void handle_word(t_token **tokens, char *input, int *i, char del);
+void add_token(t_token **tokens, t_token *new);
+t_token *new_token(t_token_type type, const char *value, int flag);
 
 #endif

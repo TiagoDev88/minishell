@@ -1,6 +1,6 @@
 #include "../includes/token.h"
 
-static t_token	*new_token(t_token_type type, const char *value, int flag)
+t_token	*new_token(t_token_type type, const char *value, int flag)
 {
 	t_token	*token;
 	
@@ -15,7 +15,7 @@ static t_token	*new_token(t_token_type type, const char *value, int flag)
 	return (token);
 }
 
-static void	add_token(t_token **tokens, t_token *new)
+void	add_token(t_token **tokens, t_token *new)
 {
 	t_token	*tmp;
 
@@ -46,42 +46,6 @@ static t_token_type	get_token_type(const char *s)
 	return (TOKEN_WORD);
 }
 
-	//depois tratar single quotes e double quotes (FLAG)
-	//fazer uma verificacao se e ' ou "
-static void	handle_word(t_token **tokens, char *input, int *i, char del)
-{
-	int	start;
-	int flag;
-	t_token *new;
-	char *token;
-
-	flag = 0;
-
-	start = *i;
-	while (input[*i])
-	{
-		if (input[*i] == del)
-			break;
-		(*i)++;
-	}
-	if (del == '"')
-		flag = 1; // new->double_quotes = 1;
-	add_token(tokens, new_token(TOKEN_WORD, ft_substr(input, start, *i - start), flag));
-	if (input[*i] == del) // Paramos em cima do delimitador e andamos para a frente.
-		(*i)++;
-	else
-	{
-		if (del == '\'' || del == '"')
-			printf("QUOTES UNCLOSED\n");
-		// Nao terminou com delimitador = ' ou "
-		// Retornar erro e limpar.
-	}
-	// Se a seguir ao delimitador for igual a espaco
-	if (input[*i] == ' ')
-		// mudar flag para quando houver concatencao, separar com espaco
-		// new->sep_space = 1;
-
-}
 
 t_token	*tokenize(char *input)
 {
@@ -93,7 +57,7 @@ t_token	*tokenize(char *input)
 	i = 0;
 	while (input[i])
 	{
-		printf("input: %s INDEX: %i\n", input + i, i);
+		//printf("input: %s INDEX: %i\n", input + i, i);
 		del = ' ';
 		while (input[i] == del || input[i] == '\t')
 			i++;
@@ -111,7 +75,7 @@ t_token	*tokenize(char *input)
 		}
 		else
 		{
-			printf("IS WORD\n");
+			//printf("IS WORD\n");
 			if (input[i] == '\"' || input[i] == '\'')
 			{
 				del = input[i];
@@ -124,7 +88,7 @@ t_token	*tokenize(char *input)
 			handle_word(&tokens, input, &i, del);
 		}
 		//printf("Fim dentro do primeiro while");
-		if (i == 15)
+		if (i == 50)
 			break;
 	}
 	return (tokens);
