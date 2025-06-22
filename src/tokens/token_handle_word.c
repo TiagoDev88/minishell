@@ -1,25 +1,49 @@
 #include "../includes/token.h"
 
+
 static char *extract_word(char *input, int start, int *i, int del)
 {
-	// reparar se vem com flag = 1 para expandir as variaveis.
-	char *part;
+	char	*part;
+
 	while (input[*i])
+	{
+		if (del != ' ' && input[*i] == del)
+			break ;
+		if (del == ' ' && ft_strchr("\" '\t><|", input[*i]))
+			break ;
+		(*i)++;
+	}
+	part = ft_substr(input, start, *i - start);
+	return (part);
+}
+
+
+static int	check_state(char *input, int *i, char *del)
+{
+	if (*del != ' ' && input[*i] == *del)
+	{
+		(*i)++;
+		*del = ' ';
+		return (2); // tem que continuar
+	}
+	if (*del == ' ' && ft_strchr("' \" \t><|", input[*i]))
+	{
+		if (input[*i] == '\'' || input[*i] == '"')
 		{
-			if (del != ' ')
-			{
-				if (input[*i] == del)
-					break ;
-			}
-			else
-			{
-				if (input[*i] == del)
-					break ;
-			}
-			(*i)++;
+			*del = input[*i];
+			(*i)++;	
+			return (2); // tem que continuar
 		}
-		part = ft_substr(input, start, *i - start);
-		return (part);
+		// printf("checkstate %d\n", *del);
+		return (1); // para dar break
+	}
+	if (input[*i] == '\0' && *del != ' ')
+	{
+		printf("Erro: aspa não fechada, tenho que dar ERRO porque nao encontrou o par de quots\n");
+		return (1); // para dar break
+	}
+	printf("checkstate printf final\n");
+	return (0); // para prosseguir normalmente
 }
 
 
@@ -30,6 +54,7 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 	char	*part;
 	int		start;
 	int flag;
+	int res;
 	word = NULL;
 	tmp = NULL;
 	flag = 0;
@@ -37,16 +62,16 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 		flag = 1;
 	while (input[*i])
 	{
-		if (del == ' ')
+		printf("CARACTER: |%c|\n", input[*i]);
+		printf("DELIMITADOR: |%c|\n", del);
+		if (del == ' ' && (input[*i] == '\'' || input[*i] == '"'))
 		{
-			if (input[*i] == '\'' || input[*i] == '"')
-			{
-				del = input[*i];
-				(*i)++;
-			}
+			del = input[*i];
+			(*i)++;
 		}
 		start = *i;
 		part = extract_word(input, start, i, del);
+		printf("PART: |%s|\n", part);
 		if (!word)
 			word = part;
 		else
@@ -56,25 +81,14 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 			free(tmp);
 			free(part);
 		}
-		printf("%c\n", input[*i]);
-		printf("%s\n", word);
-		if (del != ' ' && input[*i] == del)
-		{
-			(*i)++;
-			del = ' ';
-		}
-		else if (del == ' ')
-		{
-			if (input[*i] == ' ' )
-			break ;
-			if (input[*i] == '\'' || input[*i] == '"')
-			{
-				del = input[*i];
-				(*i)++;
-			}
-			else
-			break ;
-		}
+		//printf("%c\n", input[*i]);
+		printf("WORD: %s\n", word);
+		res = check_state(input, i, &del);
+		printf("resultado %d\n", res);
+		if (res == 1)
+			break;
+		if (res == 2)
+			continue;
 	}
 	add_token(tokens, new_token(TOKEN_WORD, word, flag));
 }
@@ -85,3 +99,7 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 // Se encontramos outra quotecontinuamos a ler
 // Se tiver flag 1 de " tenho que tratar por causa da expansao das variaveis
 // Tratar diretamente aqui, se nao tem par de quotes, para dar erro.
+//casos para tratar | oi"ola" | -> oiola
+// - | "ola"oi |-> olaoi
+// - | oi'ola' |-> oiola
+//falta tratar das quotes em pares.
