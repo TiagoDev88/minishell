@@ -7,6 +7,8 @@ static char *extract_word(char *input, int start, int *i, int del)
 
 	while (input[*i])
 	{
+		//criar uma funcao para quando encontra $ e esta fora do single quote, para guardar e retornar
+		// array e passos para o NO.
 		if (del != ' ' && input[*i] == del)
 			break ;
 		if (del == ' ' && ft_strchr("\" '\t><|", input[*i]))
@@ -18,11 +20,13 @@ static char *extract_word(char *input, int start, int *i, int del)
 }
 
 
-static int	check_state(char *input, int *i, char *del)
+static int	check_state(char *input, int *i, char *del, int *flag)
 {
 	if (*del != ' ' && input[*i] == *del)
 	{
 		(*i)++;
+		if (*del == '"')
+			*flag = 1;
 		*del = ' ';
 		return (2); // tem que continuar
 	}
@@ -83,7 +87,7 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 		}
 		//printf("%c\n", input[*i]);
 		printf("WORD: %s\n", word);
-		res = check_state(input, i, &del);
+		res = check_state(input, i, &del, &flag);
 		printf("resultado %d\n", res);
 		if (res == 1)
 			break;
@@ -99,7 +103,19 @@ void	handle_word(t_token **tokens, char *input, int *i, char del)
 // Se encontramos outra quotecontinuamos a ler
 // Se tiver flag 1 de " tenho que tratar por causa da expansao das variaveis
 // Tratar diretamente aqui, se nao tem par de quotes, para dar erro.
-//casos para tratar | oi"ola" | -> oiola
+// casos para tratar | oi"ola" | -> oiola
 // - | "ola"oi |-> olaoi
 // - | oi'ola' |-> oiola
-//falta tratar das quotes em pares.
+// falta tratar das quotes em pares.
+// ter atencao a expansao das variaveis.
+// echo "ola $USER'ola"'ola $USER' -> ola tfilipe-'olaola $USER
+// echo "ola $USER"'Ola $USER' -> ola tfilipe-ola $USER
+// echo "ola $USER" 'Ola $USER' -> ola tfilipe- ola $USER (fica com 2 tokens)
+// echo "ola $USE"'R' -> ola R
+// quando encontrar " e tiver $ vai ser uma variavel de ambiente, guardar logo a variavel.
+// caso encontre " e um $ mesmo que seja para concatenar, e tiver o par da " colococar na mesma flag 1
+// para ser variavel de ambiente, aseguir ao $ tem que ter algum caracter sem ser SPACE
+// se for single quote nao e para expandir a variavel de ambiente
+// depois no ECHO , fazer um strcmp com o ENVP, caso tenha depois na funcao echo
+// verificar ate a envp que e passada para o no.
+// tratar do $ e expandir antes de entrar no conteudo do no

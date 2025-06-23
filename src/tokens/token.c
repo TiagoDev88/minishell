@@ -10,7 +10,7 @@ t_token	*new_token(t_token_type type, const char *value, int flag)
 	token->type = type;
 	token->value = ft_strdup(value);
 	token->double_quote = flag;
-	token->sep_by_space = -1;
+	token->env = NULL;
 	token->next = NULL;
 	return (token);
 }
@@ -107,3 +107,67 @@ void	free_tokens(t_token *tokens)
 		free(tmp);
 	}
 }
+
+/*
+
+new test: $$ = placehold for current pid number.
+
+bash-5.2$ echo $$"ola $USER"
+2023ola tfilipe-
+
+bash-5.2$ echo $$"ola $USE"
+2023ola 
+
+bash-5.2$ echo $$"ola $"
+2023ola $
+
+bash-5.2$ echo $$"ola $$"
+2023ola 2023
+
+bash-5.2$ echo $$"ola $$" $$
+2023ola 2023 2023
+
+bash-5.2$ echo $$"ola $$" $
+2023ola 2023 $
+
+bash-5.2$ echo $$"ola $$"$
+2023ola 2023$
+
+bash-5.2$ echo $$"ola $$" $
+2023ola 2023 $
+
+bash-5.2$ echo $$ "ola $$" $
+2023 ola 2023 $
+
+bash-5.2$ echo $"ola"
+ola
+
+bash-5.2$ echo $$"ola"
+2023ola
+
+bash-5.2$ echo $$ "ola"
+2023 ola
+
+bash-5.2$ echo $$ "ola $"
+2023 ola $
+
+bash-5.2$ echo $$ "ola $" $
+2023 ola $ $
+
+bash-5.2$ echo $$ "ola $"$
+2023 ola $$
+
+bash-5.2$ echo $$ "ola $"$ $$
+2023 ola $$ 2023
+
+bash-5.2$ echo $$ "ola $USER"$ $$
+2023 ola tfilipe-$ 2023
+
+bash-5.2$ echo $$ "ola $invalid"$ $$
+2023 ola $ 2023
+
+bash-5.2$ echo $$ "ola $invalid" $ $$
+2023 ola  $ 2023
+
+
+*/
