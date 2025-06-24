@@ -1,121 +1,192 @@
 #include "../includes/token.h"
 
-
-static char *extract_word(char *input, int start, int *i, int del)
+//TODO retirar o printf
+static char *get_env_value(char *name, char **envp)
 {
-	char	*part;
+    int i;
+    int len;
 
-	while (input[*i])
-	{
-		//criar uma funcao para quando encontra $ e esta fora do single quote, para guardar e retornar
-		// array e passos para o NO.
-		if (del != ' ' && input[*i] == del)
-			break ;
-		if (del == ' ' && ft_strchr("\" '\t><|", input[*i]))
-			break ;
-		(*i)++;
-	}
-	part = ft_substr(input, start, *i - start);
-	return (part);
+    len = ft_strlen(name);
+    i = 0;
+    while (envp[i])
+    {
+        //printf("ENV: %s posicao %i\n", envp[i], i);
+        if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
+            return (ft_strdup(envp[i] + len + 1));
+        i++;
+    }
+    return (ft_strdup(""));
+}
+//TODO: depois tenho que ver como vou tratar do exit status
+static char *extract_variable(t_token_builder *bd)
+{
+    char var[256];
+    int j;
+    char *value;
+
+    j = 0;
+    bd->pos++; // aqui vou saltar o '$'
+
+    if (bd->input[bd->pos] == '?')
+    {
+        bd->pos++;
+        return (ft_itoa(10)); // substituir $? pelo exit status (exemplo fixo 10)
+    }
+    // as variaveis de ambiente $ tem que ser seguidas de letras ou _
+    while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos]) || bd->input[bd->pos] == '_'))
+    {
+        var[j] = bd->input[bd->pos];
+        j++;
+        bd->pos++;
+    }
+    var[j] = '\0';
+    value = get_env_value(var, bd->envp);
+    if (!value)
+        return (NULL);
+    return (value);
 }
 
-
-static int	check_state(char *input, int *i, char *del, int *flag)
+static int	is_ignored_variable(t_token_builder **bd, int *start)
 {
-	if (*del != ' ' && input[*i] == *del)
+	if ((*bd)->input[(*bd)->pos + 1] == '\0')
 	{
-		(*i)++;
-		if (*del == '"')
-			*flag = 1;
-		*del = ' ';
-		return (2); // tem que continuar
+		(*bd)->pos++;
+		return (1);
 	}
-	if (*del == ' ' && ft_strchr("' \" \t><|", input[*i]))
+	if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
 	{
-		if (input[*i] == '\'' || input[*i] == '"')
-		{
-			*del = input[*i];
-			(*i)++;	
-			return (2); // tem que continuar
-		}
-		// printf("checkstate %d\n", *del);
-		return (1); // para dar break
+		(*bd)->pos += 2;
+        *start = (*bd)->pos;
+        return (0);
 	}
-	if (input[*i] == '\0' && *del != ' ')
-	{
-		printf("Erro: aspa não fechada, tenho que dar ERRO porque nao encontrou o par de quots\n");
-		return (1); // para dar break
-	}
-	printf("checkstate printf final\n");
-	return (0); // para prosseguir normalmente
+	return (0);
 }
 
-
-void	handle_word(t_token **tokens, char *input, int *i, char del)
+//TODO talvez tratar com char* para nao andar so com endereco
+// tratar das alocacoes
+static void	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 {
-	char	*word;
-	char *tmp;
-	char	*part;
-	int		start;
-	int flag;
-	int res;
-	word = NULL;
-	tmp = NULL;
-	flag = 0;
-	if (del == '"')
-		flag = 1;
-	while (input[*i])
+	char	*tmp;
+	char	*env_val;
+
+	if ((*bd)->pos > *start)
 	{
-		printf("CARACTER: |%c|\n", input[*i]);
-		printf("DELIMITADOR: |%c|\n", del);
-		if (del == ' ' && (input[*i] == '\'' || input[*i] == '"'))
-		{
-			del = input[*i];
-			(*i)++;
-		}
-		start = *i;
-		part = extract_word(input, start, i, del);
-		printf("PART: |%s|\n", part);
-		if (!word)
-			word = part;
-		else
-		{
-			tmp = word;
-			word = ft_strjoin(word, part);
-			free(tmp);
-			free(part);
-		}
-		//printf("%c\n", input[*i]);
-		printf("WORD: %s\n", word);
-		res = check_state(input, i, &del, &flag);
-		printf("resultado %d\n", res);
-		if (res == 1)
-			break;
-		if (res == 2)
-			continue;
+		tmp = ft_substr((*bd)->input, *start, (*bd)->pos - *start);
+		env_val = ft_strjoin(*part, tmp);
+		free(*part);
+		free(tmp);
+		*part = env_val;
 	}
-	add_token(tokens, new_token(TOKEN_WORD, word, flag));
+    if (flag == 1)
+    {
+        env_val = extract_variable((*bd));
+        tmp = ft_strjoin(*part, env_val);
+        free(*part);
+        free(env_val);
+        *part = tmp;
+        *start = (*bd)->pos;
+    }
 }
 
-// Se ainda não estamos dentro de quotes e encontramos uma marcamos o delimitador
-// Se terminou numa quote sai do delimitador antigo
-// Se encontramos um separador fora de aspas vamos parar a leitura
-// Se encontramos outra quotecontinuamos a ler
-// Se tiver flag 1 de " tenho que tratar por causa da expansao das variaveis
-// Tratar diretamente aqui, se nao tem par de quotes, para dar erro.
-// casos para tratar | oi"ola" | -> oiola
-// - | "ola"oi |-> olaoi
-// - | oi'ola' |-> oiola
-// falta tratar das quotes em pares.
-// ter atencao a expansao das variaveis.
-// echo "ola $USER'ola"'ola $USER' -> ola tfilipe-'olaola $USER
-// echo "ola $USER"'Ola $USER' -> ola tfilipe-ola $USER
-// echo "ola $USER" 'Ola $USER' -> ola tfilipe- ola $USER (fica com 2 tokens)
-// echo "ola $USE"'R' -> ola R
-// quando encontrar " e tiver $ vai ser uma variavel de ambiente, guardar logo a variavel.
-// caso encontre " e um $ mesmo que seja para concatenar, e tiver o par da " colococar na mesma flag 1
-// para ser variavel de ambiente, aseguir ao $ tem que ter algum caracter sem ser SPACE
-// se for single quote nao e para expandir a variavel de ambiente
-// depois no ECHO , fazer um strcmp com o ENVP, caso tenha depois na funcao echo
-// verificar ate a envp que e passada para o no.
-// tratar do $ e expandir antes de entrar no conteudo do no
+//TODO a flag vai servir para adicionar o que esta antes do $ com 1
+// e 0 para juntar o resto da palavra que sobrou
+// falta tratar deste teste $USER$USER deve imprimir duas variaveis seguidas.
+static char *extract_word(t_token_builder **bd, int start)
+{
+    char *part;
+
+    part = ft_strdup("");
+    if (!part)
+        return (NULL);
+    while ((*bd)->input[(*bd)->pos])
+    {
+		if ((*bd)->input[(*bd)->pos] == '$' && (*bd)->input[(*bd)->pos + 1] != ' ')
+        {
+            if (is_ignored_variable(bd, &start))
+				break;
+			if ((*bd)->del != '\'')
+                append_dollar(bd, &part, &start, 1);
+		}
+        if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
+            break;
+        if ((*bd)->del == ' ' && ft_strchr("\" '\t><|", (*bd)->input[(*bd)->pos]))
+            break;
+        (*bd)->pos++;
+    }
+    if ((*bd)->pos > start)
+        append_dollar(bd, &part, &start, 0);
+    return (part);
+}
+
+//TODO tratar do erro das quotes nao terem pares
+static int check_state(t_token_builder *bd)
+{
+    if (bd->del != ' ' && bd->input[bd->pos] == bd->del)
+    {
+        bd->pos++;
+        bd->del = ' ';
+        return (2);
+    }
+    if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
+    {
+        if (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')
+        {
+            bd->del = bd->input[bd->pos];
+            bd->pos++;
+            return (2);
+        }
+        return (1);
+    }
+    if (bd->input[bd->pos] == '\0' && bd->del != ' ')
+    {
+        printf("Erro: aspa não fechada, tenho que dar ERRO porque nao encontrou o par de quots\n");
+        return (1);
+    }
+    return (0);
+}
+
+//TODO verificar as alocacoes
+// e se part vem NULL
+static void	word_append(char **word, char *part)
+{
+	char	*tmp;
+
+	if (!*word)
+		*word = part;
+	else
+	{
+		tmp = ft_strjoin(*word, part);
+		free(*word);
+		free(part);
+		if (!tmp)
+			return ;
+		*word = tmp;
+	}
+}
+//TODO tratar de diminuir linhas, usando outras funcoes auxiliares.
+//verificar alocacoes no codigo.
+// part pode vir NULL
+void handle_word(t_token **tokens, t_token_builder *bd)
+{
+    char *word;
+    char *part;
+    int start;
+    int res;
+
+    word = NULL;
+    while (bd->input[bd->pos])
+    {
+        if (bd->del == ' ' && (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"'))
+        {
+            bd->del = bd->input[bd->pos];
+            bd->pos++;
+        }
+        start = bd->pos;
+        part = extract_word(&bd, start);
+        word_append(&word, part);
+        res = check_state(bd);
+        if (res == 1)
+            break;
+    }
+    add_token(tokens, new_token(TOKEN_WORD, word));
+}

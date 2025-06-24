@@ -1,6 +1,6 @@
 #include "../includes/token.h"
 
-t_token	*new_token(t_token_type type, const char *value, int flag)
+t_token	*new_token(t_token_type type, const char *value)
 {
 	t_token	*token;
 	
@@ -9,22 +9,20 @@ t_token	*new_token(t_token_type type, const char *value, int flag)
 		return (NULL);
 	token->type = type;
 	token->value = ft_strdup(value);
-	token->double_quote = flag;
-	token->env = NULL;
 	token->next = NULL;
 	return (token);
 }
 
-void	add_token(t_token **tokens, t_token *new)
+void	add_token(t_token **tk, t_token *new)
 {
 	t_token	*tmp;
 
-	if (!*tokens)
+	if (!*tk)
 	{
-		*tokens = new;
+		*tk = new;
 		return;
 	}
-	tmp = *tokens;
+	tmp = *tk;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
@@ -47,62 +45,111 @@ static t_token_type	get_token_type(const char *s)
 }
 
 
-t_token	*tokenize(char *input)
-{
-	t_token	*tokens;
-	int		i;
-	char del;
+// t_token	*tokenize(char *input, char **envp)
+// {
+// 	t_token	*tokens;
+// 	int		i;
+// 	char del;
 
-	tokens = NULL;
-	i = 0;
-	while (input[i])
+// 	tokens = NULL;
+// 	i = 0;
+// 	while (input[i])
+// 	{
+// 		//printf("input: %s INDEX: %i\n", input + i, i);
+// 		del = ' ';
+// 		while (input[i] == del || input[i] == '\t')
+// 			i++;
+// 		if (!input[i])
+// 			break ;
+// 		if (!ft_strncmp(&input[i], ">>", 2) || !ft_strncmp(&input[i], "<<", 2))
+// 		{
+// 			add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 2), 0));
+// 			i += 2;
+// 		}
+// 		else if (ft_strchr("> < |", input[i]))
+// 		{
+//     		add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 1), 0));
+//     		i++;
+// 		}
+// 		else
+// 		{
+// 			//printf("IS WORD\n");
+// 			if (input[i] == '\"' || input[i] == '\'')
+// 			{
+// 				del = input[i];
+// 				i++;
+// 			}
+// 			// {
+// 			// 	handle_word(&tokens, input, &i);
+// 			// }
+// 			// else
+// 			handle_word(&tokens, input, &i, del, envp);
+// 		}
+// 		//printf("Fim dentro do primeiro while");
+// 		if (i == 50)
+// 			break;
+// 	}
+// 	return (tokens);
+// }
+
+t_token	*tokenize(char *input, char **envp)
+{
+	t_token_builder	bd;
+	t_token			*tk;
+	char *substr;
+
+	bd.input = input;
+	bd.envp = envp;
+	bd.pos = 0;
+	bd.del = ' ';
+	tk = NULL;
+
+	while (bd.input[bd.pos])
 	{
-		//printf("input: %s INDEX: %i\n", input + i, i);
-		del = ' ';
-		while (input[i] == del || input[i] == '\t')
-			i++;
-		if (!input[i])
+		bd.del = ' ';
+		while (bd.input[bd.pos] == ' ' || bd.input[bd.pos] == '\t')
+			bd.pos++;
+		if (!bd.input[bd.pos])
 			break ;
-		if (!ft_strncmp(&input[i], ">>", 2) || !ft_strncmp(&input[i], "<<", 2))
+		if (!ft_strncmp(&bd.input[bd.pos], ">>", 2) || !ft_strncmp(&bd.input[bd.pos], "<<", 2))
 		{
-			add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 2), 0));
-			i += 2;
+			substr = ft_substr(bd.input, bd.pos, 2);
+            if (!substr)
+                break;
+			add_token(&tk, new_token(get_token_type(&bd.input[bd.pos]), substr));
+			free(substr);
+			bd.pos += 2;
 		}
-		else if (ft_strchr("> < |", input[i]))
+		else if (ft_strchr("> < |", bd.input[bd.pos]))
 		{
-    		add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 1), 0));
-    		i++;
+			substr = ft_substr(bd.input, bd.pos, 1);
+            if (!substr)
+                break;
+			add_token(&tk, new_token(get_token_type(&bd.input[bd.pos]), substr));
+			free(substr);
+			bd.pos++;
 		}
 		else
 		{
-			//printf("IS WORD\n");
-			if (input[i] == '\"' || input[i] == '\'')
+			if (bd.input[bd.pos] == '\"' || bd.input[bd.pos] == '\'')
 			{
-				del = input[i];
-				i++;
+				bd.del = bd.input[bd.pos];
+				bd.pos++;
 			}
-			// {
-			// 	handle_word(&tokens, input, &i);
-			// }
-			// else
-			handle_word(&tokens, input, &i, del);
+			handle_word(&tk, &bd);
 		}
-		//printf("Fim dentro do primeiro while");
-		if (i == 50)
-			break;
 	}
-	return (tokens);
+	return (tk);
 }
 
-
-void	free_tokens(t_token *tokens)
+void	free_tokens(t_token *tk)
 {
 	t_token	*tmp;
 
-	while (tokens)
+	while (tk)
 	{
-		tmp = tokens;
-		tokens = tokens->next;
+		tmp = tk;
+		tk = tk->next;
 		free(tmp->value);
 		free(tmp);
 	}
