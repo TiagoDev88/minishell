@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/25 12:49:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/25 15:02:07 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
 
 int main(int argc, char *argv[], char **envp)
 {

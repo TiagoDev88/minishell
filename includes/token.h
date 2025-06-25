@@ -34,5 +34,6 @@ void	free_tokens(t_token *);
 void handle_word(t_token **, t_token_builder *);
 void add_token(t_token **, t_token *);
 t_token *new_token(t_token_type , const char *);
+char *extract_word(t_token_builder **bd, int start);
 
 #endif
