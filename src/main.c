@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/25 12:49:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/25 15:05:16 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,19 @@ int main(int argc, char *argv[], char **envp)
 			break;
 		add_history(line);
 		tokens = tokenize(line, envp);
-		t_token *tmp = tokens;
-		while (tmp)
+		t_cmd *lst = NULL;
+		parser(&lst, tokens);
+		while (lst)
 		{
-			printf("Token: [%d] |%s|\n", tmp->type, tmp->value);
-			tmp = tmp->next;
+			printf("COMMAND: ");
+			int i = 0;
+			while (lst->cmd[i])
+			{
+				printf("%s ", lst->cmd[i]);
+				i++;
+			}
+			printf("\n");
+			lst = lst->next;
 		}
 		free_tokens(tokens);
 		free(line);

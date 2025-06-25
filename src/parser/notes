@@ -69,3 +69,33 @@ Constrói uma estrutura lógica dos comandos (ex: t_command *, árvore binária,
 Verifica erros de sintaxe.
 
 cat < infile | > outfile 
+
+PROBLEMAS para tratar:
+
+ls -l
+ls < outfile -l -> Argumento de ls no fim
+< outfile ls -l 
+ls -l < outfile
+-l < outfile ls -> Assume -l como comando e ls como argumento. 
+
+Vou ter que procurar argumentos depois de um redirect, heredoc ou append e o seu ficheiro:
+ Se nao vier pipe ou fim do ficheiro.
+Vou ter que procurar redirects antes e depois do comando.
+
+Se comecar com redirect, append ou heredoc
+	Procurar comando e flags depois do ficheiro.
+Se comecar pelo comando
+	Guardar argumentos do comando a frente do comando, ignorando redirects, appends ou heredocs e seus ficheiros relaccionados,
+	ate encontrar o fim da linha ou 1 pipe.
+
+ASSUMIMOS QUE UM COMANDO COMECA COMO PRIMEIRO TOKEN E DEPOIS DE UM PIPE.
+SE DEPOIS DE UM PIPE OU O INICIO DA LINHA FOR UM TOKEN WORD.
+SE DEPOIS DE UM PIPE OU O INICIO DA LINHA FOR UM REDIRECT, APPEND OU HEREDOC,
+ASSUMIMOS QUE O COMANDO VEM DEPOIS DO FICHEIRO E OS SEUS PARAMENTROS ATE ENCONTRAR UM PIPE OU FIM DA LINHA.
+
+QUANDO ENCONTRAMOS UM PIPE, VALIDAMOS E SALTAMOS.
+QUNADO ENCOTRAMOS UM TOKEN WORD, GUARDAMOS O COMANDO E OS ARGUMENTOS, PERCORREMOS E GUARDAMOS OS REDIRECTS, APPENDS E HEREDOCS E NO FIM DE CADA FICHEIRO SE HOUVER TOKEN_WORD,
+GUARDAMOS COMO ARGUMENTO DO COMANDO.
+
+QUANDO ENCONTRAMOS UM REDIRECT, APPEND OU HEREDOC, PERCORREMOS ATE ACABAR OS REDIRECTS E OS FICHEIROS.
+GUARDAMOS COMANDOS E ARGUMENTOS.
