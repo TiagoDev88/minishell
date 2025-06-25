@@ -1,4 +1,5 @@
-#include "../includes/token.h"
+#include "../includes/minishell.h"
+
 
 //TODO retirar o printf
 static char *get_env_value(char *name, char **envp)
@@ -18,6 +19,7 @@ static char *get_env_value(char *name, char **envp)
     return (ft_strdup(""));
 }
 //TODO: depois tenho que ver como vou tratar do exit status
+// vai ser com a variavel global, o EXIT CODE
 static char *extract_variable(t_token_builder *bd)
 {
     char var[256];

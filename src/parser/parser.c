@@ -6,11 +6,11 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/20 15:10:03 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/06/25 12:28:54 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/parser.h"
+#include "../../includes/minishell.h"
 
 // Change delimiter if we found a single or double quotes;
 // If flag has_quotes is 1, it means that precendent TOKEN was a TOKEN_WORD,
