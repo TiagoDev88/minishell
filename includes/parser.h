@@ -1,8 +1,6 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "minishell.h"
-# include "token.h"
 
 # define ERR_SINTAX_NEAR_PIPE "bash: syntax error near unexpected token `|'\n"
 # define ERR_SINTAX_NEAR_APPEND  "bash: syntax error near unexpected token `>>'\n"
