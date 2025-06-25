@@ -1,4 +1,5 @@
 .vscode
+test_main.c
 
 # Prerequisites
 *.d
