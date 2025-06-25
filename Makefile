@@ -2,7 +2,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS =  -Wall -Wextra -Werror -I includes -I libft
+CFLAGS =  -I includes -I libft -Wall -Wextra -Werror
 
 LDFLAGS = -lreadline
 
@@ -17,7 +17,7 @@ SRC_MAIN	=	main.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c)
 SRC_UTILS	=	$(addprefix utils/, utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c)
-SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c)
+SRC_TOKENS =	$(addprefix tokens/, token.c)
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_BUILTIN) $(SRC_MAIN) $(SRC_UTILS) $(SRC_PARSER) \
 		$(SRC_EXECUTOR) $(SRC_TOKENS))
