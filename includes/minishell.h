@@ -11,5 +11,7 @@
 # include <fcntl.h>
 # include <dirent.h>
 # include "../includes/libft/libft.h"
+# include "../includes/token.h"
+# include "../includes/parser.h"
 
 #endif
