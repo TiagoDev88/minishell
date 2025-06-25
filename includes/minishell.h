@@ -11,6 +11,11 @@
 # include <fcntl.h>
 # include <dirent.h>
 # include "../includes/libft/libft.h"
+# include "token.h"
+# include "executor.h"
+# include "builtins.h"
+# include "parser.h"
+# include "utils.h"
 
 
 

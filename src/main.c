@@ -1,4 +1,4 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -6,11 +6,11 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/19 17:56:25 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/06/25 12:29:51 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "../includes/minishell.h"
 
 int main(int argc, char *argv[], char **envp)
 {
@@ -32,11 +32,11 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break;
 		add_history(line);
-		tokens = tokenize(line);
+		tokens = tokenize(line, envp);
 		t_token *tmp = tokens;
 		while (tmp)
 		{
-			printf("Token: [%d] %s\n", tmp->type, tmp->value);
+			printf("Token: [%d] |%s|\n", tmp->type, tmp->value);
 			tmp = tmp->next;
 		}
 		free_tokens(tokens);
