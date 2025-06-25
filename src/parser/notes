@@ -68,28 +68,4 @@ Constrói uma estrutura lógica dos comandos (ex: t_command *, árvore binária,
 
 Verifica erros de sintaxe.
 
-Possiveis erros:
-
-Redirecionamentos, appends ou heredoc sem comando aseguir.
-Pipes como primeiro e ultimo token
-Pipes sem TOKEN_WORD antes e depois 
-
-Comando importante para testar.
-cat file.txt | > out.txt grep foo
-
-
-EXECUCAO:
-
-1 - echo hello
-Passos:
--> executa comando e argumento
-2 - echo hello | cat > outfile
--> Abre 1 pipe
--> O descriptor de escrita do pipe é redireccionado para o STDOUT para receber counteudo do comando
--> O descriptor de leitura do pipe é redireccionado para o STDIN onde o comando 'cat' vai receber conteudo vindo do pipe
--> E o STDOUT de cat é redireccionado para o outfile
-
-Redirects no inicio.
-E se tiver no inicio, precisa de ter um ficheiro a frente,
-e caso tenha outro token word a frente do nome do ficheiro.
-Criar estrutura.
+cat < infile | > outfile 
