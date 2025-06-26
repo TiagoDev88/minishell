@@ -5,104 +5,72 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 01:17:32 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/25 01:09:49 by edfreder         ###   ########.fr       */
+/*   Created: 2025/06/26 19:45:55 by edfreder          #+#    #+#             */
+/*   Updated: 2025/06/26 23:29:49 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+/*
+	Contain helper functions to construct *t_cmd main struct and sub structures
+	in parser_cmd.c
+*/
 
-t_cmd	*cmd_create_node(t_token **prev, t_token **curr)
+#include "../../includes/minishell.h"
+
+// Creates an array of char* from a t_list* linked list.
+int	lst_to_arr(t_list *args_lst, char ***cmd_args)
 {
-	t_cmd	*node;
-	t_token	*tmp;
-	int		cmd_args;
+	t_list	*curr;
+	int		cmd_args_size;
 	int		i;
 
-	if (!(*curr))
-		return (NULL);
-	node = malloc(sizeof(t_cmd));
-	if (!node)
-		return (NULL);
-	node->next = NULL;
-	node->redir_in = NULL;
-	node->redir_out = NULL;
-	tmp = *curr;
-	cmd_args = 0;
-	while (tmp && tmp->type == TOKEN_WORD) // Calculate amount of args cmd will have - CMD + ARGS OR FLAGS
-	{
-		cmd_args++;
-		tmp = tmp->next;
-	}
-	node->cmd = malloc(sizeof(char *) * (cmd_args + 1)); // Allocate **cmd to receive cmd + args or flags
-	if (!node->cmd)
-		return (NULL);
+	cmd_args_size = ft_lstsize(args_lst);
+	if (cmd_args_size == 0)
+		return (0);
+	*cmd_args = malloc(sizeof(char *) * (cmd_args_size + 1));
+	if (!*cmd_args)
+		return (0);
+	curr = args_lst;
 	i = 0;
-	while ((*curr) && (*curr)->type == TOKEN_WORD) // Copy token values to array of strings -> **cmd.
+	while (curr)
 	{
-		node->cmd[i] = ft_strdup((*curr)->value);
-		if (!node->cmd[i])
-			return (NULL);
+
+		(*cmd_args)[i] = ft_strdup(curr->content);
+		if (!(*cmd_args)[i])
+			return (cmd_clean_split(*cmd_args, 0));
+		curr = curr->next;
 		i++;
+	}
+	(*cmd_args)[cmd_args_size] = NULL;
+	return (1);
+}
+
+// Save command and respective args and flags inside a t_list* linked list. 
+int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
+{
+	t_list	*new;
+	char	*arg;
+
+	while (*curr && (*curr)->type == TOKEN_WORD) // Copy token values to array of strings -> **cmd.
+	{
+		arg = ft_strdup((*curr)->value);
+		if (!arg)
+			return (0);
+		new = ft_lstnew(arg);
+		if (!new)
+		{
+			free(arg);
+			ft_lstclear(args_lst, &free);
+			return (0);
+		}
+		ft_lstadd_back(args_lst, new);
 		*prev = *curr;
 		*curr = (*curr)->next;
 	}
-	node->cmd[cmd_args] = NULL;
-	return (node);
+	return (1);
 }
 
-void	cmd_add_back(t_cmd	**lst, t_cmd *new)
-{
-	t_cmd	*curr;
-
-	if (!new)
-		return ;
-	if (!(*lst))
-		*lst = new;
-	else
-	{
-		curr = *lst;
-		while (curr->next)
-			curr = curr->next;
-		curr->next = new;
-	}
-}
-
-void	cmd_clean_split(char **split)
-{
-	int	i;
-
-	if (*split)
-		return ;
-	i = 0;
-	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
-	*split = NULL;
-}
-
-int cmd_clean_cmds(t_cmd **lst, int status)
-{
-	t_cmd	*curr;
-	t_cmd	*tmp;
-
-	if (*lst)
-	{
-		curr = *lst;
-		while (curr)
-		{
-			cmd_clean_split(curr->cmd);
-			tmp = curr->next;
-			free(curr);
-			curr = tmp;
-		}
-	}
-	*lst = NULL;
-	return (status);
-}
-
+// Push node to the end of t_redir* linked list.
 void	redir_add_back(t_redir **redir_lst, t_redir *new)
 {
 	t_redir	*curr;
@@ -118,12 +86,14 @@ void	redir_add_back(t_redir **redir_lst, t_redir *new)
 	}
 }
 
-int add_redir(t_redir **redir_lst, t_token **curr, t_token **prev)
+// Create a *t_redir node. t_redir saves redirect tokens
+// and his info like type and filename -> FILE or DELIMIT for heredoc
+int add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 {
 	t_redir *new;
 
-	if (!(*curr)->next || (*curr)->next->type != TOKEN_WORD)
-		return (print_sintax_err((*curr), 0));
+	if (!is_valid_redirect(*curr))
+		return (0);
 	new = malloc(sizeof(t_redir));
 	if (!new)
 		return (0);
@@ -134,33 +104,29 @@ int add_redir(t_redir **redir_lst, t_token **curr, t_token **prev)
 	if (!new->filename)
 		return (0);
 	*prev = (*curr)->next;
-	if (*prev && (*prev)->next)
+	if (*prev && (*prev)->next != NULL)
 		*curr = (*prev)->next;
 	else
 		*curr = NULL;
 	return (1);
 }
 
-int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr)
+int	save_cmd_redirects(t_cmd *cmd, t_token **prev, t_token **curr)
 {
-	t_cmd	*new;
-
-	new = cmd_create_node(prev, curr); // Go through all words
-	if (!new)
-		return (0);
-	cmd_add_back(cmd_lst, new);
-	while (*curr && (*curr)->type != TOKEN_PIPE) // Looking for the end of tokens or a pipe
+	while (*curr) // Looking for the end of tokens or a pipe
 	{
 		if ((*curr)->type == TOKEN_REDIR_IN || (*curr)->type == TOKEN_HEREDOC)
 		{
-			if (!add_redir(&(*cmd_lst)->redir_in, curr, prev))
+			if (!add_redir(&cmd->redir_in, prev, curr))
+				return (0);
+		}
+		else if ((*curr)->type == TOKEN_REDIR_OUT || (*curr)->type == TOKEN_APPEND)
+		{
+			if (!add_redir(&cmd->redir_out, prev, curr))
 				return (0);
 		}
 		else
-		{
-			if (!add_redir(&(*cmd_lst)->redir_out, curr, prev))
-				return (0);
-		}
+			break ;
 	}
 	return (1);
 }

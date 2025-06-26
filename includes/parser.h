@@ -18,28 +18,12 @@ typedef struct s_redir
 
 typedef struct s_cmd
 {
-	char			**cmd;
+	char			**cmd_args;
+	t_list			*args_lst;
 	t_redir			*redir_in;
 	t_redir			*redir_out;
 	struct s_cmd	*next;
 } t_cmd;
-
-typedef struct s_parser_counts
-{
-	int	cmds;
-	int	pipes;
-	int redir_out;
-	int	redir_in;
-	int	appends;
-	int heredoc;
-}	t_parser_counts;
-
-typedef struct s_file
-{
-	char			*filename;
-	int				fd;
-	struct s_file	*next;
-}	t_file;
 
 
 /* Main function */
@@ -47,7 +31,22 @@ int	parser(t_cmd **cmd_lst, t_token *tokens);
 int	print_sintax_err(t_token *prev, t_token *curr, int status);
 
 /* Command struct utils */
-int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr);
+int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
+int	is_valid_redirect(t_token *curr);
+int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr);
+int	save_cmd_redirects(t_cmd *cmd, t_token **prev, t_token **curr);
+
+int	is_valid_redirect(t_token *curr);
+int	is_valid_pipe(t_token **prev, t_token **curr);
+int	lst_to_arr(t_list *args_lst, char ***cmd_args);
+
+int cmd_clear(t_cmd **lst, int status);
+void	redir_clean(t_redir **redir);
+int	cmd_clean_split(char **split, int status);
+
+
+
+
 
 
 
