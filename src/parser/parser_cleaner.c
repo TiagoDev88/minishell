@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/26 23:31:54 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 00:16:10 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	cmd_clean_split(char **split, int status)
 	if (!split)
 		return (status);
 	i = 0;
-	printf("Cleaning split\n");
 	while (split[i])
 	{
 		free(split[i]);
@@ -43,7 +42,6 @@ void	redir_clean(t_redir **redir)
 
 	if (!(*redir) || !redir)
 		return ;
-	printf("Cleaning redir\n");
 	curr = *redir;
 	while (curr)
 	{
@@ -63,7 +61,6 @@ int cmd_clear(t_cmd **lst, int status)
 
 	if (!lst || !*lst)
 		return (status);
-	printf("Cleaning list\n");
 	curr = *lst;
 	while (curr)
 	{

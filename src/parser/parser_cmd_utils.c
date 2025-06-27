@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:45:55 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/26 23:29:49 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 00:29:45 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	lst_to_arr(t_list *args_lst, char ***cmd_args)
 	i = 0;
 	while (curr)
 	{
-
+		printf("curr->content: %s\n", (char *)curr->content);
 		(*cmd_args)[i] = ft_strdup(curr->content);
 		if (!(*cmd_args)[i])
 			return (cmd_clean_split(*cmd_args, 0));
