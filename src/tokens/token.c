@@ -45,53 +45,6 @@ static t_token_type	get_token_type(const char *s)
 }
 
 
-// t_token	*tokenize(char *input, char **envp)
-// {
-// 	t_token	*tokens;
-// 	int		i;
-// 	char del;
-
-// 	tokens = NULL;
-// 	i = 0;
-// 	while (input[i])
-// 	{
-// 		//printf("input: %s INDEX: %i\n", input + i, i);
-// 		del = ' ';
-// 		while (input[i] == del || input[i] == '\t')
-// 			i++;
-// 		if (!input[i])
-// 			break ;
-// 		if (!ft_strncmp(&input[i], ">>", 2) || !ft_strncmp(&input[i], "<<", 2))
-// 		{
-// 			add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 2), 0));
-// 			i += 2;
-// 		}
-// 		else if (ft_strchr("> < |", input[i]))
-// 		{
-//     		add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 1), 0));
-//     		i++;
-// 		}
-// 		else
-// 		{
-// 			//printf("IS WORD\n");
-// 			if (input[i] == '\"' || input[i] == '\'')
-// 			{
-// 				del = input[i];
-// 				i++;
-// 			}
-// 			// {
-// 			// 	handle_word(&tokens, input, &i);
-// 			// }
-// 			// else
-// 			handle_word(&tokens, input, &i, del, envp);
-// 		}
-// 		//printf("Fim dentro do primeiro while");
-// 		if (i == 50)
-// 			break;
-// 	}
-// 	return (tokens);
-// }
-
 t_token	*tokenize(char *input, char **envp)
 {
 	t_token_builder	bd;
@@ -131,7 +84,7 @@ t_token	*tokenize(char *input, char **envp)
 		}
 		else
 		{
-			if (bd.input[bd.pos] == '\"' || bd.input[bd.pos] == '\'')
+			if ((bd.input[bd.pos] == '\"' || bd.input[bd.pos] == '\'') && bd.input[bd.pos + 1])
 			{
 				bd.del = bd.input[bd.pos];
 				bd.pos++;

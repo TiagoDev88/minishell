@@ -1,22 +1,5 @@
 #include "../includes/minishell.h"
 
-//TODO retirar o printf
-static char *get_env_value(char *name, char **envp)
-{
-    int i;
-    int len;
-
-    len = ft_strlen(name);
-    i = 0;
-    while (envp[i])
-    {
-        //printf("ENV: %s posicao %i\n", envp[i], i);
-        if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
-            return (ft_strdup(envp[i] + len + 1));
-        i++;
-    }
-    return (ft_strdup(""));
-}
 //TODO: depois tenho que ver como vou tratar do exit status
 // vai ser com a variavel global, o EXIT CODE
 
@@ -30,6 +13,7 @@ static char *extract_variable(t_token_builder *bd)
     j = 0;
     bd->pos++; // aqui vou saltar o '$'
 
+    var[0] = '\0';
     if (bd->input[bd->pos] == '?')
     {
         bd->pos++;
@@ -44,9 +28,10 @@ static char *extract_variable(t_token_builder *bd)
     }
     var[j] = '\0';
     //value = get_env_value(var, bd->envp);
+    value = getenv(var);
     if (!value)
-        return (NULL);
-    return (value);
+        return (ft_strdup(""));
+    return (ft_strdup(value));
 }
 
 static int	is_ignored_variable(t_token_builder **bd, int *start)
@@ -97,21 +82,30 @@ static void	append_dollar(t_token_builder **bd, char **part, int *start, int fla
 char *extract_word(t_token_builder **bd, int start)
 {
     char *part;
+    char next;
 
     part = ft_strdup("");
     if (!part)
         return (NULL);
     while ((*bd)->input[(*bd)->pos])
     {
-		if ((*bd)->input[(*bd)->pos] == '$' && (*bd)->input[(*bd)->pos + 1] != ' ')
+        if ((*bd)->input[(*bd)->pos] == '$')
         {
+            next = (*bd)->input[(*bd)->pos + 1];
+            if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|", next))
+            {
+                (*bd)->pos++;
+                continue;
+            }
             if (is_ignored_variable(bd, &start))
-				break;
-			if ((*bd)->del != '\'')
+                break;
+
+            if ((*bd)->del != '\'')
+            {
                 append_dollar(bd, &part, &start, 1);
-		}
-        if ((*bd)->del != '\'' && (*bd)->input[(*bd)->pos] == '$')
-            break;
+                break;
+            }
+        }
         if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
             break;
         if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|", (*bd)->input[(*bd)->pos]))
