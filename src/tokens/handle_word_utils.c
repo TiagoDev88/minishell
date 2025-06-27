@@ -43,7 +43,7 @@ static char *extract_variable(t_token_builder *bd)
         bd->pos++;
     }
     var[j] = '\0';
-    value = get_env_value(var, bd->envp);
+    //value = get_env_value(var, bd->envp);
     if (!value)
         return (NULL);
     return (value);
