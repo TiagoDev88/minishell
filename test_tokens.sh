@@ -131,10 +131,73 @@ run_test 'echo hello$USERworld' \
 Token: [0] |hello|" \
 'echo hello$USERworld'
 
+# Comando com $USER
+run_test 'echo $USER' \
+"Token: [0] |echo|
+Token: [0] |$USER|" \
+'echo $USER'
+
+# Comando com $HOME
+run_test 'echo $HOME' \
+"Token: [0] |echo|
+Token: [0] |$HOME|" \
+'echo $HOME'
+
+# Comando com $USER e $HOME
+run_test 'echo $USER $HOME' \
+"Token: [0] |echo|
+Token: [0] |$USER|
+Token: [0] |$HOME|" \
+'echo $USER $HOME'
+
+# Comando com $USER e $HOME entre aspas
+run_test 'echo "$USER" "$HOME"' \
+"Token: [0] |echo|
+Token: [0] |$USER|
+Token: [0] |$HOME|" \
+'echo "$USER" "$HOME"'
+
+# Comando com $USER e $HOME entre aspas simples
+run_test 'echo '\''$USER'\'' '\''$HOME'\''' \
+"Token: [0] |echo|
+Token: [0] |\$USER|
+Token: [0] |\$HOME|" \
+'echo '\''$USER'\'' '\''$HOME'\'''
+
 # Comando com $ no nome
 run_test '$USER$HOME' \
 "Token: [0] |$USER$HOME|" \
 '$USER$HOME'
+
+# Comando com $USER e $HOME
+run_test 'echo $USER$HOME' \
+"Token: [0] |echo|
+Token: [0] |$USER$HOME|" \
+'echo $USER$HOME'
+
+# Comando com $USER e $HOME entre aspas
+run_test 'echo "$USER$HOME"' \
+"Token: [0] |echo|
+Token: [0] |$USER$HOME|" \
+'echo "$USER$HOME"'
+
+# Comando com $USER e $HOME entre aspas simples
+run_test 'echo '\''$USER$HOME'\''' \
+"Token: [0] |echo|
+Token: [0] |\$USER\$HOME|" \
+'echo '\''$USER$HOME'\'''
+
+# Comando com $USER e $HOME entre aspas simples e duplas
+run_test 'echo '\''$USER'\''"'"$HOME"'"' \
+"Token: [0] |echo|
+Token: [0] |\$USER/home/foraalinux|" \
+'echo '\''$USER'\''"'"$HOME"'"'
+
+# Comando com $USER e $HOME entre aspas simples e duplas, sem espaço
+run_test 'echo '\''$USER'\''"'"$HOME"'"' \
+"Token: [0] |echo|
+Token: [0] |\$USER/home/foraalinux|" \
+'echo '\''$USER'\''"'"$HOME"'"'
 
 
 # Simples entre aspas simples
@@ -142,6 +205,7 @@ run_test "echo 'testando'" \
 "Token: [0] |echo|
 Token: [0] |testando|" \
 "echo 'testando'"
+
 
 # Simples entre aspas duplas
 run_test "echo \"testando\"" \
@@ -151,7 +215,8 @@ Token: [0] |testando|" \
 
 # Aspas simples vazias coladas
 run_test "echo '''''" \
-"Token: [0] |echo|
+"Erro: aspa não fechada, tenho que dar ERRO porque nao encontrou o par de quots
+Token: [0] |echo|
 Token: [0] ||" \
 "echo '''''"
 
@@ -160,6 +225,24 @@ run_test "echo \"\"\"\"" \
 "Token: [0] |echo|
 Token: [0] ||" \
 "echo \"\"\"\""
+
+# Aspas simples + aspas duplas
+run_test "echo '\"'" \
+"Token: [0] |echo|
+Token: [0] |\"|" \
+"echo '\"'"
+
+# Aspas duplas + aspas simples
+run_test "echo \"'\"" \
+"Token: [0] |echo|
+Token: [0] |'|" \
+"echo \"'\""
+
+# Aspas simples + aspas duplas vazias
+run_test "echo ''\"\"" \
+"Token: [0] |echo|
+Token: [0] ||" \
+"echo ''\"\""
 
 # Aspas simples + aspas duplas juntas
 run_test "echo ''\"\"" \
@@ -172,23 +255,35 @@ run_test "echo foo'bar'baz\"qux\"" \
 "Token: [0] |echo|
 Token: [0] |foobarbazqux|" \
 "echo foo'bar'baz\"qux\""
-
-# Escape dentro de aspas duplas (o escape funciona)
-run_test "echo \"foo\\\"bar\"" \
+# Texto colado: aspas simples, duplas e sem aspas, com variável
+run_test "echo foo'bar'$USER\"baz\"" \
 "Token: [0] |echo|
-Token: [0] |foo\"bar|" \
-"echo \"foo\\\"bar\""
+Token: [0] |foobarforaalinuxbaz|" \
+"echo foo'bar'$USER\"baz\""
 
-# Escape dentro de aspas simples (escape não é interpretado)
-run_test "echo 'foo\\'bar'" \
+# Variável entre aspas simples e texto colado
+run_test "echo '\$USER'foo" \
 "Token: [0] |echo|
-Token: [0] |foo\'bar|" \
-"echo 'foo\'bar'"
+Token: [0] |\$USERfoo|" \
+"echo '$USER'foo"
+
+# Variável entre aspas duplas e texto colado
+run_test "echo \"$USER\"foo" \
+"Token: [0] |echo|
+Token: [0] |foraalinuxfoo|" \
+"echo \"$USER\"foo"
+
+# Variável com escape dentro de aspas simples
+run_test "echo '\$USER'" \
+"Token: [0] |echo|
+Token: [0] |\$USER|" \
+"echo '\$USER'"
+
 
 # Variável com escape dentro de aspas duplas
 run_test "echo \"foo\\\$USER\"" \
 "Token: [0] |echo|
-Token: [0] |foo\$USER|" \
+Token: [0] |foo\\$USER|" \
 "echo \"foo\\\$USER\""
 
 # Variável com escape fora de aspas
@@ -220,10 +315,11 @@ run_test "    " \
 ""
 
 # Variável não definida
-run_test "echo $UNDEFINED_VAR" \
+run_test "echo \$UNDEFINED_VAR" \
 "Token: [0] |echo|
 Token: [0] |$UNDEFINED_VAR|" \
 "echo \$UNDEFINED_VAR"
+
 
 # Variável dentro de comando (não é token, apenas um comando estranho)
 run_test "$USER echo" \
@@ -242,6 +338,37 @@ run_test "echo '\$USER'\"world\"" \
 "Token: [0] |echo|
 Token: [0] |\$USERworld|" \
 "echo '\$USER'\"world\""
+
+# Variável dentro de aspas duplas seguida de aspas simples
+run_test "echo \"$USER\"'world'" \
+"Token: [0] |echo|
+Token: [0] |foraalinuxworld|" \
+"echo \"$USER\"'world'"
+
+# Variável com escape dentro de aspas simples
+run_test "echo '\$USER'" \
+"Token: [0] |echo|
+Token: [0] |\$USER|" \
+"echo '\$USER'"
+
+# Variável com escape fora de aspas simples
+run_test "echo \$USER" \
+"Token: [0] |echo|
+Token: [0] |$USER|" \
+"echo \$USER"
+
+# Variável com escape dentro de aspas duplas
+run_test "echo \"\$USER\"" \
+"Token: [0] |echo|
+Token: [0] |$USER|" \
+"echo \"\$USER\""
+
+# Variável com escape fora de aspas duplas
+run_test "echo \$USER" \
+"Token: [0] |echo|
+Token: [0] |$USER|" \
+"echo \$USER"
+
 
 
 echo -e "\n\033[1;35m===== TESTES FINALIZADOS =====\033[0m"
