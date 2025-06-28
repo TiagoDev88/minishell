@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:45:55 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/28 00:29:45 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:41:27 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,12 @@ int	lst_to_arr(t_list *args_lst, char ***cmd_args)
 	return (1);
 }
 
-// Save command and respective args and flags inside a t_list* linked list. 
 int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
 {
 	t_list	*new;
 	char	*arg;
 
-	while (*curr && (*curr)->type == TOKEN_WORD) // Copy token values to array of strings -> **cmd.
+	while (*curr && (*curr)->type == TOKEN_WORD)
 	{
 		arg = ft_strdup((*curr)->value);
 		if (!arg)
@@ -88,9 +87,9 @@ void	redir_add_back(t_redir **redir_lst, t_redir *new)
 
 // Create a *t_redir node. t_redir saves redirect tokens
 // and his info like type and filename -> FILE or DELIMIT for heredoc
-int add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
+int	add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 {
-	t_redir *new;
+	t_redir	*new;
 
 	if (!is_valid_redirect(*curr))
 		return (0);
@@ -113,14 +112,16 @@ int add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 
 int	save_cmd_redirects(t_cmd *cmd, t_token **prev, t_token **curr)
 {
-	while (*curr) // Looking for the end of tokens or a pipe
+	while (*curr)
 	{
-		if ((*curr)->type == TOKEN_REDIR_IN || (*curr)->type == TOKEN_HEREDOC)
+		if ((*curr)->type == TOKEN_REDIR_IN
+			|| (*curr)->type == TOKEN_HEREDOC)
 		{
 			if (!add_redir(&cmd->redir_in, prev, curr))
 				return (0);
 		}
-		else if ((*curr)->type == TOKEN_REDIR_OUT || (*curr)->type == TOKEN_APPEND)
+		else if ((*curr)->type == TOKEN_REDIR_OUT
+			|| (*curr)->type == TOKEN_APPEND)
 		{
 			if (!add_redir(&cmd->redir_out, prev, curr))
 				return (0);

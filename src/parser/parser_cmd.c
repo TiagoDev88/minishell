@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 01:17:32 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/26 23:01:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:37:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	add_mode_two(t_cmd **cmd_lst, t_token **prev, t_token **curr)
 {
 	t_cmd	*new;
 
-	new = cmd_create_node(); // Go through all words
+	new = cmd_create_node();
 	if (!new)
 		return (0);
 	cmd_add_back(cmd_lst, new);
@@ -65,7 +65,7 @@ int	add_mode_one(t_cmd **cmd_lst, t_token **prev, t_token **curr)
 {
 	t_cmd	*new;
 
-	new = cmd_create_node(); // Go through all words
+	new = cmd_create_node();
 	if (!new)
 		return (0);
 	if (!save_cmd_redirects(new, prev, curr))
@@ -75,14 +75,13 @@ int	add_mode_one(t_cmd **cmd_lst, t_token **prev, t_token **curr)
 		cmd_add_back(cmd_lst, new);
 		if (!save_cmd_args(&new->args_lst, prev, curr))
 			return (0);
-		return (lst_to_arr(new->args_lst, &new->cmd_args));	
+		return (lst_to_arr(new->args_lst, &new->cmd_args));
 	}
 	redir_clean(&new->redir_in);
 	redir_clean(&new->redir_out);
 	free(new);
 	return (1);
 }
-
 
 int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode)
 {

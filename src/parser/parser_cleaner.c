@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/28 00:16:10 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:42:05 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	redir_clean(t_redir **redir)
 }
 
 // Main cleaner function. 
-int cmd_clear(t_cmd **lst, int status)
+int	cmd_clear(t_cmd **lst, int status)
 {
 	t_cmd	*curr;
 	t_cmd	*tmp;

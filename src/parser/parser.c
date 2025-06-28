@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/26 23:00:48 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:43:27 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static int	check_prompt_syntax(t_cmd **cmd_lst, t_token *tokens)
 		if (curr && curr->type == TOKEN_PIPE)
 			if (!is_valid_pipe(&prev, &curr))
 				return (0);
-		if (curr && curr->type >= TOKEN_REDIR_OUT && curr->type <= TOKEN_HEREDOC)
+		if (curr && curr->type >= TOKEN_REDIR_OUT
+			&& curr->type <= TOKEN_HEREDOC)
 		{
 			if (!is_valid_redirect(curr))
 				return (0);

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:35:47 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/26 22:55:13 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:42:35 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	print_redir_sintax_err(t_token *curr, int status)
 // Validate pipe and send error
 int	is_valid_pipe(t_token **prev, t_token **curr)
 {
-	if (!prev || !(*curr)->next || (*curr)->next->type == TOKEN_PIPE) // Validate if pipe is the first or last token
+	if (!prev || !(*curr)->next || (*curr)->next->type == TOKEN_PIPE)
 	{
 		ft_putstr_fd(ERR_SINTAX_NEAR_PIPE, 2);
 		return (0);
