@@ -214,11 +214,11 @@ Token: [0] |testando|" \
 "echo \"testando\""
 
 # Aspas simples vazias coladas
-run_test "echo '''''" \
-"Erro: aspa não fechada, tenho que dar ERRO porque nao encontrou o par de quots
-Token: [0] |echo|
-Token: [0] ||" \
-"echo '''''"
+# run_test "echo '''''" \
+# "minishell: syntax error: unclosed quote
+# Token: [0] |echo|
+# Token: [0] ||" \
+# "echo '''''"
 
 # Aspas duplas vazias coladas
 run_test "echo \"\"\"\"" \

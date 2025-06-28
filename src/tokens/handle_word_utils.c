@@ -11,15 +11,13 @@ static char *extract_variable(t_token_builder *bd)
     char *value;
 
     j = 0;
-    bd->pos++; // aqui vou saltar o '$'
-
+    bd->pos++;
     var[0] = '\0';
     if (bd->input[bd->pos] == '?')
     {
         bd->pos++;
         return (ft_itoa(signal_code)); // substituir $? pelo exit status (exemplo fixo 10)
     }
-    // as variaveis de ambiente $ tem que ser seguidas de letras ou _
     while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos]) || bd->input[bd->pos] == '_'))
     {
         var[j] = bd->input[bd->pos];
@@ -27,7 +25,6 @@ static char *extract_variable(t_token_builder *bd)
         bd->pos++;
     }
     var[j] = '\0';
-    //value = get_env_value(var, bd->envp);
     value = getenv(var);
     if (!value)
         return (ft_strdup(""));
@@ -50,69 +47,71 @@ static int	is_ignored_variable(t_token_builder **bd, int *start)
 	return (0);
 }
 
-//TODO talvez tratar com char* para nao andar so com endereco
-// tratar das alocacoes
-static void	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
+static void	append_text(t_token_builder **bd, char **part, int *start)
+{
+	char	*tmp;
+	char	*env_val;
+
+	tmp = ft_substr((*bd)->input, *start, (*bd)->pos - *start);
+	if (!tmp)
+		return ;
+	env_val = ft_strjoin(*part, tmp);
+	if (!env_val)
+	{
+		free(tmp);
+		return ;
+	}
+	free(*part);
+	free(tmp);
+	*part = env_val;
+}
+
+int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 {
 	char	*tmp;
 	char	*env_val;
 
 	if ((*bd)->pos > *start)
+		append_text(bd, part, start);
+	if (flag == 1)
 	{
-		tmp = ft_substr((*bd)->input, *start, (*bd)->pos - *start);
-		env_val = ft_strjoin(*part, tmp);
+		env_val = extract_variable((*bd));
+		if (!env_val)
+			return (0);
+		tmp = ft_strjoin(*part, env_val);
+		if (!tmp)
+		{
+			free(env_val);
+			return (0);
+		}
 		free(*part);
-		free(tmp);
-		*part = env_val;
+		free(env_val);
+		*part = tmp;
+		*start = (*bd)->pos;
 	}
-    if (flag == 1)
-    {
-        env_val = extract_variable((*bd));
-        tmp = ft_strjoin(*part, env_val);
-        free(*part);
-        free(env_val);
-        *part = tmp;
-        *start = (*bd)->pos;
-    }
+	return (1);
 }
 
-//TODO a flag vai servir para adicionar o que esta antes do $ com 1
-// e 0 para juntar o resto da palavra que sobrou
-// falta tratar deste teste $USER$USER deve imprimir duas variaveis seguidas.
-char *extract_word(t_token_builder **bd, int start)
+int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 {
-    char *part;
-    char next;
+	char next;
 
-    part = ft_strdup("");
-    if (!part)
-        return (NULL);
-    while ((*bd)->input[(*bd)->pos])
-    {
-        if ((*bd)->input[(*bd)->pos] == '$')
-        {
-            next = (*bd)->input[(*bd)->pos + 1];
-            if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|", next))
-            {
-                (*bd)->pos++;
-                continue;
-            }
-            if (is_ignored_variable(bd, &start))
-                break;
-
-            if ((*bd)->del != '\'')
-            {
-                append_dollar(bd, &part, &start, 1);
-                break;
-            }
-        }
-        if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
-            break;
-        if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|", (*bd)->input[(*bd)->pos]))
-            break;
-        (*bd)->pos++;
-    }
-    if ((*bd)->pos > start)
-        append_dollar(bd, &part, &start, 0);
-    return (part);
+	if ((*bd)->input[(*bd)->pos] == '$')
+	{
+		next = (*bd)->input[(*bd)->pos + 1];
+		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|", next))
+		{
+			(*bd)->pos++;
+			return (2);
+		}
+		if (is_ignored_variable(bd, start))
+			return (1);
+		if ((*bd)->del != '\'')
+		{
+			append_dollar(bd, part, start, 1);
+			return (1);
+		}
+	}
+	return (0);
 }
+

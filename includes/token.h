@@ -34,6 +34,7 @@ void	free_tokens(t_token *);
 void handle_word(t_token **, t_token_builder *);
 void add_token(t_token **, t_token *);
 t_token *new_token(t_token_type , const char *);
-char *extract_word(t_token_builder **bd, int start);
+int	append_dollar(t_token_builder **bd, char **part, int *start, int flag);
+int	check_dollar_cases(t_token_builder **bd, char **part, int *start);
 
 #endif
