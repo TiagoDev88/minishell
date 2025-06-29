@@ -153,7 +153,7 @@ void handle_word(t_token **tokens, t_token_builder *bd)
 			return (free(word));
 		res = check_state(bd);
 		if (res == STATE_ERROR)
-			return (free(word));
+			return (free(word), free_tokens(tokens));
 		if (res == STATE_BREAK)
 			break;
 	}

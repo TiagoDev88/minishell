@@ -17,7 +17,7 @@ SRC_MAIN	=	main.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c)
 SRC_UTILS	=	$(addprefix utils/, utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c parser_cmd_utils.c)
-SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c handle_word_utils.c)
+SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c handle_word_utils.c tokens_utils.c)
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_BUILTIN) $(SRC_MAIN) $(SRC_UTILS) $(SRC_PARSER) \
 		$(SRC_EXECUTOR) $(SRC_TOKENS))
