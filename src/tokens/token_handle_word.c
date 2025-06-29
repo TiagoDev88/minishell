@@ -3,13 +3,36 @@
 
 //TODO tratar do erro das quotes nao terem pares
 // talvez escrever o erro das quotes para o strerror
+
+/**
+ * @brief Checks the current parsing state regarding quotes and special characters.
+ *
+ * This function analyzes the character at the current `bd->pos` position to determine whether to:
+ * 
+ * - Close an open quote (e.g., closing " or ')
+ * - Open a new quote (if no quote is currently active and the character is ' or ")
+ * 
+ * - End the reading of a word when encountering a delimiter (space, tab, pipe, etc.)
+ * 
+ * - Report a syntax error if there is an unclosed quote at the end of the input.
+ *
+ * @param bd Pointer to the token builder structure (`t_token_builder`),
+ * 
+ *           which contains the input, current position, and active delimiter.
+ * @return int
+ * - -1: Syntax error (e.g., unclosed quote).
+ * -  0: Normal state, continue reading.
+ * 
+ * -  1: Word is complete (delimiter found outside of quotes).
+ * -  2: State change (opened or closed a quote).
+ */
 static int check_state(t_token_builder *bd)
 {
     if (bd->del != ' ' && bd->input[bd->pos] == bd->del)
     {
         bd->pos++;
         bd->del = ' ';
-        return (2);
+        return (STATE_QUOTE_CHANGE);
     }
     if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
     {
@@ -17,18 +40,28 @@ static int check_state(t_token_builder *bd)
         {
             bd->del = bd->input[bd->pos];
             bd->pos++;
-            return (2);
+            return (STATE_QUOTE_CHANGE);
         }
-        return (1);
+        return (STATE_BREAK);
     }
     if (bd->input[bd->pos] == '\0' && bd->del != ' ')
     {
         printf("minishell: syntax error: unclosed quote\n");
-        return (-1);
+        return (STATE_ERROR);
     }
-    return (0);
+    return (STATE_CONTINUE);
 }
 
+/**
+ * @brief Appends a part to the word, dynamically allocating memory as needed.
+ * 
+ * This function checks if the word is currently NULL, in which case it 
+ * assigns the part directly
+ * or appends the part to the existing word.
+ * @param word Pointer to the word string that will be modified.
+ * @param part The part to be appended to the word.
+ * @return 1 on success, 0 on failure (memory allocation error).
+ */
 static int word_append(char **word, char *part)
 {
     char *tmp;
@@ -50,6 +83,18 @@ static int word_append(char **word, char *part)
     return (1);
 }
 
+/**
+ * @brief Extracts a word from the input string based on the current position and delimiter.
+ * 
+ * This function reads characters from the input string until it encounters a delimiter
+ * 
+ * or the end of the string. It constructs a word by appending characters to it,
+ * 
+ * taking care of special cases like quotes and dollar signs.
+ * @param bd Pointer to the token builder containing the input string and current position.
+ * @param start The starting position of the word in the input string.
+ * @return A dynamically allocated string containing the extracted word, or NULL on failure.
+ */
 static char *extract_word(t_token_builder **bd, int start)
 {
 	char *part;
@@ -61,10 +106,8 @@ static char *extract_word(t_token_builder **bd, int start)
 	while ((*bd)->input[(*bd)->pos])
 	{
 		check = check_dollar_cases(bd, &part, &start);
-		if (check == 1)
+		if (check == STATE_BREAK)
 			break;
-		if (check == 2)
-			continue;
 		if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
 			break;
 		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|", (*bd)->input[(*bd)->pos]))
@@ -79,9 +122,18 @@ static char *extract_word(t_token_builder **bd, int start)
 	return (part);
 }
 
-
-
-//TODO tratar de diminuir linhas, usando outras funcoes auxiliares.
+/**
+ * @brief Handles the extraction of a word from the input string and adds it as a token.
+ * 
+ * This function reads characters from the input string until it encounters a delimiter
+ * 
+ * or the end of the string. It constructs a word by appending characters to it,
+ * 
+ * taking care of special cases like quotes and dollar signs.
+ * @param tokens Pointer to the list of tokens where the new token will be added.
+ * @param bd Pointer to the token builder containing the input string and current position.
+ * @return void
+ */
 void handle_word(t_token **tokens, t_token_builder *bd)
 {
 	char	*word;
@@ -90,13 +142,9 @@ void handle_word(t_token **tokens, t_token_builder *bd)
 	int		res;
 
 	word = NULL;
+	res = 0;
 	while (bd->input[bd->pos])
 	{
-		if (bd->del == ' ' && (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"'))
-		{
-			bd->del = bd->input[bd->pos];
-			bd->pos++;
-		}
 		start = bd->pos;
 		part = extract_word(&bd, start);
 		if (!part)
@@ -104,9 +152,9 @@ void handle_word(t_token **tokens, t_token_builder *bd)
 		if (!word_append(&word, part))
 			return (free(word));
 		res = check_state(bd);
-		if (res == -1)
+		if (res == STATE_ERROR)
 			return (free(word));
-		if (res == 1)
+		if (res == STATE_BREAK)
 			break;
 	}
 	if (word)

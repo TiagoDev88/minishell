@@ -95,79 +95,20 @@ t_token	*tokenize(char *input, char **envp)
 	return (tk);
 }
 
-void	free_tokens(t_token *tk)
+void	free_tokens(t_token **tk)
 {
 	t_token	*tmp;
+	t_token *ptr;
 
-	while (tk)
+	if (tk == NULL || *tk == NULL)
+		return;
+	ptr = *tk;
+	while (ptr != NULL)
 	{
-		tmp = tk;
-		tk = tk->next;
-		free(tmp->value);
-		free(tmp);
+		tmp = ptr->next;
+		free(ptr->value);
+		free(ptr);
+		ptr = tmp;
 	}
+	*tk = NULL;
 }
-
-/*
-
-new test: $$ = placehold for current pid number.
-
-bash-5.2$ echo $$"ola $USER"
-2023ola tfilipe-
-
-bash-5.2$ echo $$"ola $USE"
-2023ola 
-
-bash-5.2$ echo $$"ola $"
-2023ola $
-
-bash-5.2$ echo $$"ola $$"
-2023ola 2023
-
-bash-5.2$ echo $$"ola $$" $$
-2023ola 2023 2023
-
-bash-5.2$ echo $$"ola $$" $
-2023ola 2023 $
-
-bash-5.2$ echo $$"ola $$"$
-2023ola 2023$
-
-bash-5.2$ echo $$"ola $$" $
-2023ola 2023 $
-
-bash-5.2$ echo $$ "ola $$" $
-2023 ola 2023 $
-
-bash-5.2$ echo $"ola"
-ola
-
-bash-5.2$ echo $$"ola"
-2023ola
-
-bash-5.2$ echo $$ "ola"
-2023 ola
-
-bash-5.2$ echo $$ "ola $"
-2023 ola $
-
-bash-5.2$ echo $$ "ola $" $
-2023 ola $ $
-
-bash-5.2$ echo $$ "ola $"$
-2023 ola $$
-
-bash-5.2$ echo $$ "ola $"$ $$
-2023 ola $$ 2023
-
-bash-5.2$ echo $$ "ola $USER"$ $$
-2023 ola tfilipe-$ 2023
-
-bash-5.2$ echo $$ "ola $invalid"$ $$
-2023 ola $ 2023
-
-bash-5.2$ echo $$ "ola $invalid" $ $$
-2023 ola  $ 2023
-
-
-*/
