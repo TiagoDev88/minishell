@@ -1,11 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_word_utils.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
+/*   Updated: 2025/06/30 15:37:36 by tfilipe-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
-
-int signal_code = 35; // vai ser para teste, depois tenho que tratar
-
 
 //TODO: depois tenho que ver como vou tratar do exit status
 // vai ser com a variavel global, o EXIT CODE
-
+// substituir $? pelo exit status
 /**
  * @brief Extracts the value of an environment variable from the input string.
  *
@@ -16,33 +25,35 @@ int signal_code = 35; // vai ser para teste, depois tenho que tratar
  * Otherwise, it fetches the value from the environment using `getenv`.
  *
  * @param bd Pointer to the token builder containing the input and position.
- * @return A dynamically allocated string with the variable's value, or an empty string if not found.
+ * @return A dynamically allocated string with the variable's value, or an 
+ * empty string if not found.
  */
-static char *extract_variable(t_token_builder *bd)
+static char	*extract_variable(t_token_builder *bd)
 {
-    char var[256];
-    int j;
-    char *value;
+	char	var[256];
+	int		j;
+	char	*value;
 
-    j = 0;
-    bd->pos++;
-    var[0] = '\0';
-    if (bd->input[bd->pos] == '?')
-    {
-        bd->pos++;
-        return (ft_itoa(signal_code)); // substituir $? pelo exit status (exemplo fixo 10)
-    }
-    while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos]) || bd->input[bd->pos] == '_'))
-    {
-        var[j] = bd->input[bd->pos];
-        j++;
-        bd->pos++;
-    }
-    var[j] = '\0';
-    value = getenv(var);
-    if (!value)
-        return (ft_strdup(""));
-    return (ft_strdup(value));
+	j = 0;
+	bd->pos++;
+	var[0] = '\0';
+	if (bd->input[bd->pos] == '?')
+	{
+		bd->pos++;
+		return (ft_itoa(69));
+	}
+	while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos])
+			|| bd->input[bd->pos] == '_'))
+	{
+		var[j] = bd->input[bd->pos];
+		j++;
+		bd->pos++;
+	}
+	var[j] = '\0';
+	value = getenv(var);
+	if (!value)
+		return (ft_strdup(""));
+	return (ft_strdup(value));
 }
 
 /**
@@ -52,7 +63,8 @@ static char *extract_variable(t_token_builder *bd)
  * 
  * - `$` at the end of the input.
  * 
- * - `$` followed by a digit (positional parameter, which is ignored in this implementation).
+ * - `$` followed by a digit (positional parameter, which is ignored in 
+ * this implementation).
  *
  * @param bd Pointer to the token builder.
  * @param start Pointer to the start position index to update if needed.
@@ -72,8 +84,8 @@ static int	is_ignored_variable(t_token_builder **bd, int *start)
 	if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
 	{
 		(*bd)->pos += 2;
-        *start = (*bd)->pos;
-        return (0);
+		*start = (*bd)->pos;
+		return (0);
 	}
 	return (0);
 }
@@ -105,16 +117,17 @@ static void	append_text(t_token_builder **bd, char **part, int *start)
 		free(tmp);
 		return ;
 	}
-    free(*part);
+	free(*part);
 	free(tmp);
 	*part = env_val;
 }
 
 /**
- * @brief Handles the appending of text and/or environment variable values to the current word part.
+ * @brief Handles the appending of text and/or environment variable
+ *  values to the current word part.
  *
- * This function appends plain text if `flag == 0`, or resolves and appends a variable value
- * if `flag == 1`. 
+ * This function appends plain text if `flag == 0`, or resolves and
+ *  appends a variable value if `flag == 1`. 
  * 
  * It handles memory allocation and updating of the input position.
  *
@@ -163,7 +176,8 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
  * 
  * - Ignores positional parameters (e.g., `$1`).
  * 
- * - Resolves and appends the environment variable value if not inside single quotes.
+ * - Resolves and appends the environment variable value if not 
+ * inside single quotes.
  *
  * @param bd Pointer to the token builder.
  * @param part Pointer to the current partial word being built.
@@ -178,7 +192,7 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
  */
 int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 {
-	char next;
+	char	next;
 
 	if ((*bd)->input[(*bd)->pos] == '$')
 	{
@@ -198,4 +212,3 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 	}
 	return (STATE_CONTINUE);
 }
-

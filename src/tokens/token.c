@@ -1,5 +1,16 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
+/*   Updated: 2025/06/30 15:49:57 by tfilipe-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../includes/minishell.h"
 
 /**
  * @brief Determines the token type from the given string.
@@ -35,33 +46,31 @@ static t_token_type	get_token_type(const char *s)
  * 
  * Detects multi-character tokens (>>, <<), single-character tokens (> < |),
  * 
- * or words possibly enclosed in quotes. It adds the extracted tokens to the list.
+ * or words possibly enclosed in quotes. It adds the extracted
+ *  tokens to the list.
  *
  * @param tk Pointer to the head of the token list.
  * @param bd Pointer to the token builder structure holding input state.
  * @param substr Temporary string used to hold extracted substrings.
  */
-static void help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
+static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
 {
-	if (!ft_strncmp(&bd->input[bd->pos], ">>", 2) || !ft_strncmp(&bd->input[bd->pos], "<<", 2))
+	if (!ft_strncmp(&bd->input[bd->pos], ">>", 2)
+		|| !ft_strncmp(&bd->input[bd->pos], "<<", 2))
 	{
 		substr = ft_substr(bd->input, bd->pos, 2);
-		if (!substr)
-			return ;
 		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
 		bd->pos += 2;
 	}
 	else if (ft_strchr("> < |", bd->input[bd->pos]))
 	{
 		substr = ft_substr(bd->input, bd->pos, 1);
-		if (!substr)
-			return ;
 		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
 		bd->pos++;
 	}
 	else
 	{
-		if ((bd->input[bd->pos] == '\"' || bd->input[bd->pos] == '\'') && bd->input[bd->pos + 1])
+		if (bd->input[bd->pos] == '\"' || bd->input[bd->pos] == '\'')
 		{
 			bd->del = bd->input[bd->pos];
 			bd->pos++;
@@ -78,19 +87,20 @@ static void help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
  * to parse tokens until the end of the input string is reached.
  *
  * @param input The command line input string to tokenize.
- * @param envp The environment variables array (unused in the shown code but passed).
+ * @param envp The environment variables array (unused in the
+ *  shown code but passed).
  * @return Pointer to the head of the generated token linked list.
  */
 t_token	*tokenize(char *input, char **envp)
 {
 	t_token_builder	bd;
 	t_token			*tk;
-	char *substr;
+	char			*substr;
 
 	bd.input = input;
 	bd.envp = envp;
 	bd.pos = 0;
-	tk = NULL; // talvez retirar depois, quando juntar as bibliotecas
+	tk = NULL;
 	substr = NULL;
 	while (bd.input[bd.pos])
 	{

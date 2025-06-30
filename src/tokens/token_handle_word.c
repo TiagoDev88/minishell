@@ -1,20 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_handle_word.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
+/*   Updated: 2025/06/30 14:45:21 by tfilipe-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
+static void	clean_words(t_token **tk, char *word, int res)
+{
+	if (res == -1)
+		printf("minishell: syntax error: unclosed quote\n");
+	if (word)
+		free(word);
+	if (tk || *tk)
+		free_tokens(tk);
+}
 
 //TODO tratar do erro das quotes nao terem pares
 // talvez escrever o erro das quotes para o strerror
 
 /**
- * @brief Checks the current parsing state regarding quotes and special characters.
+ * @brief Checks the current parsing state regarding quotes and special
+ *  characters.
  *
- * This function analyzes the character at the current `bd->pos` position to determine whether to:
+ * This function analyzes the character at the current `bd->pos` position
+ *  to determine whether to:
  * 
  * - Close an open quote (e.g., closing " or ')
- * - Open a new quote (if no quote is currently active and the character is ' or ")
+ * - Open a new quote (if no quote is currently active and the character
+ *  is ' or ")
  * 
- * - End the reading of a word when encountering a delimiter (space, tab, pipe, etc.)
+ * - End the reading of a word when encountering a delimiter (space, tab,
+ *  pipe, etc.)
  * 
- * - Report a syntax error if there is an unclosed quote at the end of the input.
+ * - Report a syntax error if there is an unclosed quote at the end of the
+ *  input.
  *
  * @param bd Pointer to the token builder structure (`t_token_builder`),
  * 
@@ -26,30 +52,27 @@
  * -  1: Word is complete (delimiter found outside of quotes).
  * -  2: State change (opened or closed a quote).
  */
-static int check_state(t_token_builder *bd)
+static int	check_state(t_token_builder *bd)
 {
-    if (bd->del != ' ' && bd->input[bd->pos] == bd->del)
-    {
-        bd->pos++;
-        bd->del = ' ';
-        return (STATE_QUOTE_CHANGE);
-    }
-    if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
-    {
-        if (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')
-        {
-            bd->del = bd->input[bd->pos];
-            bd->pos++;
-            return (STATE_QUOTE_CHANGE);
-        }
-        return (STATE_BREAK);
-    }
-    if (bd->input[bd->pos] == '\0' && bd->del != ' ')
-    {
-        printf("minishell: syntax error: unclosed quote\n");
-        return (STATE_ERROR);
-    }
-    return (STATE_CONTINUE);
+	if (bd->del != ' ' && bd->input[bd->pos] == bd->del)
+	{
+		bd->pos++;
+		bd->del = ' ';
+		return (STATE_QUOTE_CHANGE);
+	}
+	if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
+	{
+		if (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')
+		{
+			bd->del = bd->input[bd->pos];
+			bd->pos++;
+			return (STATE_QUOTE_CHANGE);
+		}
+		return (STATE_BREAK);
+	}
+	if (bd->input[bd->pos] == '\0' && bd->del != ' ')
+		return (STATE_ERROR);
+	return (STATE_CONTINUE);
 }
 
 /**
@@ -62,56 +85,63 @@ static int check_state(t_token_builder *bd)
  * @param part The part to be appended to the word.
  * @return 1 on success, 0 on failure (memory allocation error).
  */
-static int word_append(char **word, char *part)
+static int	word_append(char **word, char *part)
 {
-    char *tmp;
+	char	*tmp;
 
-    if (!*word)
-    {
-        *word = part;
-        return (1);
-    }
-    tmp = ft_strjoin(*word, part);
-    if (!tmp)
-    {
-        free(part);
-        return (0);
-    }
-    free(*word);
-    free(part);
-    *word = tmp;
-    return (1);
+	tmp = NULL;
+	if (!*word)
+	{
+		*word = part;
+		return (1);
+	}
+	tmp = ft_strjoin(*word, part);
+	if (!tmp)
+	{
+		free(part);
+		return (0);
+	}
+	free(*word);
+	free(part);
+	*word = tmp;
+	return (1);
 }
 
 /**
- * @brief Extracts a word from the input string based on the current position and delimiter.
+ * @brief Extracts a word from the input string based on the current 
+ * position and delimiter.
  * 
- * This function reads characters from the input string until it encounters a delimiter
+ * This function reads characters from the input string until it encounters
+ *  a delimiter
  * 
  * or the end of the string. It constructs a word by appending characters to it,
  * 
  * taking care of special cases like quotes and dollar signs.
- * @param bd Pointer to the token builder containing the input string and current position.
+ * @param bd Pointer to the token builder containing the input string and
+ *  current position.
  * @param start The starting position of the word in the input string.
- * @return A dynamically allocated string containing the extracted word, or NULL on failure.
+ * @return A dynamically allocated string containing the extracted word, or
+ *  NULL on failure.
  */
-static char *extract_word(t_token_builder **bd, int start)
+static char	*extract_word(t_token_builder **bd, int start)
 {
-	char *part;
-	int check;
+	char	*part;
+	int		check;
 
 	part = ft_strdup("");
 	if (!part)
 		return (NULL);
+	check = 0;
 	while ((*bd)->input[(*bd)->pos])
 	{
 		check = check_dollar_cases(bd, &part, &start);
 		if (check == STATE_BREAK)
-			break;
+			break ;
 		if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
-			break;
-		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|", (*bd)->input[(*bd)->pos]))
-			break;
+			break ;
+		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|",
+				(*bd)->input[(*bd)->pos]))
+			break ;
 		(*bd)->pos++;
 	}
 	if ((*bd)->pos > start)
@@ -123,41 +153,44 @@ static char *extract_word(t_token_builder **bd, int start)
 }
 
 /**
- * @brief Handles the extraction of a word from the input string and adds it as a token.
+ * @brief Handles the extraction of a word from the input string and adds it
+ *  as a token.
  * 
- * This function reads characters from the input string until it encounters a delimiter
+ * This function reads characters from the input string until it encounters a 
+ * delimiter
  * 
  * or the end of the string. It constructs a word by appending characters to it,
  * 
  * taking care of special cases like quotes and dollar signs.
  * @param tokens Pointer to the list of tokens where the new token will be added.
- * @param bd Pointer to the token builder containing the input string and current position.
+ * @param bd Pointer to the token builder containing the input string and current
+ *  position.
  * @return void
  */
-void handle_word(t_token **tokens, t_token_builder *bd)
+void	handle_word(t_token **tokens, t_token_builder *bd)
 {
 	char	*word;
 	char	*part;
 	int		start;
 	int		res;
 
-	word = NULL;
-	res = 0;
+	word = ft_strdup("");
+	res = check_state(bd);
+	if (res == STATE_ERROR)
+		return (clean_words(tokens, word, STATE_ERROR));
 	while (bd->input[bd->pos])
 	{
 		start = bd->pos;
 		part = extract_word(&bd, start);
 		if (!part)
-			return (free(word));
+			return (clean_words(tokens, word, STATE_ERROR));
 		if (!word_append(&word, part))
 			return (free(word));
 		res = check_state(bd);
 		if (res == STATE_ERROR)
-			return (free(word), free_tokens(tokens));
+			return (clean_words(tokens, word, STATE_ERROR));
 		if (res == STATE_BREAK)
-			break;
+			break ;
 	}
-	if (word)
-		add_token(tokens, new_token(TOKEN_WORD, word));
+	add_token(tokens, new_token(TOKEN_WORD, word));
 }
-

@@ -1,11 +1,21 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokens_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/30 15:49:01 by tfilipe-          #+#    #+#             */
+/*   Updated: 2025/06/30 15:49:38 by tfilipe-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*token;
-	
+
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
@@ -22,7 +32,7 @@ void	add_token(t_token **tk, t_token *new)
 	if (!*tk)
 	{
 		*tk = new;
-		return;
+		return ;
 	}
 	tmp = *tk;
 	while (tmp->next)
@@ -33,10 +43,10 @@ void	add_token(t_token **tk, t_token *new)
 void	free_tokens(t_token **tk)
 {
 	t_token	*tmp;
-	t_token *ptr;
+	t_token	*ptr;
 
 	if (tk == NULL || *tk == NULL)
-		return;
+		return ;
 	ptr = *tk;
 	while (ptr != NULL)
 	{
