@@ -13,7 +13,8 @@ run_test() {
   local bash_expected="$3"
 
   output=$(echo "$input" | $MINISHELL)
-  filtered_output=$(echo "$output" | grep -v '^/mnt/c/Users/foraa/Documents/Programacao/C/42school/minishell\$')
+  #filtered_output=$(echo "$output" | grep -v '^/mnt/c/Users/foraa/Documents/Programacao/C/42school/minishell\$')
+  filtered_output=$(echo "$output" | grep -v '^/home/tfilipe-/CommonCore/minishell\$')
   filtered_output=$(echo "$filtered_output" | sed '/^$/d')
 
   echo -e "\n\033[1;34mInput:\033[0m $input"
@@ -95,7 +96,7 @@ Token: [0] |spaced|" \
 # Variáveis coladas e entre aspas
 run_test "echo ola\$USER\$USER'\$USER'OLA" \
 "Token: [0] |echo|
-Token: [0] |olaforaalinuxforaalinux\$USEROLA|" \
+Token: [0] |olatfilipe-tfilipe-\$USEROLA|" \
 "echo ola\$USER\$USER'\$USER'OLA"
 
 
@@ -190,13 +191,13 @@ Token: [0] |\$USER\$HOME|" \
 # Comando com $USER e $HOME entre aspas simples e duplas
 run_test 'echo '\''$USER'\''"'"$HOME"'"' \
 "Token: [0] |echo|
-Token: [0] |\$USER/home/foraalinux|" \
+Token: [0] |\$USER/home/tfilipe-|" \
 'echo '\''$USER'\''"'"$HOME"'"'
 
 # Comando com $USER e $HOME entre aspas simples e duplas, sem espaço
 run_test 'echo '\''$USER'\''"'"$HOME"'"' \
 "Token: [0] |echo|
-Token: [0] |\$USER/home/foraalinux|" \
+Token: [0] |\$USER/home/tfilipe-|" \
 'echo '\''$USER'\''"'"$HOME"'"'
 
 
@@ -258,7 +259,7 @@ Token: [0] |foobarbazqux|" \
 # Texto colado: aspas simples, duplas e sem aspas, com variável
 run_test "echo foo'bar'$USER\"baz\"" \
 "Token: [0] |echo|
-Token: [0] |foobarforaalinuxbaz|" \
+Token: [0] |foobartfilipe-baz|" \
 "echo foo'bar'$USER\"baz\""
 
 # Variável entre aspas simples e texto colado
@@ -270,7 +271,7 @@ Token: [0] |\$USERfoo|" \
 # Variável entre aspas duplas e texto colado
 run_test "echo \"$USER\"foo" \
 "Token: [0] |echo|
-Token: [0] |foraalinuxfoo|" \
+Token: [0] |tfilipe-foo|" \
 "echo \"$USER\"foo"
 
 # Variável com escape dentro de aspas simples
@@ -295,7 +296,7 @@ Token: [0] |foo\\$USER|" \
 # Variável colada com texto entre aspas simples
 run_test "echo $USER'foo'$HOME" \
 "Token: [0] |echo|
-Token: [0] |foraalinuxfoo/home/foraalinux|" \
+Token: [0] |tfilipe-foo/home/tfilipe-|" \
 "echo $USER'foo'$HOME"
 
 # Texto colado entre aspas simples e duplas alternadas
@@ -330,7 +331,7 @@ Token: [0] |echo|" \
 # Variável entre aspas e texto junto
 run_test "echo \"$USER\"world" \
 "Token: [0] |echo|
-Token: [0] |foraalinuxworld|" \
+Token: [0] |tfilipe-world|" \
 "echo \"$USER\"world"
 
 # Variável dentro de aspas simples seguida de aspas duplas
@@ -342,7 +343,7 @@ Token: [0] |\$USERworld|" \
 # Variável dentro de aspas duplas seguida de aspas simples
 run_test "echo \"$USER\"'world'" \
 "Token: [0] |echo|
-Token: [0] |foraalinuxworld|" \
+Token: [0] |tfilipe-world|" \
 "echo \"$USER\"'world'"
 
 # Variável com escape dentro de aspas simples

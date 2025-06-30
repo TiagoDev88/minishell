@@ -2,7 +2,7 @@
 
 #include "../includes/minishell.h"
 
-t_token	*new_token(t_token_type type, const char *value)
+t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*token;
 	
@@ -10,7 +10,7 @@ t_token	*new_token(t_token_type type, const char *value)
 	if (!token)
 		return (NULL);
 	token->type = type;
-	token->value = ft_strdup(value);
+	token->value = value;
 	token->next = NULL;
 	return (token);
 }
