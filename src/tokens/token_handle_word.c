@@ -131,7 +131,6 @@ static char	*extract_word(t_token_builder **bd, int start)
 	part = ft_strdup("");
 	if (!part)
 		return (NULL);
-	check = 0;
 	while ((*bd)->input[(*bd)->pos])
 	{
 		check = check_dollar_cases(bd, &part, &start);
@@ -142,7 +141,8 @@ static char	*extract_word(t_token_builder **bd, int start)
 		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|",
 				(*bd)->input[(*bd)->pos]))
 			break ;
-		(*bd)->pos++;
+		if ((*bd)->input[(*bd)->pos])
+			(*bd)->pos++;
 	}
 	if ((*bd)->pos > start)
 	{

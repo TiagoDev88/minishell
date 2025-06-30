@@ -13,12 +13,12 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC_DIR = src
 
 SRC_BUILTIN	=	$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c unset.c)
-SRC_MAIN	=	test_main.c
+SRC_MAIN	=	main.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c)
 SRC_UTILS	=	$(addprefix utils/, utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c parser_cmd.c parser_cmd_utils.c parser_cleaner.c \
-							parser_validator.c parser_cmd_utils.c)
-SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c token_handle_word.c handle_word_utils.c tokens_utils.c)
+							parser_validator.c)
+SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c handle_word_utils.c tokens_utils.c)
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_BUILTIN) $(SRC_MAIN) $(SRC_UTILS) $(SRC_PARSER) \
 		$(SRC_EXECUTOR) $(SRC_TOKENS))

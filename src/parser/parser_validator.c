@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_validator.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:35:47 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/28 13:42:35 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/30 16:25:23 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@
 int	print_redir_sintax_err(t_token *curr, int status)
 {
 	if (!curr->next)
-		ft_putstr_fd(ERR_SINTAX_NO_TOKEN_AFTER, 2);
+		ft_putstr_fd(ERR_SINTAX_AFTER, 2);
 	else if (curr->next->type == TOKEN_REDIR_OUT)
-		ft_putstr_fd(ERR_SINTAX_NEAR_REDIR_OUT, 2);
+		ft_putstr_fd(ERR_SINTAX_REDIR_OUT, 2);
 	else if (curr->next->type == TOKEN_REDIR_IN)
-		ft_putstr_fd(ERR_SINTAX_NEAR_REDIR_IN, 2);
+		ft_putstr_fd(ERR_SINTAX_REDIR_IN, 2);
 	else if (curr->next->type == TOKEN_APPEND)
-		ft_putstr_fd(ERR_SINTAX_NEAR_APPEND, 2);
+		ft_putstr_fd(ERR_SINTAX_APPEND, 2);
 	else if (curr->next->type == TOKEN_HEREDOC)
-		ft_putstr_fd(ERR_SINTAX_NEAR_HEREDOC, 2);
+		ft_putstr_fd(ERR_SINTAX_HEREDOC, 2);
 	else if (curr->next->type == TOKEN_PIPE)
-		ft_putstr_fd(ERR_SINTAX_NEAR_PIPE, 2);
+		ft_putstr_fd(ERR_SINTAX_PIPE, 2);
 	return (status);
 }
 
@@ -39,7 +39,7 @@ int	is_valid_pipe(t_token **prev, t_token **curr)
 {
 	if (!prev || !(*curr)->next || (*curr)->next->type == TOKEN_PIPE)
 	{
-		ft_putstr_fd(ERR_SINTAX_NEAR_PIPE, 2);
+		ft_putstr_fd(ERR_SINTAX_PIPE, 2);
 		return (0);
 	}
 	*prev = *curr;
