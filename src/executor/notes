@@ -1,0 +1,46 @@
+Built-ins vs Normal commands na execuçao
+
+-> Nos built-ins chama-se a funcao, nao o execve
+-> Nos built-ins usar fork apenas quando tiver pipes, senao executar apenas.
+
+-> Nos comandos normais, usar fork + execve seja com pipes ou nao.
+
+Linhas podem começar de duas formas:
+-> Com um comando
+-> Com um redirect
+
+Se começar com um comando:
+-> Ir a estrutura de comandos.
+-> Confirmar se é um built-in.
+-> Se nao for built-in
+	-> fork ();
+	-> execve();
+
+
+ERROS enviados pela bash:
+-> Parece que erros de ficheiros se sobrepoem a erros de comandos para já. -> CONFIRMADO..
+.. Se houver redirecoes antes ou depois de um comando, executa-las, a primeira que der erro interrompe
+a execucao do comando caso nao haja um pipe.
+
+
+Tipo de execucao de linhas:
+-> Execucao simples -> 1 comando ou so ficheiros.
+-> Execucao de pipeline -> varios comandos com pipes.
+
+Execucao simples tratado:
+-> So comando e flags com path absoluto.
+-> So ficheiros
+
+Execucao simples por tratar:
+-> Comando e flags com path relativo
+-> Comando e flags + redirects
+-> Heredoc.
+-> Mais coisas, claro, mas nao me estou a lembrar.
+
+
+Exit codes, como tratar?
+Quando nao existem comandos e só redireccoes:
+-> Guardar exit code na variavel global, caso haja algum erro -> sair. EXIT_CODE = 1
+Quando existem comandos:
+-> Dar exit no processo filho.
+-> Pai atualiza a variavel global.

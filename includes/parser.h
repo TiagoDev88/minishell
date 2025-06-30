@@ -28,7 +28,6 @@ typedef struct s_cmd
 
 /* Main function */
 int	parser(t_cmd **cmd_lst, t_token *tokens);
-int	print_sintax_err(t_token *prev, t_token *curr, int status);
 
 /* Command struct utils */
 int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
