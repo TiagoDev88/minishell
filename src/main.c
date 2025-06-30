@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/26 22:58:35 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/30 10:53:06 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int main(int argc, char *argv[], char **envp)
 	char	*line;
 	t_token	*tokens;
 	char *dir = NULL;
+	t_cmd *lst = NULL;
 
 
 	dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
@@ -33,6 +34,9 @@ int main(int argc, char *argv[], char **envp)
 			break;
 		add_history(line);
 		tokens = tokenize(line, envp);
+		parser(&lst, tokens);
+		execute(tokens, lst, envp);
+		cmd_clear(&lst, 0);
 		free_tokens(tokens);
 		free(line);
 	}

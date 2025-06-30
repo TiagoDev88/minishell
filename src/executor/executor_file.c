@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/29 23:37:32 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:52:06 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,10 @@ int	open_files(t_token **curr_token, t_files_container *files_container)
 	{
 		if ((*curr_token)->type != TOKEN_HEREDOC)
 			if (!add_file(files_container, (*curr_token)->next->value, (*curr_token)->type))
+			{
+				EXIT_STATUS = 1;
 				return (0);
+			}
 		*curr_token = (*curr_token)->next->next;
 	}
 	return (1);

@@ -34,15 +34,19 @@ typedef struct s_exec
 	t_pipe				*pipe_lst;
 }	t_exec;
 
+
+extern int EXIT_STATUS;
+
 /* Main */
 void	execute(t_token *tokens, t_cmd *cmd_lst, char **envp);
 /* Path */
 char	*get_cmd_path(char *cmd);
 /* File */
 int		open_files(t_token **curr_token, t_files_container *files_container);
+void	clean_files(t_file **file_lst);
 void	close_files(t_files_container *files_container);
 /* Proccess */
-void	exec_cmd(char *cmd_path, t_cmd *cmd, char **envp);
+void	exec_cmd(char *cmd_path, t_exec *exec, t_cmd *cmd, char **envp);
 void	handle_redirects(t_files_container *files_container);
 /* Cleaner */
 void	exit_clean(t_exec *exec, char *error, int exit_status);
