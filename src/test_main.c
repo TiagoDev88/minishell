@@ -19,9 +19,19 @@ int execute_command(t_cmd **cmd)
 		return (ft_echo(*cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
 		return (ft_exit(cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
+        return (ft_cd(*cmd));
 	return (0);
 }
 
+//TODO tratar de fazer uma copia dos envs, para nao alterar os originais
+// tratar de fazer free dos envs, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos tokens, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos comandos, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos argumentos, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos pipes, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos redirecionamentos, e de todas as variaveis que sao alocadas
+// talvez criar uma estrutura por causa das ENVs
 
 int main(int argc, char *argv[], char **envp)
 {

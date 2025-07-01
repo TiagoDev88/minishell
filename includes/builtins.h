@@ -5,5 +5,6 @@
 
 int ft_echo(t_cmd *cmd);
 int ft_exit(t_cmd **cmd);
+int ft_cd(t_cmd *cmd);
 
 #endif
