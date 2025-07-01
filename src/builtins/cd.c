@@ -16,7 +16,7 @@ int ft_cd(t_cmd *cmd)
         path = getenv("HOME");
         if (!path)
         {
-            ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+            ft_putstr_fd("bash: cd: HOME not set\n", 2);
             return (1);
         }
     }
@@ -25,7 +25,7 @@ int ft_cd(t_cmd *cmd)
 
     if (chdir(path) != 0)
     {
-        ft_putstr_fd("minishell: cd: ", 2);
+        ft_putstr_fd("bash: cd: ", 2);
         ft_putstr_fd(path, 2);
         ft_putstr_fd(": ", 2);
         perror("");

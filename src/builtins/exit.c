@@ -31,7 +31,7 @@ tfilipe-@c1r16s7:~$ echo $?
 
 #include "../includes/minishell.h"
 #include "../includes/builtins.h"
-//TODO tratar de limpar os comandos alocados. chamar a funcao de limpeza
+
 int	ft_exit(t_cmd **cmd)
 {
 	int	exit_code;
@@ -41,18 +41,18 @@ int	ft_exit(t_cmd **cmd)
         exit(EXIT_SUCCESS);
 	if (!ft_atoi((*cmd)->cmd_args[1]))
     {
-        ft_putstr_fd("minishell: exit: ", 2);
+        ft_putstr_fd("bash: exit: ", 2);
         ft_putstr_fd((*cmd)->cmd_args[1], 2);
         ft_putstr_fd(": numeric argument required\n", 2);
-       // cmd_clear(cmd, 0);
+        cmd_clear(cmd, 0);
         exit(EXIT_FAILURE);
     }
 	exit_code = ft_atoi((*cmd)->cmd_args[1]);
 	if ((*cmd)->cmd_args[2])
     {
-        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+        ft_putstr_fd("bash: exit: too many arguments\n", 2);
         return (1);
     }
-	//cmd_clear(cmd, 0);
+	cmd_clear(cmd, 0);
 	exit(exit_code);
 }

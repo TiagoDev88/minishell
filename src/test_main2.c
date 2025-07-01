@@ -21,6 +21,8 @@ int execute_command(t_cmd **cmd)
 		return (ft_exit(cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
         return (ft_cd(*cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "./minishell", 12) == 0)
+        return (execvp("./minishell", (*cmd)->cmd_args));
 	return (0);
 }
 
@@ -68,7 +70,8 @@ int main(int argc, char *argv[], char **envp)
 		tokens = tokenize(line, envp);
 		parser(&lst, tokens);
 		free_tokens(&tokens);
-		while (lst)
+		t_cmd *tmp = lst;
+		while (tmp)
 		{
 			// printf("COMMAND: ");
 			// int i = 0;
@@ -78,10 +81,11 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(&lst);
-			lst = lst->next;
+			execute_command(&tmp);
+			tmp = tmp->next;
 		}
 		cmd_clear(&lst, 10);
+		//printf("argumentos %s \n", lst->cmd_args[0]);
 		free(line);
 	}
 	free(dir);
