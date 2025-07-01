@@ -6,11 +6,12 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 12:00:08 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/01 12:00:10 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:22:53 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
+#include "../../includes/builtins.h"
 
 int	ft_echo(t_cmd *cmd)
 {

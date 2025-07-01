@@ -2,40 +2,62 @@
 
 #include "../includes/minishell.h"
 
-
-
-int	execute_command(t_cmd *cmd)
+void sigint_handler(int sig)
 {
-	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
+    (void)sig;
+	clear_history();
+	rl_clear_signals();
+ 	write(1, "\nShell encerrada por SIGINT (Ctrl+C)\n", 37);
+	exit(EXIT_SUCCESS);
+}
+
+int execute_command(t_cmd **cmd)
+{
+	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);
-	if (ft_strncmp(cmd->cmd_args[0], "echo", 5) == 0)
-		return (ft_echo(cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "echo", 5) == 0)
+		return (ft_echo(*cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
+		return (ft_exit(cmd));
 	return (0);
 }
+
 
 int main(int argc, char *argv[], char **envp)
 {
 	(void)argc;
 	(void)argv;
 	(void)envp;
-
+	
 	char	*line;
-	t_token	*tokens;
 	char *dir = NULL;
-
-
-	dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
-	dir = ft_strjoin(dir, "$ ");
+	char *cwd = NULL;
+	t_token	*tokens;
+	t_cmd *lst = NULL;
+	signal(SIGINT, sigint_handler);
+	
 
 	while (1)
 	{
+
+		//printf("argumentos %s \n", lst->cmd_args[0]);
+		free(dir);
+		cwd = getcwd(NULL, 0);  //dar free a dir, pk e alocado
+		if (!cwd)
+			break;
+		dir = ft_strjoin(cwd, "$ ");
+		free(cwd);
 		line = readline(dir);
 		if (!line)
+		{
+			printf("exit\n");
 			break;
-		add_history(line);
+		}
+		if (*line)
+			add_history(line);	
 		tokens = tokenize(line, envp);
-		t_cmd *lst = NULL;
 		parser(&lst, tokens);
+		free_tokens(&tokens);
 		while (lst)
 		{
 			// printf("COMMAND: ");
@@ -46,11 +68,12 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(lst);
+			execute_command(&lst);
 			lst = lst->next;
 		}
-		free_tokens(&tokens);
+		cmd_clear(&lst, 10);
 		free(line);
 	}
+	free(dir);
 	return (0);
 }
