@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/30 16:15:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/01 11:37:07 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #ifndef PARSER_H
 
@@ -20,6 +20,8 @@
 # define ERR_SINTAX_REDIR_IN  "bash: syntax error near unexpected token `<'\n"
 # define ERR_SINTAX_REDIR_OUT "bash: syntax error near unexpected token `>'\n"
 # define ERR_SINTAX_AFTER "bash: syntax error near unexpected token `newline'\n"
+
+# include "token.h"
 
 typedef struct s_redir
 {
