@@ -6,12 +6,28 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 12:00:08 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/01 16:42:01 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:05:38 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
+
+static int	n_flag(char *arg)
+{
+	int	i;
+
+	i = 0;
+	if (arg[i] == '-' && arg[i + 1] == 'n')
+	{
+		i += 2;
+		while (arg[i] == 'n')
+			i++;
+		if (arg[i] == '\0')
+			return (1);
+	}
+	return (0);
+}
 //TODO resolver estes testes 
 // echo -n -n -nnnn -nnnnm
 // echo -n
@@ -24,8 +40,11 @@ int	ft_echo(t_cmd *cmd)
 
 	i = 1;
 	nl = 1;
-	if (cmd->cmd_args[i] && ft_strncmp(cmd->cmd_args[i], "-n", 3) == 0)
+	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
+		return (1);
+	while (cmd->cmd_args[i] && n_flag(cmd->cmd_args[i]))
 	{
+		printf("teste %s\n", cmd->cmd_args[i]);
 		nl = 0;
 		i++;
 	}
