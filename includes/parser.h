@@ -26,15 +26,15 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-typedef struct	s_executor
+typedef struct	s_parser
 {
 	t_cmd	*cmd_lst;
 	int		n_pipes;
-}	t_executor;
+}	t_parser;
 
 
 /* Main function */
-int	parser(t_cmd **cmd_lst, t_token *tokens);
+int	parser(t_parser *parser_s, t_token *tokens);
 
 /* Command struct utils */
 int	add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);

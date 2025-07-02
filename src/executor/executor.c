@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/02 14:58:34 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/02 15:43:50 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,28 +93,48 @@ void	exec_pid_son(t_exec *exec, t_cmd *cmd, char **envp)
 	}
 }
 
+// void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
+// {
+// 	t_token *curr_token;
+
+// 	curr_token = tokens;
+// 	while (curr_token && curr_token->type == TOKEN_WORD)
+// 		curr_token = curr_token->next;
+// 	if (curr_token)
+// 		if (!open_files(&curr_token, exec))
+// 			return ;
+// 	if (!cmd_lst)
+// 		return ;
+// 	// Confirmar se sao comandos built-in
+// 		// Se forem chamar funcoes
+// 		// Se nao abrir forks e executar.
+// 	exec_pid_son(exec, cmd_lst, envp);
+// 	exec_pid_father(exec);
+// }
+
 void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 {
 	t_token *curr_token;
 
 	curr_token = tokens;
-	while (curr_token && curr_token->type == TOKEN_WORD)
-		curr_token = curr_token->next;
-	if (curr_token)
-		if (!open_files(&curr_token, exec))
-			return ;
-	t_file *curr = exec->files_container.lst;
-	while (curr)
+	while (curr_token)
 	{
-		printf("%i %s %i\n", curr->fd, curr->filename, curr->unlink);
-		curr = curr->next;
+		while (curr_token && curr_token->type == TOKEN_WORD)
+			curr_token = curr_token->next;
+		if (curr_token)
+			if (!open_files(&curr_token, exec))
+				return ;
+		while (curr_token && curr_token->type == TOKEN_WORD)
+			curr_token = curr_token->next;
+		if (curr_token->type == TOKEN_PIPE)
+		{
+			// save pipe.
+			curr_token = curr_token->next;
+		}
+		if (!cmd_lst)
+			return ;
+		exec_pid_son(exec, cmd_lst, envp);		
 	}
-	if (!cmd_lst)
-		return ;
-	// Confirmar se sao comandos built-in
-		// Se forem chamar funcoes
-		// Se nao abrir forks e executar.
-	exec_pid_son(exec, cmd_lst, envp);
 	exec_pid_father(exec);
 }
 
