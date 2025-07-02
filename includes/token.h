@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
+# include "utils.h"
 typedef enum e_check_state {
 	STATE_ERROR = -1,
 	STATE_CONTINUE = 0,
@@ -29,14 +30,14 @@ typedef struct s_token
 typedef struct s_token_builder
 {
     char    *input;
-    char    **envp;
+    t_envp	**envp;
     int     pos;
     char    del;
 }   t_token_builder;
 
 
 
-t_token	*tokenize(char *, char **);
+t_token	*tokenize(char *input, t_envp **envp);
 void	free_tokens(t_token **);
 void handle_word(t_token **, t_token_builder *);
 void add_token(t_token **, t_token *);

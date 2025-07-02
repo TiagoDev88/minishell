@@ -1,7 +1,7 @@
 
 
 #include "../includes/minishell.h"
-#include "../includes/envp.h"
+#include "../includes/utils.h"
 
 void sigint_handler(int sig)
 {
@@ -49,7 +49,19 @@ int main(int argc, char *argv[], char **envp)
 	t_cmd *lst = NULL;
 	signal(SIGINT, sigint_handler);
 
-	copy_env(envp);
+	t_envp *cp_envp;
+	copy_env(envp, &cp_envp);
+	t_envp *tmp;
+	tmp = cp_envp;
+	while (tmp)
+	{
+		printf("key: %s | ", tmp->key);
+		if (tmp->flag == '=')
+			printf("value: %s\n", tmp->value);
+		else
+			printf("sem valor (só exportado, não no env)\n");
+		tmp = tmp->next;
+	}
 	// int i = 0;
 	// while (envp[i])
 	// {
@@ -75,7 +87,7 @@ int main(int argc, char *argv[], char **envp)
 		}
 		if (*line)
 			add_history(line);	
-		tokens = tokenize(line, envp);
+		tokens = tokenize(line, &cp_envp);
 		parser(&lst, tokens);
 		free_tokens(&tokens);
 		t_cmd *tmp = lst;
@@ -96,6 +108,7 @@ int main(int argc, char *argv[], char **envp)
 		//printf("argumentos %s \n", lst->cmd_args[0]);
 		free(line);
 	}
+	//free_envp(cp_envp);
 	free(dir);
 	return (0);
 }

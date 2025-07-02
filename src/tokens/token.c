@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/01 10:26:27 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/02 21:46:25 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -91,7 +91,7 @@ static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
  *  shown code but passed).
  * @return Pointer to the head of the generated token linked list.
  */
-t_token	*tokenize(char *input, char **envp)
+t_token	*tokenize(char *input, t_envp **envp)
 {
 	t_token_builder	bd;
 	t_token			*tk;
