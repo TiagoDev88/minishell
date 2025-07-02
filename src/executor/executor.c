@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/30 15:56:47 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/02 13:17:17 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,11 @@ void exec_pid_father(t_exec *exec)
 	int			exit_code;
 	int			status;
 
+	exit_code = 0;
+	close_files(&exec->files_container);
 	if (!exec->procc_lst)
 		return ;
-	close_files(&exec->files_container);
+	//close_files(&exec->files_container);
 	curr = exec->procc_lst;
 	while (curr)
 	{
@@ -69,6 +71,7 @@ void exec_pid_father(t_exec *exec)
 			exit_code = WEXITSTATUS(status);
 		curr = curr->next;
 	}
+	clean_files(&exec->files_container.lst);
 	EXIT_STATUS = exit_code;
 }
 
@@ -81,17 +84,16 @@ void	exec_pid_son(t_exec *exec, t_cmd *cmd, char **envp)
 		return ;
 	*curr_pid = fork();
 	if (*curr_pid == -1)
-		exit_clean(exec, "fork: error\n", EXIT_FAILURE);
+		exit_clean(exec, EXIT_FAILURE);
 	else if (*curr_pid == 0)
 	{
-		handle_redirects(&exec->files_container);
+		handle_redirects(exec);
 		close_files(&exec->files_container);
-		if (cmd->cmd_args[0][0] == '/')
+		if (ft_strchr(cmd->cmd_args[0], '/'))
 			exec_cmd(cmd->cmd_args[0], exec, cmd, envp);
 		else
-			exec_cmd(get_cmd_path(cmd->cmd_args[0]), exec, cmd, envp);
+			exec_cmd(get_cmd_path(exec, cmd->cmd_args[0]), exec, cmd, envp);
 	}
-	//wait(NULL);
 }
 
 void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
@@ -102,7 +104,7 @@ void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 	while (curr_token && curr_token->type == TOKEN_WORD)
 		curr_token = curr_token->next;
 	if (curr_token)
-		if (!open_files(&curr_token, &exec->files_container))
+		if (!open_files(&curr_token, exec))
 			return ;
 	if (!cmd_lst)
 		return ;
@@ -118,10 +120,12 @@ void	execute(t_token *tokens, t_cmd *cmd_lst, char **envp)
 	t_exec exec;
 
 	ft_memset(&exec, 0, sizeof(t_exec));
+	exec.files_container.last_in_fd = -2;
+	exec.files_container.last_out_fd = -2;
 	if (!cmd_lst || (cmd_lst && !cmd_lst->next))
 		execute_simple(tokens, cmd_lst, &exec, envp);
 	else
 		printf("Is a pipeline\n");
-	//get_cmd_path("ls");
 	printf("EXIT_CODE = %i\n", EXIT_STATUS);
+	clean_files(&exec.files_container.lst);
 }

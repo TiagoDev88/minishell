@@ -6,13 +6,13 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:54:14 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/30 15:50:02 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/02 02:41:59 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	redirect(int redir_type, int fd)
+void	redirect(int redir_type, t_exec *exec, int fd)
 {
 	if (redir_type == 1)
 	{
@@ -20,8 +20,8 @@ void	redirect(int redir_type, int fd)
 		{
 			if (dup2(fd, STDIN_FILENO) == -1)
 			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
+				print_error_msg(NULL, "dup2: error", 1);
+				exit_clean(exec, errno);
 			}
 		}
 	}
@@ -31,8 +31,8 @@ void	redirect(int redir_type, int fd)
 		{
 			if (dup2(fd, STDOUT_FILENO) == -1)
 			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
+				print_error_msg(NULL, "dup2: error", 1);
+				exit_clean(exec, errno);
 			}
 		}
 	}
@@ -43,27 +43,27 @@ void	validate_cmd(char *cmd_path, t_exec *exec)
 	struct stat sb;
 
 	if (stat(cmd_path, &sb) != 0) // Verifica se o ficheiro existe.
-		exit_clean(exec, "No such file or directory\n", 127);
+		print_cmd_err_and_exit(cmd_path, 1, 127, exec);
 	if (S_ISDIR(sb.st_mode)) // Verifica se é um diretorio
-		exit_clean(exec, "Is a directory\n", 126);
+		print_cmd_err_and_exit(cmd_path, 0, 126, exec);
 	if (access(cmd_path, X_OK) != 0) // sem permissoes
-		exit_clean(exec, "Permission denied\n", 126);
+		print_cmd_err_and_exit(cmd_path, 1, 126, exec);
 }
-
 
 void	exec_cmd(char *cmd_path, t_exec *exec, t_cmd *cmd_lst, char **envp)
 {
 	if (!cmd_path)
-		exit_clean(exec, "command not found\n", 127);
+		return ;
 	validate_cmd(cmd_path, exec);
 	execve(cmd_path, cmd_lst->cmd_args, envp);
-	exit_clean(exec, "execve: error", EXIT_FAILURE);
+	print_error_msg(NULL, "execve: error", 1);
+	exit_clean(exec, EXIT_FAILURE);
 }
 
-void	handle_redirects(t_files_container *files_container)
+void	handle_redirects(t_exec *exec)
 {
-	if (files_container->last_in_fd)
-		redirect(1, files_container->last_in_fd);
-	if (files_container->last_out_fd)
-		redirect(2, files_container->last_out_fd);
+	if (exec->files_container.last_in_fd >= 0)
+		redirect(1, exec, exec->files_container.last_in_fd);
+	if (exec->files_container.last_out_fd >= 0)
+		redirect(2, exec, exec->files_container.last_out_fd);
 }

@@ -10,6 +10,8 @@ typedef	struct s_proccess
 typedef struct s_file
 {
 	int				fd;
+	char			*filename;
+	int				unlink;
 	struct s_file	*next;
 }	t_file;
 
@@ -17,6 +19,7 @@ typedef struct s_files_container
 {
 	int		last_out_fd;
 	int		last_in_fd;
+	int		heredocs;
 	t_file	*lst;
 }	t_files_container;
 
@@ -40,15 +43,21 @@ extern int EXIT_STATUS;
 /* Main */
 void	execute(t_token *tokens, t_cmd *cmd_lst, char **envp);
 /* Path */
-char	*get_cmd_path(char *cmd);
+char	*get_cmd_path(t_exec *exec, char *cmd);
 /* File */
-int		open_files(t_token **curr_token, t_files_container *files_container);
+int		open_files(t_token **curr_token, t_exec *exec);
 void	clean_files(t_file **file_lst);
-void	close_files(t_files_container *files_container);
+void	close_files(t_files_container **files_container);
 /* Proccess */
 void	exec_cmd(char *cmd_path, t_exec *exec, t_cmd *cmd, char **envp);
-void	handle_redirects(t_files_container *files_container);
+void	handle_redirects(t_exec *exec);
 /* Cleaner */
-void	exit_clean(t_exec *exec, char *error, int exit_status);
+void	exit_clean(t_exec *exec, int exit_status);
+int		clean_mem(void *p1, void *p2, void *p3, int exit_status);
+int		return_clean(t_exec *exec, char *error, int exit_status);
+/* Error */
+void	print_error_msg(char *cmd, char *error, int mode);
+void	print_cmd_err_and_exit(char *cmd, int mode, int exit_status, t_exec *exec);
+int		print_file_err_and_return(char *filename, char *error, int exit_status);
 
 #endif

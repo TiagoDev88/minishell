@@ -44,3 +44,20 @@ Quando nao existem comandos e só redireccoes:
 Quando existem comandos:
 -> Dar exit no processo filho.
 -> Pai atualiza a variavel global.
+
+
+Tratar ./programa. '.' Significa que tem que procurar no diretorio atual.
+
+Passos da execucao.
+
+Abrir ficheiros -> Erros de ficheiro
+Abrir pipes se houver -> Erros em pipes
+Tratar de redirecçoes -> Erros dup2
+Executar comandos:
+
+Erros de variaveis de ambiente -> bash: comando: No such file or directory.
+Erros de nao encontrar comando com path relativo -> "comando: command not found"
+
+Erros e mensagens de erros parecem estar todos tratados.
+Varios ficheiros heredoc tambem parecem estar tratados.
+Ter a certeza para passar para pipeline.
