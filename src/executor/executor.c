@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/02 13:17:17 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/02 14:58:34 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,8 @@ void exec_pid_father(t_exec *exec)
 	int			status;
 
 	exit_code = 0;
-	close_files(&exec->files_container);
 	if (!exec->procc_lst)
 		return ;
-	//close_files(&exec->files_container);
 	curr = exec->procc_lst;
 	while (curr)
 	{
@@ -71,7 +69,6 @@ void exec_pid_father(t_exec *exec)
 			exit_code = WEXITSTATUS(status);
 		curr = curr->next;
 	}
-	clean_files(&exec->files_container.lst);
 	EXIT_STATUS = exit_code;
 }
 
@@ -106,6 +103,12 @@ void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 	if (curr_token)
 		if (!open_files(&curr_token, exec))
 			return ;
+	t_file *curr = exec->files_container.lst;
+	while (curr)
+	{
+		printf("%i %s %i\n", curr->fd, curr->filename, curr->unlink);
+		curr = curr->next;
+	}
 	if (!cmd_lst)
 		return ;
 	// Confirmar se sao comandos built-in

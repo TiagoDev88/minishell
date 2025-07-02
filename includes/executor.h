@@ -47,7 +47,7 @@ char	*get_cmd_path(t_exec *exec, char *cmd);
 /* File */
 int		open_files(t_token **curr_token, t_exec *exec);
 void	clean_files(t_file **file_lst);
-void	close_files(t_files_container **files_container);
+void	close_files(t_files_container *files_container);
 /* Proccess */
 void	exec_cmd(char *cmd_path, t_exec *exec, t_cmd *cmd, char **envp);
 void	handle_redirects(t_exec *exec);

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/02 13:28:23 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/02 15:01:01 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ void	clean_files(t_file **file_lst)
 
 	if (file_lst)
 	{
-		printf("Is to clean\n");
 		curr = *file_lst;
 		while (curr)
 		{
-			printf("Cleaning\n");
 			tmp = curr->next;
 			if (curr->fd != -1 && curr->fd > 2)
 				close(curr->fd);
@@ -38,17 +36,15 @@ void	clean_files(t_file **file_lst)
 	}
 }
 
-void	close_files(t_files_container **files_container)
+void	close_files(t_files_container *files_container)
 {
 	t_file	*curr;
 
-	printf("Closing files.");
-	if (!(*files_container)->lst)
+	if (files_container->lst)
 		return ;
-	curr = (*files_container)->lst;
+	curr = files_container->lst;
 	while (curr)
 	{
-		printf("Closing files2.");
 		if (curr->fd != -1 && curr->fd > 2)
 			close(curr->fd);
 		curr->fd = -1;
@@ -113,6 +109,7 @@ int	heredoc(t_file **new_file, char *delimiter, t_files_container **files_contai
 	close((*new_file)->fd);
 	(*new_file)->fd = open((*new_file)->filename, O_RDONLY);
 	(*files_container)->last_in_fd = (*new_file)->fd;
+	add_file_back(&(*files_container)->lst, *new_file);
 	return (0);
 }
 
