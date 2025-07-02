@@ -1,6 +1,7 @@
 
 
 #include "../includes/minishell.h"
+#include "../includes/envp.h"
 
 void sigint_handler(int sig)
 {
@@ -47,7 +48,14 @@ int main(int argc, char *argv[], char **envp)
 	t_token	*tokens;
 	t_cmd *lst = NULL;
 	signal(SIGINT, sigint_handler);
-	
+
+	copy_env(envp);
+	// int i = 0;
+	// while (envp[i])
+	// {
+	// 	printf("%s\n", envp[i]);
+	// 	i++;
+	// }
 
 	while (1)
 	{

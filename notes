@@ -1,0 +1,4 @@
+os sinais nao podem sair, so tenho que tratar, 
+tanto o cntl + c = fecha o processo que o minishell esta a executar (um comando)
+e o ctrl + d = fazer exatamente igual ao c, so que com o sinal de EOF
+e o ctrl + \ = nao tem que fazer nada, IGNORAR
