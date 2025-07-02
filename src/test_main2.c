@@ -12,7 +12,7 @@ void sigint_handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-int execute_command(t_cmd **cmd)
+int execute_command(t_cmd **cmd, t_envp *envp)
 {
 	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);
@@ -22,8 +22,8 @@ int execute_command(t_cmd **cmd)
 		return (ft_exit(cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
         return (ft_cd(*cmd));
-	if (ft_strncmp((*cmd)->cmd_args[0], "./minishell", 12) == 0)
-        return (execvp("./minishell", (*cmd)->cmd_args));
+	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
+        return (ft_env(*cmd, envp));
 	return (0);
 }
 
@@ -55,11 +55,11 @@ int main(int argc, char *argv[], char **envp)
 	tmp = cp_envp;
 	while (tmp)
 	{
-		printf("key: %s | ", tmp->key);
-		if (tmp->flag == '=')
-			printf("value: %s\n", tmp->value);
-		else
-			printf("sem valor (só exportado, não no env)\n");
+		// printf("key: %s | ", tmp->key);
+		// if (tmp->flag == '=')
+		// 	printf("value: %s\n", tmp->value);
+		// else
+		// 	printf("sem valor (só exportado, não no env)\n");
 		tmp = tmp->next;
 	}
 	// int i = 0;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(&tmp);
+			execute_command(&tmp, cp_envp);
 			tmp = tmp->next;
 		}
 		cmd_clear(&lst, 10);
