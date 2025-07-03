@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/02 13:24:53 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/03 11:01:56 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,10 @@ void	free_envp(t_envp **envp)
 		ptr = tmp;
 	}
 	*envp = NULL;
+}
+
+void print_envp(t_envp *envp)
+{
+	printf("dentro do print_envp\n");
+	printf("envp-> %s\n", envp->key);
 }

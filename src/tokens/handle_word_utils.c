@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/01 10:26:02 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/03 16:12:12 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -15,6 +15,7 @@
 //TODO: depois tenho que ver como vou tratar do exit status
 // vai ser com a variavel global, o EXIT CODE
 // substituir $? pelo exit status
+// TALVEZ USAR UMA VARIAVEL E GUARDAR O VALOR, E ANDAR COM A VARIAVEL NO PONTEIRO
 /**
  * @brief Extracts the value of an environment variable from the input string.
  *
@@ -42,8 +43,8 @@ static char	*extract_variable(t_token_builder *bd)
 		bd->pos++;
 		return (ft_itoa(69));
 	}
-	while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos])
-			|| bd->input[bd->pos] == '_'))
+	while (bd->input[bd->pos] && !ft_isdigit(bd->input[bd->pos] && (ft_isalnum(bd->input[bd->pos])
+			|| bd->input[bd->pos] == '_')))
 	{
 		var[j] = bd->input[bd->pos];
 		j++;
@@ -81,12 +82,12 @@ static int	is_ignored_variable(t_token_builder **bd, int *start)
 		(*bd)->pos++;
 		return (1);
 	}
-	if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
-	{
-		(*bd)->pos += 2;
-		*start = (*bd)->pos;
-		return (0);
-	}
+	// if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
+	// {
+	// 	(*bd)->pos += 2;
+	// 	*start = (*bd)->pos;
+	// 	return (0);
+	// }
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/01 10:26:22 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/03 15:21:04 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -147,7 +147,10 @@ static char	*extract_word(t_token_builder **bd, int start)
 	if ((*bd)->pos > start)
 	{
 		if (!append_dollar(bd, &part, &start, 0))
+		{
+			printf("entrou no que nao e append");
 			return (free(part), NULL);
+		}
 	}
 	return (part);
 }
@@ -162,6 +165,10 @@ static char	*extract_word(t_token_builder **bd, int start)
  * or the end of the string. It constructs a word by appending characters to it,
  * 
  * taking care of special cases like quotes and dollar signs.
+ * 
+ * check first character after quote, in variable RES = check_state.
+ * 
+ * Because its ERROR, if only one quote.
  * @param tokens Pointer to the list of tokens where the new token will be added.
  * @param bd Pointer to the token builder containing the input string and current
  *  position.

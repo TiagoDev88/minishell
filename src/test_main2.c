@@ -12,7 +12,7 @@ void sigint_handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-int execute_command(t_cmd **cmd, t_envp *envp)
+int execute_command(t_cmd **cmd, t_envp **envp)
 {
 	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);
@@ -23,7 +23,9 @@ int execute_command(t_cmd **cmd, t_envp *envp)
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
         return (ft_cd(*cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
-        return (ft_env(*cmd, envp));
+        return (ft_env(*cmd, *envp));
+	if (ft_strncmp((*cmd)->cmd_args[0], "export", 7) == 0)
+		return (ft_export(*cmd, envp));
 	return (0);
 }
 
@@ -49,19 +51,19 @@ int main(int argc, char *argv[], char **envp)
 	t_cmd *lst = NULL;
 	signal(SIGINT, sigint_handler);
 
-	t_envp *cp_envp;
+	t_envp *cp_envp = NULL;
 	copy_env(envp, &cp_envp);
-	t_envp *tmp;
-	tmp = cp_envp;
-	while (tmp)
-	{
-		// printf("key: %s | ", tmp->key);
-		// if (tmp->flag == '=')
-		// 	printf("value: %s\n", tmp->value);
-		// else
-		// 	printf("sem valor (só exportado, não no env)\n");
-		tmp = tmp->next;
-	}
+	// t_envp *tmp;
+	// tmp = cp_envp;
+	// while (tmp)
+	// {
+	// 	// printf("key: %s | ", tmp->key);
+	// 	// if (tmp->flag == '=')
+	// 	// 	printf("value: %s\n", tmp->value);
+	// 	// else
+	// 	// 	printf("sem valor (só exportado, não no env)\n");
+	// 	tmp = tmp->next;
+	// }
 	// int i = 0;
 	// while (envp[i])
 	// {
@@ -88,6 +90,12 @@ int main(int argc, char *argv[], char **envp)
 		if (*line)
 			add_history(line);	
 		tokens = tokenize(line, &cp_envp);
+		t_token *tmp1 = tokens;
+		while (tmp1)
+		{
+			printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
+			tmp1 = tmp1->next;
+		}
 		parser(&lst, tokens);
 		free_tokens(&tokens);
 		t_cmd *tmp = lst;
@@ -101,7 +109,7 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(&tmp, cp_envp);
+			execute_command(&tmp, &cp_envp);
 			tmp = tmp->next;
 		}
 		cmd_clear(&lst, 10);
