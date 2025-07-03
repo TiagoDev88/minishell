@@ -6,12 +6,38 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/02 23:15:29 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/03 23:58:41 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
+//TODO ordenar pela tabela ascii
+//talvez usar o strncmp para verificar a diferenca nas palavras
+void	assign_indexes(t_envp *env_list)
+{
+	t_envp	*current_node;
+	t_envp	*others_node;
+	int		index;
 
+	if (!env_list)
+		return ;
+	current_node = env_list;
+	while (current_node)
+	{
+		index = 0;
+		others_node = env_list;
+		while (others_node)
+		{
+			if (others_node->key < current_node->key)
+				index++;
+			printf("caracter others: %c\n", others_node->key[0]);
+			printf("caracter current: %c\n", current_node->key[0]);
+			others_node = others_node->next;
+		}
+		current_node->index = index;
+		current_node = current_node->next;
+	}
+}
 void	copy_env(char **envp, t_envp **env_list)
 {
 	int		i;
@@ -38,4 +64,5 @@ void	copy_env(char **envp, t_envp **env_list)
 		}
 		i++;
 	}
+	assign_indexes(*env_list);
 }

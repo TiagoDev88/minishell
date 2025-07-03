@@ -53,11 +53,11 @@ int main(int argc, char *argv[], char **envp)
 
 	t_envp *cp_envp = NULL;
 	copy_env(envp, &cp_envp);
-	// t_envp *tmp;
-	// tmp = cp_envp;
+	t_envp *tmp;
+	tmp = cp_envp;
 	// while (tmp)
 	// {
-	// 	printf("key: %s | ", tmp->key);
+	// 	printf("index:%d key: %s | ", tmp->index, tmp->key);
 	// 	if (tmp->flag == '=')
 	// 		printf("value: %s\n", tmp->value);
 	// 	else
