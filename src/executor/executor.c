@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/03 11:47:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/03 16:12:17 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,15 @@ void	close_pipes(t_pipe **pipe_lst)
 
 void	close_last_fds(t_exec *exec)
 {
-	if (exec->files_container.last_in_fd > 2)
+	if (exec->files_container.last_in_fd != STDIN_FILENO)
 	{
 		close(exec->files_container.last_in_fd);
-		exec->files_container.last_in_fd = 0;
+		exec->files_container.last_in_fd = -1;
 	}
-	if (exec->files_container.last_out_fd > 2)
+	if (exec->files_container.last_out_fd != STDOUT_FILENO)
 	{
 		close(exec->files_container.last_out_fd);
-		exec->files_container.last_out_fd = 1;
+		exec->files_container.last_out_fd = -1;
 	}
 }
 
@@ -118,13 +118,21 @@ void	exec_pid_son(t_exec *exec, t_cmd *cmd, char **envp)
 	{
 		handle_redirects(exec);
 		close_last_fds(exec);
+		//close_files(&exec->files_container);
 		if (ft_strchr(cmd->cmd_args[0], '/'))
 			exec_cmd(cmd->cmd_args[0], exec, cmd, envp);
 		else
 			exec_cmd(get_cmd_path(exec, cmd->cmd_args[0]), exec, cmd, envp);
 	}
-	else
-		exec_pid_father(exec);
+	close_last_fds(exec);
+	//waitpid(*curr_pid, NULL, 0);
+	//close_files(&exec->files_container);
+	// else
+	// {
+	// 	close_last_fds(exec);
+	// 	close_files(&exec->files_container);
+	// 	//waitpid(*curr_pid, NULL, 0);
+	// }
 }
 
 /*
@@ -177,8 +185,8 @@ t_pipe *save_pipe(t_exec *exec, t_files_container *files_container)
 		return (NULL);
 	}
 	new_pipe->write_fd = pipe_fds[1];
-	printf("pipe fd 1: %i\n", pipe_fds[1]);
 	new_pipe->read_fd = pipe_fds[0];
+	printf("PIPE out: %i PIPE in: %i\n", new_pipe->write_fd, new_pipe->read_fd);
 	new_pipe->next = NULL;
 	return (new_pipe);
 }
@@ -216,21 +224,26 @@ void	execute_simple(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 			exec->files_container.last_out_fd = last_pipe->write_fd;
 			curr_token = curr_token->next;
 		}
-		printf("last_in: %i last_out: %i\n", exec->files_container.last_in_fd, exec->files_container.last_out_fd);
+		printf("BEFORE EXEC: last_in: %i last_out: %i\n", exec->files_container.last_in_fd, exec->files_container.last_out_fd);
 		if (!err_file && exec_cmd && curr_cmd)
 		{
+			printf("Exec cmd\n");
 			exec_pid_son(exec, curr_cmd, envp);
 			curr_cmd = curr_cmd->next;
 		}
 		else
+		{
 			close_files(&exec->files_container);
+			close_last_fds(exec);
+		}
 		if (last_pipe)
 		{
 			printf("Last pipe: %i %i\n", last_pipe->read_fd, last_pipe->write_fd);
 			exec->files_container.last_in_fd = last_pipe->read_fd;
 		}
-		printf("last_in: %i last_out: %i\n", exec->files_container.last_in_fd, exec->files_container.last_out_fd);
-		//clean_files(&exec->files_container.lst);
+		clean_files(&exec->files_container.lst);
+		printf("AFTER EXEC: last_in: %i last_out: %i\n", exec->files_container.last_in_fd, exec->files_container.last_out_fd);
+		exec->files_container.last_out_fd = -1;
 	}
 	if (cmd_lst)
 		get_last_cmd_exit_code(exec);
@@ -241,8 +254,8 @@ void	execute(t_token *tokens, t_cmd *cmd_lst, char **envp)
 	t_exec exec;
 
 	ft_memset(&exec, 0, sizeof(t_exec));
-	exec.files_container.last_in_fd = 0;
-	exec.files_container.last_out_fd = 1;
+	exec.files_container.last_in_fd = -1;
+	exec.files_container.last_out_fd = -1;
 	execute_simple(tokens, cmd_lst, &exec, envp);
 	//printf("Is a pipeline\n");
 	printf("EXIT_CODE = %i\n", EXIT_STATUS);

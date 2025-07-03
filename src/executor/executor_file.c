@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/03 01:43:39 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:35:15 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,11 @@ void	close_files(t_files_container *files_container)
 	curr = files_container->lst;
 	while (curr)
 	{
-		if (curr->fd != -1 && curr->fd > 2)
+		if (curr->fd != STDIN_FILENO || curr->fd != STDOUT_FILENO)
 			close(curr->fd);
 		curr->fd = -1;
 		curr = curr->next;
 	}
-	if (files_container->last_in_fd != -1)
-		close(files_container->last_in_fd);
-	if (files_container->last_out_fd != -1)
-		close(files_container->last_out_fd);
 }
 
 void		add_file_back(t_file **file_lst, t_file *new_file)
