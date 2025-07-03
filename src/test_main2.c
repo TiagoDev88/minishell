@@ -57,11 +57,11 @@ int main(int argc, char *argv[], char **envp)
 	// tmp = cp_envp;
 	// while (tmp)
 	// {
-	// 	// printf("key: %s | ", tmp->key);
-	// 	// if (tmp->flag == '=')
-	// 	// 	printf("value: %s\n", tmp->value);
-	// 	// else
-	// 	// 	printf("sem valor (só exportado, não no env)\n");
+	// 	printf("key: %s | ", tmp->key);
+	// 	if (tmp->flag == '=')
+	// 		printf("value: %s\n", tmp->value);
+	// 	else
+	// 		printf("sem valor (só exportado, não no env)\n");
 	// 	tmp = tmp->next;
 	// }
 	// int i = 0;
@@ -113,10 +113,12 @@ int main(int argc, char *argv[], char **envp)
 			tmp = tmp->next;
 		}
 		cmd_clear(&lst, 10);
+		//free_envp(&cp_envp); // para testar se tem links nas envs
+
 		//printf("argumentos %s \n", lst->cmd_args[0]);
 		free(line);
 	}
-	//free_envp(cp_envp);
+	free_envp(&cp_envp);
 	free(dir);
 	return (0);
 }
