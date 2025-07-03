@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/02 15:01:01 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/03 01:43:39 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	clean_files(t_file **file_lst)
 			tmp = curr->next;
 			if (curr->fd != -1 && curr->fd > 2)
 				close(curr->fd);
-			printf("%i %s\n", curr->unlink, curr->filename);
+			printf("%i %i %s\n", curr->fd, curr->unlink, curr->filename);
 			if (curr->unlink)
 				unlink(curr->filename);
 			free(curr->filename);
@@ -50,6 +50,10 @@ void	close_files(t_files_container *files_container)
 		curr->fd = -1;
 		curr = curr->next;
 	}
+	if (files_container->last_in_fd != -1)
+		close(files_container->last_in_fd);
+	if (files_container->last_out_fd != -1)
+		close(files_container->last_out_fd);
 }
 
 void		add_file_back(t_file **file_lst, t_file *new_file)
@@ -67,60 +71,27 @@ void		add_file_back(t_file **file_lst, t_file *new_file)
 	}
 }
 
-char	*get_heredoc_filename(int n_heredocs)
+t_file *create_file_node(void)
 {
-	char *n_heredocs_str;
-	char *filename;
+	t_file	*new_file;
 
-	n_heredocs_str = ft_itoa(n_heredocs);
-	if (!n_heredocs_str)
+	new_file = malloc(sizeof(t_file));
+	if (!new_file)
 		return (NULL);
-	filename = ft_strjoin(".heredoc_", n_heredocs_str);
-	if (!filename)
-	{
-		free(n_heredocs_str);
-		return (NULL);
-	}
-	return (filename);
-}
-
-int	heredoc(t_file **new_file, char *delimiter, t_files_container **files_container)
-{
-	char	*line;
-	char	*heredoc_filename;
-
-	(*files_container)->heredocs++;
-	(*new_file)->filename = get_heredoc_filename((*files_container)->heredocs);
-	if (!(*new_file)->filename)
-		return (clean_mem(*new_file, NULL, NULL, -1));
-	(*new_file)->unlink = 1;
-	(*new_file)->fd = open((*new_file)->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	while (1)
-	{
-		ft_putstr_fd("> ", 1);
-		line = get_next_line(0);
-		if (!line)
-			break ;
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
-			break ;
-		ft_putstr_fd(line, (*new_file)->fd);
-		free(line);
-	}
-	close((*new_file)->fd);
-	(*new_file)->fd = open((*new_file)->filename, O_RDONLY);
-	(*files_container)->last_in_fd = (*new_file)->fd;
-	add_file_back(&(*files_container)->lst, *new_file);
-	return (0);
+	new_file->fd = -2;
+	new_file->unlink = 0;
+	new_file->filename = NULL;
+	new_file->next = NULL;
+	return (new_file);
 }
 
 int	add_file(t_files_container *files_container, char *filename, int redir_type)
 {
 	t_file	*new_file;
 
-	new_file = malloc(sizeof(t_file));
+	new_file = create_file_node();
 	if (!new_file)
 		return (-1);
-	new_file->next = NULL;
 	if (redir_type == TOKEN_REDIR_IN)
 		new_file->fd = open(filename, O_RDONLY);
 	else if (redir_type == TOKEN_HEREDOC)
@@ -158,7 +129,10 @@ int	open_files(t_token **curr_token, t_exec *exec)
 		if (exit_status > 0)
 		{
 			EXIT_STATUS = 1;
-			return(print_file_err_and_return((*curr_token)->next->value, strerror(exit_status), 0));
+			print_file_err_and_return((*curr_token)->next->value, strerror(exit_status), 0);
+			while (*curr_token && ((*curr_token)->type >= TOKEN_REDIR_OUT && (*curr_token)->type <= TOKEN_HEREDOC))
+				*curr_token = (*curr_token)->next->next;
+			return(0);
 		}
 		*curr_token = (*curr_token)->next->next;
 	}

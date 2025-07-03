@@ -12,3 +12,6 @@
 | **Syscall interrompida (`EINTR`)**                   | `EINTR`            | (Ignorar / tentar novamente)                                          | -               | Em geral re-tentar a syscall                        |
 | **Pipe não criado (`pipe()`)**                       | `EMFILE`, `ENFILE` | `minishell: pipe: too many open files`                                | 1               | Limite de descritores atingido                      |
 | **Wait falhou (`waitpid`)**                          | `ECHILD`           | (Normal se não houver processos filhos)                               | -               | Não precisa de erro grave                           |
+
+
+ps aux | grep bash | awk '{print $2}' | wc -l -> Erro

@@ -16,7 +16,7 @@ SRC_DIR = src
 SRC_BUILTIN	=	$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c unset.c)
 SRC_MAIN	=	test_main.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c executor_path.c executor_cleaner.c executor_file.c \
-							executor_proccess.c executor_errors.c)
+							executor_proccess.c executor_errors.c executor_heredoc.c)
 SRC_UTILS	=	$(addprefix utils/, utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c parser_cmd.c parser_cmd_utils.c parser_cleaner.c \
 							parser_validator.c)
