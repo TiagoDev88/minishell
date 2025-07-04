@@ -34,8 +34,10 @@ static char *extract_variable(t_token_builder *bd)
         bd->pos++;
         return (ft_itoa(10)); // substituir $? pelo exit status (exemplo fixo 10)
     }
+    if (ft_isdigit(bd->input[bd->pos]))
+        return (bd->pos++, ft_strdup(""));
     // as variaveis de ambiente $ tem que ser seguidas de letras ou _
-    while (bd->input[bd->pos] && (ft_isalpha(bd->input[bd->pos]) || bd->input[bd->pos] == '_'))
+    while (bd->input[bd->pos] && (ft_isalnum(bd->input[bd->pos]) || bd->input[bd->pos] == '_'))
     {
         var[j] = bd->input[bd->pos];
         j++;
@@ -55,12 +57,12 @@ static int	is_ignored_variable(t_token_builder **bd, int *start)
 		(*bd)->pos++;
 		return (1);
 	}
-	if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
-	{
-		(*bd)->pos += 2;
-        *start = (*bd)->pos;
-        return (0);
-	}
+	// if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
+	// {
+	// 	(*bd)->pos += 2;
+    //     *start = (*bd)->pos;
+    //     return (0);
+	// }
 	return (0);
 }
 
