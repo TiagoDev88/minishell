@@ -41,7 +41,7 @@ typedef struct s_exec
 extern int EXIT_STATUS;
 
 /* Main */
-void	execute(t_token *tokens, t_cmd *cmd_lst, char **envp);
+void	executor(t_token *tokens, t_cmd *cmd_lst, char **envp);
 /* Path */
 char	*get_cmd_path(t_exec *exec, char *cmd);
 /* File */

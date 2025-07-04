@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/03 22:40:23 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:41:45 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	clean_files(t_file **file_lst)
 		while (curr)
 		{
 			tmp = curr->next;
-			printf("%i %i %s\n", curr->fd, curr->unlink, curr->filename);
+			//printf("%i %i %s\n", curr->fd, curr->unlink, curr->filename);
 			if (curr->unlink)
 				unlink(curr->filename);
 			free(curr->filename);
