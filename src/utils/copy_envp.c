@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/03 23:58:41 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/05 00:29:11 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -18,23 +18,47 @@ void	assign_indexes(t_envp *env_list)
 	t_envp	*current_node;
 	t_envp	*others_node;
 	int		index;
+	int len;
+	int len2;
+	int limit = 0;
 
 	if (!env_list)
 		return ;
 	current_node = env_list;
+	len = ft_strlen(current_node->key);
 	while (current_node)
 	{
 		index = 0;
 		others_node = env_list;
 		while (others_node)
 		{
-			if (others_node->key < current_node->key)
-				index++;
-			printf("caracter others: %c\n", others_node->key[0]);
-			printf("caracter current: %c\n", current_node->key[0]);
+			printf("CURRENT node %s\n", current_node->key);
+			len2 = ft_strlen(others_node->key);
+			if (len < len2)
+			{
+				if (ft_strncmp(current_node->key, others_node->key, len2))
+				//if (others_node->key[0] < current_node->key[0])
+				{
+					printf("INDEX len2: %d\n", index);
+					index++;
+				}
+			}
+			else
+			{
+				if (ft_strncmp(current_node->key, others_node->key, len))
+				//if (others_node->key[0] < current_node->key[0])
+				{
+					printf("INDEX len: %d\n", index);
+					index++;
+				}
+			}
 			others_node = others_node->next;
+			limit++;
+			if (limit > 6)
+				break;
 		}
 		current_node->index = index;
+		printf("KEY: %s com index %d\n", current_node->key, current_node->index);
 		current_node = current_node->next;
 	}
 }
@@ -65,4 +89,24 @@ void	copy_env(char **envp, t_envp **env_list)
 		i++;
 	}
 	assign_indexes(*env_list);
+}
+
+char *get_env_value(char *name, t_envp **lst_envp)
+{
+    int i;
+    int len;
+	t_envp *envp;
+
+	envp = *lst_envp;
+	len = ft_strlen(name);
+    i = 0;
+    while (envp->next)
+    {
+        printf("ENV: %s posicao %i\n", envp->key, i);
+        if (!ft_strcmp(envp->key, name) && envp->flag == '=')
+            return (ft_strdup(envp->value));
+		envp = envp->next;
+		i++;
+    }
+    return (ft_strdup(""));
 }

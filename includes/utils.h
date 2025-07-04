@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 # define UTILS_H
 
+# include "token.h"
+
 typedef struct s_envp
 {
 	char *key;
@@ -16,5 +18,6 @@ void free_envp(t_envp **);
 void	copy_env(char **envp, t_envp **env_list);
 void print_envp(t_envp *envp); // chamar a funcao de printar.
 void assign_indexes(t_envp *env_list);
+char *get_env_value(char *name, t_envp **lst_envp);
 
 #endif
