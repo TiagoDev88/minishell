@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/05 00:29:11 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/05 01:09:36 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -25,43 +25,43 @@ void	assign_indexes(t_envp *env_list)
 	if (!env_list)
 		return ;
 	current_node = env_list;
-	len = ft_strlen(current_node->key);
 	while (current_node)
 	{
+		len = ft_strlen(current_node->key);
 		index = 0;
 		others_node = env_list;
 		while (others_node)
 		{
 			printf("CURRENT node %s\n", current_node->key);
-			len2 = ft_strlen(others_node->key);
-			if (len < len2)
+			if (ft_strcmp(current_node->key, others_node->key) < 0)
 			{
-				if (ft_strncmp(current_node->key, others_node->key, len2))
-				//if (others_node->key[0] < current_node->key[0])
-				{
-					printf("INDEX len2: %d\n", index);
-					index++;
-				}
+				index = ft_strcmp(current_node->key, others_node->key);
+				printf("Comparando %s com %s, index: %d\n", current_node->key, others_node->key, index);
 			}
 			else
 			{
-				if (ft_strncmp(current_node->key, others_node->key, len))
-				//if (others_node->key[0] < current_node->key[0])
-				{
-					printf("INDEX len: %d\n", index);
-					index++;
-				}
+				index = ft_strcmp(current_node->key, others_node->key);
+				printf("Comparando no else %s com %s, index: %d\n", others_node->key, current_node->key, index);
 			}
 			others_node = others_node->next;
 			limit++;
-			if (limit > 6)
-				break;
+			// if (limit > 6)
+			// 	break;
 		}
 		current_node->index = index;
 		printf("KEY: %s com index %d\n", current_node->key, current_node->index);
 		current_node = current_node->next;
 	}
 }
+//TODO talvez criar duas listas, uma ordenada e outra nao ordenada
+// que so adiciono no fim
+// tipo envp_unsorted e envp_sorted
+// depois ordeno a envp_sorted e deixo a envp_unsorted como esta
+// assim posso usar a envp_unsorted para fazer o print e a export para printar ordemadamente
+// assim nao preciso de estar a ordenar a lista toda vez que adiciono um novo elemento 
+// depois ao adicionar ou apagar uma variavel, chamo a funcao principal que criou as listas
+// e assim fica tudo atualizado
+// e a env tem que
 void	copy_env(char **envp, t_envp **env_list)
 {
 	int		i;
