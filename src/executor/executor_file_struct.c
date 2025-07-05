@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_file.c                                    :+:      :+:    :+:   */
+/*   executor_file_struct.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/04 14:41:45 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/05 01:36:25 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	clean_files(t_file **file_lst)
 		while (curr)
 		{
 			tmp = curr->next;
-			//printf("%i %i %s\n", curr->fd, curr->unlink, curr->filename);
+			if (curr->fd > 2)
+				close(curr->fd);
 			if (curr->unlink)
 				unlink(curr->filename);
 			free(curr->filename);
@@ -31,22 +32,6 @@ void	clean_files(t_file **file_lst)
 			curr = tmp;
 		}
 		*file_lst = NULL;
-	}
-}
-
-void	close_files(t_files_container *files_container)
-{
-	t_file	*curr;
-
-	if (files_container->lst)
-		return ;
-	curr = files_container->lst;
-	while (curr)
-	{
-		if (curr->fd != STDIN_FILENO || curr->fd != STDOUT_FILENO)
-			close(curr->fd);
-		curr->fd = -1;
-		curr = curr->next;
 	}
 }
 
@@ -72,7 +57,7 @@ t_file *create_file_node(void)
 	new_file = malloc(sizeof(t_file));
 	if (!new_file)
 		return (NULL);
-	new_file->fd = -2;
+	new_file->fd = -1;
 	new_file->unlink = 0;
 	new_file->filename = NULL;
 	new_file->next = NULL;
@@ -84,8 +69,6 @@ int	add_file(t_files_container *files_container, char *filename, int redir_type)
 	t_file	*new_file;
 
 	new_file = create_file_node();
-	if (!new_file)
-		return (-1);
 	if (redir_type == TOKEN_REDIR_IN)
 		new_file->fd = open(filename, O_RDONLY);
 	else if (redir_type == TOKEN_HEREDOC)
@@ -107,28 +90,3 @@ int	add_file(t_files_container *files_container, char *filename, int redir_type)
 	return (0);
 }
 
-int	open_files(t_token **curr_token, t_exec *exec)
-{
-	int	exit_status;
-
-	exit_status = 0;
-	while (*curr_token && ((*curr_token)->type >= TOKEN_REDIR_OUT && (*curr_token)->type <= TOKEN_HEREDOC))
-	{
-		exit_status = add_file(&exec->files_container, (*curr_token)->next->value, (*curr_token)->type);
-		if (exit_status == -1)
-		{
-			print_error_msg(NULL, "malloc: error", 1);
-			exit_clean(exec, 2);
-		}
-		if (exit_status > 0)
-		{
-			EXIT_STATUS = 1;
-			print_file_err_and_return((*curr_token)->next->value, strerror(exit_status), 0);
-			while (*curr_token && ((*curr_token)->type >= TOKEN_REDIR_OUT && (*curr_token)->type <= TOKEN_HEREDOC))
-				*curr_token = (*curr_token)->next->next;
-			return(0);
-		}
-		*curr_token = (*curr_token)->next->next;
-	}
-	return (1);
-}
