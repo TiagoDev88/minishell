@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/05 01:09:36 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/06 14:54:28 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -18,35 +18,20 @@ void	assign_indexes(t_envp *env_list)
 	t_envp	*current_node;
 	t_envp	*others_node;
 	int		index;
-	int len;
-	int len2;
-	int limit = 0;
 
 	if (!env_list)
 		return ;
 	current_node = env_list;
 	while (current_node)
 	{
-		len = ft_strlen(current_node->key);
 		index = 0;
 		others_node = env_list;
 		while (others_node)
 		{
-			printf("CURRENT node %s\n", current_node->key);
-			if (ft_strcmp(current_node->key, others_node->key) < 0)
-			{
-				index = ft_strcmp(current_node->key, others_node->key);
-				printf("Comparando %s com %s, index: %d\n", current_node->key, others_node->key, index);
-			}
-			else
-			{
-				index = ft_strcmp(current_node->key, others_node->key);
-				printf("Comparando no else %s com %s, index: %d\n", others_node->key, current_node->key, index);
-			}
+			//printf("CURRENT node %s\n", current_node->key);
+			if (ft_strcmp(current_node->key, others_node->key) > 0)
+				index++;
 			others_node = others_node->next;
-			limit++;
-			// if (limit > 6)
-			// 	break;
 		}
 		current_node->index = index;
 		printf("KEY: %s com index %d\n", current_node->key, current_node->index);

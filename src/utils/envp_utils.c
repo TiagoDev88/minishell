@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/03 23:52:52 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/06 15:23:55 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -76,18 +76,36 @@ static int	find_index(t_envp *envp, int index)
 }
 //TODO talvez printar com os indexes
 // verificar como esta o index e printar conforme o index
-void print_envp(t_envp *envp)
+void print_export_envp(t_envp *envp)
 {
 	t_envp *tmp;
 	int i = 0;
+	int size;
 
 	tmp = envp;
 	assign_indexes(envp);
-	while (tmp->index)
+	i = 0;
+	size = 0;
+	while(tmp)
 	{
-		printf("dentro do print_envp\n");
-		printf("index %d\n", tmp->index);
-		printf("envp-> %s\n", tmp->key);
+		size++;
 		tmp = tmp->next;
+	}
+	while (i < size)
+	{
+		tmp = envp;
+		while (tmp)
+		{
+			if (tmp->index == i)
+			{
+				if (tmp->flag == '=')
+					printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
+				else
+					printf("declare -x %s\n", tmp->key);
+				break;
+			}
+			tmp = tmp->next;
+		}
+		i++;
 	}
 }

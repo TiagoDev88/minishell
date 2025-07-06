@@ -15,14 +15,15 @@ bash-5.2$ echo $?
 
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
-
+//TODO talvez fazer um if, else para ver se o primeiro carcter letra ou _
+// e aqui adicionar a lista, caso nao seja, dar erro "bash: export: `10=9': not a valid identifier" com exemplo de "export 10=9"
 int	ft_export(t_cmd *cmd, t_envp ** envp)
 {
 	printf("conteudo no comando: %s\n", cmd->cmd_args[0]);
 	if (!cmd || !(*envp) || !envp)
 		return (1);
 	if (cmd->cmd_args[1] == NULL)
-		return (print_envp(*envp), 0); // chamar a funcao de printar.
+		return (print_export_envp(*envp), 0); // chamar a funcao de printar.
 	t_cmd *tmp;
 	int i = 1;
 	int j = 0;
@@ -33,6 +34,7 @@ int	ft_export(t_cmd *cmd, t_envp ** envp)
 		j = 0;
 		while (ft_isalnum(tmp->cmd_args[i][j]) && ft_isalpha(tmp->cmd_args[i][0]))
 		{
+			if (ft_isdigit(tmp->cmd_args[i][0]))
 			printf("printas conteudo no comando %d caracter %c %s\n", i, tmp->cmd_args[i][j], tmp->cmd_args[i]);
 			j++;
 		}
