@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/06 15:23:55 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/06 18:09:41 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -60,22 +60,10 @@ void	free_envp(t_envp **envp)
 	*envp = NULL;
 }
 
-static int	find_index(t_envp *envp, int index)
-{
-	int	pos;
 
-	pos = 0;
-	while (envp)
-	{
-		if (envp->index == index)
-			return (pos);
-		envp = envp->next;
-		pos++;
-	}
-	return (-1);
-}
 //TODO talvez printar com os indexes
 // verificar como esta o index e printar conforme o index
+// acho que a ENV _ nao printa
 void print_export_envp(t_envp *envp)
 {
 	t_envp *tmp;
@@ -96,7 +84,7 @@ void print_export_envp(t_envp *envp)
 		tmp = envp;
 		while (tmp)
 		{
-			if (tmp->index == i)
+			if (tmp->index == i && tmp->key[0] != '_')
 			{
 				if (tmp->flag == '=')
 					printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
