@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/28 13:43:27 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 22:47:00 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,17 @@ static int	check_prompt_syntax(t_cmd **cmd_lst, t_token *tokens)
 				return (0);
 		}
 		if (curr && curr->type == TOKEN_WORD)
+		{
 			if (!add_cmd(cmd_lst, &prev, &curr, 2))
 				return (0);
+		}
 	}
 	return (1);
 }
 
-int	parser(t_cmd **cmd_lst, t_token *tokens)
+int	parser(t_parser *parser_s, t_token *tokens)
 {
-	if (!check_prompt_syntax(cmd_lst, tokens))
+	if (!check_prompt_syntax(&parser_s->cmd_lst, tokens))
 		return (0);
 	return (1);
 }

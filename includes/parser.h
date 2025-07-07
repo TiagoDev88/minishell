@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/30 16:15:05 by edfreder         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PARSER_H
 
 # define PARSER_H
@@ -36,8 +24,15 @@ typedef struct s_cmd
 	t_redir			*redir_out;
 	struct s_cmd	*next;
 }	t_cmd;
+
+typedef struct	s_parser
+{
+	t_cmd	*cmd_lst;
+	int		n_pipes;
+}	t_parser;
+
 /* Main function */
-int		parser(t_cmd **cmd_lst, t_token *tokens);
+int		parser(t_parser *parser_s, t_token *tokens);
 /* Command struct utils */
 int		add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
 int		is_valid_redirect(t_token *curr);

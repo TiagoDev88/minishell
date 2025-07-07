@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handle_word.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/06/30 14:45:21 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/07 22:47:52 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
