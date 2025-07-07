@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/05 00:10:50 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:16:51 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -197,7 +197,7 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 	if ((*bd)->input[(*bd)->pos] == '$')
 	{
 		next = (*bd)->input[(*bd)->pos + 1];
-		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|", next))
+		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=", next))// se der asneiras retirar o =
 		{
 			(*bd)->pos++;
 			return (STATE_CONTINUE);
