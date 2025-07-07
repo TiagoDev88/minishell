@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/05 01:18:52 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 00:17:46 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int	validate_and_open_files(t_token **curr_token, t_exec *exec)
 		exit_status = add_file(&exec->files_container, (*curr_token)->next->value, (*curr_token)->type);
 		if (exit_status == -1)
 		{
-			print_error_msg(NULL, "malloc: error", 1);
-			exit_clean(exec, 2);
+			print_error_msg(NULL, strerror(errno), 1);
+			exit_clean(exec, errno);
 		}
 		if (exit_status > 0)
 		{

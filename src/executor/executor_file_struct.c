@@ -6,13 +6,13 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/05 01:36:25 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 01:07:54 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	clean_files(t_file **file_lst)
+void	clean_files_s(t_file **file_lst)
 {
 	t_file	*curr;
 	t_file	*tmp;

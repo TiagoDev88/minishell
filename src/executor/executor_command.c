@@ -6,34 +6,11 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/05 01:22:42 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 01:09:22 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void get_last_cmd_exit_code(t_exec *exec)
-{
-	t_proccess	*curr;
-	int			exit_code;
-	int			status;
-
-	exit_code = 0;
-	if (!exec->procc_lst)
-		return ;
-	curr = exec->procc_lst;
-	close_pipes(&exec->pipe_lst);
-	close_last_fds(exec);
-	clean_files(&exec->files_container.lst);
-	while (curr)
-	{
-		waitpid(curr->pid, &status, 0);
-		if (WIFEXITED(status))
-			exit_code = WEXITSTATUS(status);
-		curr = curr->next;
-	}
-	EXIT_STATUS = exit_code;
-}
 
 static void	redirect(int redir_type, t_exec *exec, int fd)
 {
@@ -71,12 +48,12 @@ static void	handle_redirects(t_exec *exec)
 
 static void	exec_cmd(char *cmd_path, t_exec *exec, t_cmd *cmd_lst, char **envp)
 {
-	if (!cmd_path)
-		return ;
 	validate_cmd(cmd_path, exec);
 	execve(cmd_path, cmd_lst->cmd_args, envp);
-	print_error_msg(NULL, "execve: error", 1);
-	exit_clean(exec, EXIT_FAILURE);
+	print_error_msg(NULL, strerror(errno), 1);
+	if (cmd_path)
+		free(cmd_path);
+	exit_clean(exec, errno);
 }
 
 void	execute_command(t_exec *exec, t_cmd **curr_cmd, char **envp)
@@ -99,7 +76,6 @@ void	execute_command(t_exec *exec, t_cmd **curr_cmd, char **envp)
 		handle_redirects(exec);
 		close_last_fds(exec);
 		close_pipes(&exec->pipe_lst);
-
 		if (ft_strchr(cmd->cmd_args[0], '/'))
 			exec_cmd(cmd->cmd_args[0], exec, cmd, envp);
 		else

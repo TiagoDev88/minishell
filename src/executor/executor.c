@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/05 01:45:02 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 01:11:23 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,30 @@
 
 int EXIT_STATUS = 0;
 
-void	execute_line(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
+static void get_last_cmd_exit_code(t_exec *exec)
+{
+	t_proccess	*curr;
+	int			exit_code;
+	int			status;
+
+	exit_code = 0;
+	if (!exec->procc_lst)
+		return ;
+	curr = exec->procc_lst;
+	clean_files_s(&exec->files_container.lst);
+	clean_pipe_s(&exec->pipe_lst);
+	while (curr)
+	{
+		waitpid(curr->pid, &status, 0);
+		if (WIFEXITED(status))
+			exit_code = WEXITSTATUS(status);
+		curr = curr->next;
+	}
+	clean_proccess_s(&exec->procc_lst);
+	EXIT_STATUS = exit_code;
+}
+
+static void	execute_line(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 {
 	t_token *curr_token;
 	t_cmd	*curr_cmd;
@@ -37,7 +60,7 @@ void	execute_line(t_token *tokens, t_cmd *cmd_lst, t_exec *exec, char **envp)
 		if (exec->exec_helper.last_pipe)
 			exec->files_container.last_in_fd = exec->exec_helper.last_pipe->read_fd;
 		ft_memset(&exec->exec_helper, 0, sizeof(t_exec_helper));
-		clean_files(&exec->files_container.lst);
+		clean_files_s(&exec->files_container.lst);
 		exec->files_container.last_out_fd = 1;
 	}
 }
