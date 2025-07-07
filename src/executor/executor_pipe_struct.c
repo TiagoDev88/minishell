@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:16:31 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 12:31:14 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:08:19 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	add_pipe_back(t_pipe **pipe_lst, t_pipe *new)
 	}
 }
 
-static t_pipe *save_pipe(t_exec *exec)
+static t_pipe	*save_pipe(t_exec *exec)
 {
 	int		pipe_fds[2];
 	t_pipe	*new_pipe;

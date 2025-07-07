@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:07:53 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 12:56:19 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:32:34 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,12 @@ char	*get_heredoc_filename(int n_heredocs)
 	return (filename);
 }
 
-int	heredoc(t_file **new, char *del, t_files_container **files_container)
+int	heredoc(t_file **new, char *del, t_files_container **f_con)
 {
 	char	*line;
-	char	*heredoc_filename;
 
-	(*files_container)->heredocs++;
-	(*new)->filename = get_heredoc_filename((*files_container)->heredocs);
+	(*f_con)->heredocs++;
+	(*new)->filename = get_heredoc_filename((*f_con)->heredocs);
 	if (!(*new)->filename)
 		return (clean_mem(*new, NULL, NULL, -1));
 	(*new)->unlink = 1;
@@ -59,7 +58,7 @@ int	heredoc(t_file **new, char *del, t_files_container **files_container)
 	}
 	close((*new)->fd);
 	(*new)->fd = open((*new)->filename, O_RDONLY);
-	(*files_container)->last_in_fd = (*new)->fd;
-	add_file_back(&(*files_container)->lst, *new);
+	(*f_con)->last_in_fd = (*new)->fd;
+	add_file_back(&(*f_con)->lst, *new);
 	return (0);
 }

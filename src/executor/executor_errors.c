@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 23:06:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 12:48:40 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:29:25 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	print_error_msg(char *arg, char *error, int mode)
 		ft_putendl_fd(error, 2);
 }
 
-void	print_cmd_err_and_exit(char *cmd, int mode, int exit_s, t_exec *exec)
+void	print_cmd_err_exit(char *cmd, int mode, int exit_s, t_exec *exec)
 {
 	if (exit_s == 127)
 	{
@@ -42,7 +42,7 @@ void	print_cmd_err_and_exit(char *cmd, int mode, int exit_s, t_exec *exec)
 	exit_clean(exec, exit_s);
 }
 
-int	print_file_err_and_return(char *filename, char *error, int exit_s)
+int	print_file_err(char *filename, char *error, int exit_s)
 {
 	print_error_msg(filename, error, 1);
 	return (exit_s);
