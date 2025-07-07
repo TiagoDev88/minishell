@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/06/30 16:03:40 by edfreder         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PARSER_H
 
 # define PARSER_H
@@ -34,10 +22,20 @@ typedef struct s_cmd
 	t_list			*args_lst;
 	t_redir			*redir_in;
 	t_redir			*redir_out;
+	int				pipe_after;
 	struct s_cmd	*next;
 }	t_cmd;
+
+typedef struct	s_parser
+{
+	t_cmd	*cmd_lst;
+	int		n_pipes;
+}	t_parser;
+
+
 /* Main function */
-int		parser(t_cmd **cmd_lst, t_token *tokens);
+int	parser(t_parser *parser_s, t_token *tokens);
+
 /* Command struct utils */
 int		add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
 int		is_valid_redirect(t_token *curr);
@@ -50,6 +48,6 @@ int		lst_to_arr(t_list *args_lst, char ***cmd_args);
 /* Cleaner */
 int		cmd_clear(t_cmd **lst, int status);
 void	redir_clean(t_redir **redir);
-int		cmd_clean_split(char **split, int status);
+int	cmd_clean_split(char **split, int status);
 
 #endif
