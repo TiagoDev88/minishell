@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 13:16:51 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:30:49 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -40,7 +40,7 @@ static char	*extract_variable(t_token_builder *bd)
 	var[0] = '\0';
 	if (bd->input[bd->pos] == '?')
 		return (bd->pos++, ft_itoa(69));
-	if (ft_isdigit(bd->input[bd->pos]))
+	if (!ft_isalpha(bd->input[bd->pos]) && bd->input[bd->pos] != '_')
 		return (bd->pos++, ft_strdup(""));
 	while (bd->input[bd->pos] && ((ft_isalnum(bd->input[bd->pos])
 			|| bd->input[bd->pos] == '_')))

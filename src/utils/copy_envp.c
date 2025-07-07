@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/06 14:54:28 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:44:15 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -34,7 +34,7 @@ void	assign_indexes(t_envp *env_list)
 			others_node = others_node->next;
 		}
 		current_node->index = index;
-		printf("KEY: %s com index %d\n", current_node->key, current_node->index);
+		//printf("KEY: %s com index %d\n", current_node->key, current_node->index);
 		current_node = current_node->next;
 	}
 }
