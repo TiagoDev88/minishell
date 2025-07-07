@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 01:07:54 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:50:42 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	clean_files_s(t_file **file_lst)
 	}
 }
 
-void		add_file_back(t_file **file_lst, t_file *new_file)
+void	add_file_back(t_file **file_lst, t_file *new_file)
 {
 	t_file	*curr;
 
@@ -50,7 +50,7 @@ void		add_file_back(t_file **file_lst, t_file *new_file)
 	}
 }
 
-t_file *create_file_node(void)
+t_file	*create_file_node(void)
 {
 	t_file	*new_file;
 
@@ -89,4 +89,3 @@ int	add_file(t_files_container *files_container, char *filename, int redir_type)
 		return (-1);
 	return (0);
 }
-

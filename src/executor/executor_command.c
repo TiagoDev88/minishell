@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 01:09:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:45:56 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	redirect(int redir_type, t_exec *exec, int fd)
 		{
 			if (dup2(fd, STDIN_FILENO) == -1)
 			{
-				print_error_msg(NULL, "dup2: error", 1);
+				print_error_msg(NULL, strerror(errno), 1);
 				exit_clean(exec, errno);
 			}
 		}
@@ -31,7 +31,7 @@ static void	redirect(int redir_type, t_exec *exec, int fd)
 		{
 			if (dup2(fd, STDOUT_FILENO) == -1)
 			{
-				print_error_msg(NULL, "dup2: error", 1);
+				print_error_msg(NULL, strerror(errno), 1);
 				exit_clean(exec, errno);
 			}
 		}

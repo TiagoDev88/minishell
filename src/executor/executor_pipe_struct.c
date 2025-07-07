@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:16:31 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 01:05:27 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:31:14 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ static t_pipe *save_pipe(t_exec *exec)
 	new_pipe = malloc(sizeof(t_pipe));
 	if (!new_pipe)
 	{
-		print_error_msg(NULL, strerror(errno), 1);
-		exit_clean(exec, errno);
+		print_error_msg(NULL, strerror(ENOMEM), 1);
+		exit_clean(exec, ENOMEM);
 	}
 	new_pipe->next = NULL;
 	add_pipe_back(&exec->pipe_lst, new_pipe);

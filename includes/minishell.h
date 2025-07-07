@@ -20,4 +20,6 @@
 # include "utils.h"
 # include "errno.h"
 
+extern int g_exit_status;
+
 #endif

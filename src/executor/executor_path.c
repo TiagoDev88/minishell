@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 00:56:03 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:57:10 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static char	*get_envp(char *envp_to_get, t_exec *exec, char *cmd)
 
 static char	*build_cmd_path(char *dir, char *cmd)
 {
-	char *tmp_dir;
-	char *cmd_dir;
+	char	*tmp_dir;
+	char	*cmd_dir;
 
 	if (!dir || !cmd)
 		return (NULL);
@@ -37,7 +37,7 @@ static char	*build_cmd_path(char *dir, char *cmd)
 	return (cmd_dir);
 }
 
-static char	*get_path_from_path_envp(t_exec *exec, char **path_splitted, char *cmd)
+static char	*get_path_from_path_env(t_exec *exec, char **path_split, char *cmd)
 {
 	int i;
 	char *path;

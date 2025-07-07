@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/04 15:12:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:42:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[], char **envp)
 	char	*line;
 	t_token	*tokens;
 	char *dir = NULL;
-	t_cmd *lst = NULL;
+	//t_cmd *lst = NULL;
 
 	t_parser parserola;
 	ft_memset(&parserola, 0, sizeof(t_parser));
