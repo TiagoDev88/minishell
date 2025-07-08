@@ -17,7 +17,7 @@ SRC_BUILTIN	=	$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c uns
 #SRC_MAIN	=	main.c
 SRC_MAIN	=	test_main2.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c)
-SRC_UTILS	=	$(addprefix utils/, utils.c envp_utils.c copy_envp.c)
+SRC_UTILS	=	$(addprefix utils/, utils.c envp_utils.c copy_envp.c export_utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c parser_cmd.c parser_cmd_utils.c parser_cleaner.c \
 							parser_validator.c)
 SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c handle_word_utils.c tokens_utils.c)

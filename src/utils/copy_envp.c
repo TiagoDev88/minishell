@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 18:44:15 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:54:50 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -38,15 +38,7 @@ void	assign_indexes(t_envp *env_list)
 		current_node = current_node->next;
 	}
 }
-//TODO talvez criar duas listas, uma ordenada e outra nao ordenada
-// que so adiciono no fim
-// tipo envp_unsorted e envp_sorted
-// depois ordeno a envp_sorted e deixo a envp_unsorted como esta
-// assim posso usar a envp_unsorted para fazer o print e a export para printar ordemadamente
-// assim nao preciso de estar a ordenar a lista toda vez que adiciono um novo elemento 
-// depois ao adicionar ou apagar uma variavel, chamo a funcao principal que criou as listas
-// e assim fica tudo atualizado
-// e a env tem que
+
 void	copy_env(char **envp, t_envp **env_list)
 {
 	int		i;
@@ -87,7 +79,6 @@ char *get_env_value(char *name, t_envp **lst_envp)
     i = 0;
     while (envp->next)
     {
-        printf("ENV: %s posicao %i\n", envp->key, i);
         if (!ft_strcmp(envp->key, name) && envp->flag == '=')
             return (ft_strdup(envp->value));
 		envp = envp->next;

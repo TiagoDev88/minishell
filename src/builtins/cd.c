@@ -4,8 +4,10 @@
 
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
-//TODO talvez vou ter problemas por causa dos ENVS. Tenho que fazer uma copia dos ENVS
-int ft_cd(t_cmd *cmd)
+
+//TODO falta atualizar o OLDPWD e o PWD
+// usar talvez o getcwd para uma estrutura t_envp ou outra e chamar aqui para atualizar
+int ft_cd(t_cmd *cmd, t_envp **envp)
 {
     char *path;
 
@@ -13,16 +15,13 @@ int ft_cd(t_cmd *cmd)
         return (1);
     if (!cmd->cmd_args[1] || cmd->cmd_args[1][0] == '~')
     {
-        path = getenv("HOME");
+        path = get_env_value("HOME", envp);
+        printf("%s\n", path);
         if (!path)
-        {
-            ft_putstr_fd("bash: cd: HOME not set\n", 2);
-            return (1);
-        }
+            return (ft_putstr_fd("bash: cd: HOME not set\n", 2), 1);
     }
     else
         path = cmd->cmd_args[1];
-
     if (chdir(path) != 0)
     {
         ft_putstr_fd("bash: cd: ", 2);
@@ -30,6 +29,14 @@ int ft_cd(t_cmd *cmd)
         ft_putstr_fd(": ", 2);
         perror("");
         return (1);
+    }
+    if (path)
+    {
+        path = getcwd(NULL, 0);
+        printf("com getwc%s\n", path);
+        path = ft_strjoin("PWD=", path);
+        printf("%s\n", path);
+        is_update_or_add_env(path, envp, 0);
     }
     return (0);
 }

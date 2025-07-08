@@ -1,7 +1,9 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
-# include "utils.h"
+struct s_envp;
+typedef struct s_envp t_envp;
+
 typedef enum e_check_state {
 	STATE_ERROR = -1,
 	STATE_CONTINUE = 0,

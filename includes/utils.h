@@ -1,7 +1,8 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# include "token.h"
+# include "parser.h"
+
 
 typedef struct s_envp
 {
@@ -19,5 +20,7 @@ void	copy_env(char **envp, t_envp **env_list);
 void print_export_envp(t_envp *envp); // chamar a funcao de printar.
 void assign_indexes(t_envp *env_list);
 char *get_env_value(char *name, t_envp **lst_envp);
+void is_update_or_add_env(char *arg, t_envp **envp, int k_stats);
+
 
 #endif

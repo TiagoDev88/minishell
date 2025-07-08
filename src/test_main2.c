@@ -21,7 +21,7 @@ int execute_command(t_cmd **cmd, t_envp **envp)
 	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
 		return (ft_exit(cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
-        return (ft_cd(*cmd));
+        return (ft_cd(*cmd, envp));
 	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
         return (ft_env(*cmd, *envp));
 	if (ft_strncmp((*cmd)->cmd_args[0], "export", 7) == 0)
