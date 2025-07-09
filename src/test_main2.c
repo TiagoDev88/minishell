@@ -12,7 +12,7 @@ void sigint_handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-int execute_command(t_cmd **cmd, t_envp **envp)
+int execute_command(t_cmd **cmd, t_envp **envp, t_shell *shell)
 {
 	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);
@@ -21,7 +21,7 @@ int execute_command(t_cmd **cmd, t_envp **envp)
 	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
 		return (ft_exit(cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
-        return (ft_cd(*cmd, envp));
+        return (ft_cd(*cmd, envp, shell));
 	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
         return (ft_env(*cmd, *envp));
 	if (ft_strncmp((*cmd)->cmd_args[0], "export", 7) == 0)
@@ -50,6 +50,7 @@ int main(int argc, char *argv[], char **envp)
 	t_token	*tokens;
 	t_cmd *lst = NULL;
 	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 
 	t_envp *cp_envp = NULL;
 	copy_env(envp, &cp_envp);
@@ -71,17 +72,19 @@ int main(int argc, char *argv[], char **envp)
 	// 	i++;
 	// }
 
+	t_shell shell;
 	while (1)
 	{
 
 		//printf("argumentos %s \n", lst->cmd_args[0]);
-		free(dir);
+		free(shell.pwd);
 		cwd = getcwd(NULL, 0);  //dar free a dir, pk e alocado
 		if (!cwd)
 			break;
-		dir = ft_strjoin(cwd, "$ ");
+		shell.pwd = ft_strjoin(cwd, "$ ");
+		shell.oldpwd = NULL;
 		free(cwd);
-		line = readline(dir);
+		line = readline(shell.pwd);
 		if (!line)
 		{
 			printf("exit\n");
@@ -109,7 +112,7 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(&tmp, &cp_envp);
+			execute_command(&tmp, &cp_envp, &shell);
 			tmp = tmp->next;
 		}
 		cmd_clear(&lst, 10);
@@ -118,6 +121,7 @@ int main(int argc, char *argv[], char **envp)
 		//printf("argumentos %s \n", lst->cmd_args[0]);
 		free(line);
 	}
+	//free(shell.oldpwd);
 	free_envp(&cp_envp);
 	free(dir);
 	return (0);
