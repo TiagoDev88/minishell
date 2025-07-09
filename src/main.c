@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 22:16:46 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/07 22:46:08 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int main(int argc, char *argv[], char **envp)
 	t_token	*tokens;
 
 	signal(SIGINT, sigint_handler);
-	
 
 	while (1)
 	{

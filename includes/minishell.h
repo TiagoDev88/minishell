@@ -23,5 +23,14 @@
 extern int g_exit_status;
 
 void sigint_handler(int sig);
+typedef struct s_shell
+{
+	t_envp **envp;
+	t_cmd *cmd;
+	char *oldpwd;
+	char *pwd;
+	char *underscore;
+	int last_status_code;
+} t_shell;
 
 #endif

@@ -1,35 +1,29 @@
-#include "../includes/minishell.h"
+/******************************************************************************/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
+/*   Updated: 2025/07/09 17:21:39 by tfilipe-         ###   ########.fr       */
+/*                                                                            */
+/******************************************************************************/
 
-t_token	*new_token(t_token_type type, char *value)
-{
-	t_token	*token;
-	
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->type = type;
-	token->value = ft_strdup(value);
-	//free(value);
-	token->next = NULL;
-	return (token);
-}
+#include "../../includes/minishell.h"
 
-void	add_token(t_token **tk, t_token *new)
-{
-	t_token	*tmp;
-
-	if (!*tk)
-	{
-		*tk = new;
-		return;
-	}
-	tmp = *tk;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-
-
+/**
+ * @brief Determines the token type from the given string.
+ *
+ * Checks if the input string matches known shell operators
+ * 
+ * like append (>>), heredoc (<<), redirections (> or <), or pipe (|).
+ * 
+ * If none match, it returns TOKEN_WORD.
+ *
+ * @param s Pointer to the input string.
+ * @return The token type corresponding to the input string.
+ */
 static t_token_type	get_token_type(const char *s)
 {
 	if (!ft_strncmp(s, ">>", 2))
@@ -45,66 +39,69 @@ static t_token_type	get_token_type(const char *s)
 	return (TOKEN_WORD);
 }
 
+/**
+ * @brief Helper function to tokenize the input string.
+ *
+ * Parses the input starting at the current position in the token builder.
+ * 
+ * Detects multi-character tokens (>>, <<), single-character tokens (> < |),
+ * 
+ * or words possibly enclosed in quotes. It adds the extracted
+ *  tokens to the list.
+ *
+ * @param tk Pointer to the head of the token list.
+ * @param bd Pointer to the token builder structure holding input state.
+ * @param substr Temporary string used to hold extracted substrings.
+ */
+static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
+{
+	if (!ft_strncmp(&bd->input[bd->pos], ">>", 2)
+		|| !ft_strncmp(&bd->input[bd->pos], "<<", 2))
+	{
+		substr = ft_substr(bd->input, bd->pos, 2);
+		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
+		bd->pos += 2;
+	}
+	else if (ft_strchr("> < |", bd->input[bd->pos]))
+	{
+		substr = ft_substr(bd->input, bd->pos, 1);
+		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
+		bd->pos++;
+	}
+	else
+	{
+		if (bd->input[bd->pos] == '\"' || bd->input[bd->pos] == '\'')
+		{
+			bd->del = bd->input[bd->pos];
+			bd->pos++;
+		}
+		handle_word(tk, bd);
+	}
+}
 
-// t_token	*tokenize(char *input, char **envp)
-// {
-// 	t_token	*tokens;
-// 	int		i;
-// 	char del;
-
-// 	tokens = NULL;
-// 	i = 0;
-// 	while (input[i])
-// 	{
-// 		//printf("input: %s INDEX: %i\n", input + i, i);
-// 		del = ' ';
-// 		while (input[i] == del || input[i] == '\t')
-// 			i++;
-// 		if (!input[i])
-// 			break ;
-// 		if (!ft_strncmp(&input[i], ">>", 2) || !ft_strncmp(&input[i], "<<", 2))
-// 		{
-// 			add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 2), 0));
-// 			i += 2;
-// 		}
-// 		else if (ft_strchr("> < |", input[i]))
-// 		{
-//     		add_token(&tokens, new_token(get_token_type(&input[i]), ft_substr(input, i, 1), 0));
-//     		i++;
-// 		}
-// 		else
-// 		{
-// 			//printf("IS WORD\n");
-// 			if (input[i] == '\"' || input[i] == '\'')
-// 			{
-// 				del = input[i];
-// 				i++;
-// 			}
-// 			// {
-// 			// 	handle_word(&tokens, input, &i);
-// 			// }
-// 			// else
-// 			handle_word(&tokens, input, &i, del, envp);
-// 		}
-// 		//printf("Fim dentro do primeiro while");
-// 		if (i == 50)
-// 			break;
-// 	}
-// 	return (tokens);
-// }
-
-t_token	*tokenize(char *input, char **envp)
+/**
+ * @brief Tokenizes the entire input string into a linked list of tokens.
+ *
+ * Skips whitespace, iterates through the input, and calls the helper tokenizer
+ * 
+ * to parse tokens until the end of the input string is reached.
+ *
+ * @param input The command line input string to tokenize.
+ * @param envp The environment variables array (unused in the
+ *  shown code but passed).
+ * @return Pointer to the head of the generated token linked list.
+ */
+t_token	*tokenize(char *input, t_envp **envp)
 {
 	t_token_builder	bd;
 	t_token			*tk;
-	char *substr;
+	char			*substr;
 
 	bd.input = input;
 	bd.envp = envp;
 	bd.pos = 0;
-	bd.del = ' ';
 	tk = NULL;
-
+	substr = NULL;
 	while (bd.input[bd.pos])
 	{
 		bd.del = ' ';
@@ -112,112 +109,7 @@ t_token	*tokenize(char *input, char **envp)
 			bd.pos++;
 		if (!bd.input[bd.pos])
 			break ;
-		if (!ft_strncmp(&bd.input[bd.pos], ">>", 2) || !ft_strncmp(&bd.input[bd.pos], "<<", 2))
-		{
-			substr = ft_substr(bd.input, bd.pos, 2);
-            if (!substr)
-                break;
-			add_token(&tk, new_token(get_token_type(&bd.input[bd.pos]), substr));
-			free(substr);
-			bd.pos += 2;
-		}
-		else if (ft_strchr("> < |", bd.input[bd.pos]))
-		{
-			substr = ft_substr(bd.input, bd.pos, 1);
-            if (!substr)
-                break;
-			add_token(&tk, new_token(get_token_type(&bd.input[bd.pos]), substr));
-			free(substr);
-			bd.pos++;
-		}
-		else
-		{
-			if (bd.input[bd.pos] == '\"' || bd.input[bd.pos] == '\'')
-			{
-				bd.del = bd.input[bd.pos];
-				bd.pos++;
-			}
-			handle_word(&tk, &bd);
-		}
+		help_tokenize(&tk, &bd, substr);
 	}
 	return (tk);
 }
-
-void	free_tokens(t_token **tk)
-{
-	t_token	*tmp;
-	t_token	*curr;
-
-	curr = *tk;
-	while (curr)
-	{
-		tmp = curr->next;
-		free(curr->value);
-		free(curr);
-		curr = tmp;
-	}
-}
-
-/*
-
-new test: $$ = placehold for current pid number.
-
-bash-5.2$ echo $$"ola $USER"
-2023ola tfilipe-
-
-bash-5.2$ echo $$"ola $USE"
-2023ola 
-
-bash-5.2$ echo $$"ola $"
-2023ola $
-
-bash-5.2$ echo $$"ola $$"
-2023ola 2023
-
-bash-5.2$ echo $$"ola $$" $$
-2023ola 2023 2023
-
-bash-5.2$ echo $$"ola $$" $
-2023ola 2023 $
-
-bash-5.2$ echo $$"ola $$"$
-2023ola 2023$
-
-bash-5.2$ echo $$"ola $$" $
-2023ola 2023 $
-
-bash-5.2$ echo $$ "ola $$" $
-2023 ola 2023 $
-
-bash-5.2$ echo $"ola"
-ola
-
-bash-5.2$ echo $$"ola"
-2023ola
-
-bash-5.2$ echo $$ "ola"
-2023 ola
-
-bash-5.2$ echo $$ "ola $"
-2023 ola $
-
-bash-5.2$ echo $$ "ola $" $
-2023 ola $ $
-
-bash-5.2$ echo $$ "ola $"$
-2023 ola $$
-
-bash-5.2$ echo $$ "ola $"$ $$
-2023 ola $$ 2023
-
-bash-5.2$ echo $$ "ola $USER"$ $$
-2023 ola tfilipe-$ 2023
-
-bash-5.2$ echo $$ "ola $invalid"$ $$
-2023 ola $ 2023
-
-bash-5.2$ echo $$ "ola $invalid" $ $$
-2023 ola  $ 2023
-
-
-*/

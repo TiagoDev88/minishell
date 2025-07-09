@@ -1,6 +1,6 @@
 .vscode
 minishell
-
+readline.supp
 # Prerequisites
 *.d
 

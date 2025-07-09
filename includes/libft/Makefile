@@ -24,7 +24,7 @@ SRCS =  ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
 		ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
 		ft_printf_putchar.c ft_printf_putstr.c ft_printf.c ft_putnbr_base.c \
 		ft_putnbr_unsigned.c ft_putnbr.c ft_putptr.c get_next_line_bonus.c \
-		get_next_line_utils_bonus.c ft_atol.c
+		get_next_line_utils_bonus.c ft_atol.c ft_strcmp.c
 
 BONUS_SRC = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
 			ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \

@@ -8,4 +8,17 @@ Testes para fazer:
 > Tratar de erro syntax '.' Done.
 > Incluir no parser_test.sh Done.
 > Guardar o exit code caso so haja redirects Done.
-> Acabar a implementacao de testes do executor
+> Acabar a implementacao de testes do executoros sinais nao podem sair, so tenho que tratar, 
+tanto o cntl + c = fecha o processo que o minishell esta a executar (um comando)
+e o ctrl + d = fazer exatamente igual ao c, so que com o sinal de EOF
+e o ctrl + \ = nao tem que fazer nada, IGNORAR
+
+Tiago a escrever para o  EDGAR depois no parsing existe um ->
+-> "" ls
+tratar disto. Eu nos tokens estou a guardar como um no sem conteudo, tens que fazer depois a verificacao.
+/mnt/c/Users/foraa/Documents/Programacao/C/42school/minishell$ "" ls
+Token: [0] ||
+Token: [0] |ls|
+
+foraalinux@Revision-PC:/mnt/c/Users/foraa/Documents/Programacao/C/42school/minishell$ "" ls
+Command '' not found, but can be installed with:

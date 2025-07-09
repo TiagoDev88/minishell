@@ -1,16 +1,17 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 12:55:25 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 12:55:50 by edfreder         ###   ########.fr       */
+/*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
+/*   Updated: 2025/07/09 17:21:08 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #ifndef PARSER_H
+
 # define PARSER_H
 
 # define ERR_NEAR_PIPE "bash: syntax error near unexpected token `|'"
@@ -34,7 +35,6 @@ typedef struct s_cmd
 	t_list			*args_lst;
 	t_redir			*redir_in;
 	t_redir			*redir_out;
-	int				pipe_after;
 	struct s_cmd	*next;
 }	t_cmd;
 

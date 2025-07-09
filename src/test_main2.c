@@ -1,18 +1,42 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 22:15:14 by edfreder         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../includes/minishell.h"
+#include "../includes/utils.h"
 
-int g_exit_status = 0;
+void sigint_handler(int sig)
+{
+    (void)sig;
+	clear_history();
+	rl_clear_signals();
+ 	write(1, "\nShell encerrada por SIGINT (Ctrl+C)\n", 37);
+	exit(EXIT_SUCCESS);
+}
+
+int execute_command(t_cmd **cmd, t_envp **envp, t_shell *shell)
+{
+	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
+		return (1);
+	if (ft_strncmp((*cmd)->cmd_args[0], "echo", 5) == 0)
+		return (ft_echo(*cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
+		return (ft_exit(cmd));
+	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
+        return (ft_cd(*cmd, envp, shell));
+	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
+        return (ft_env(*cmd, *envp));
+	if (ft_strncmp((*cmd)->cmd_args[0], "export", 7) == 0)
+		return (ft_export(*cmd, envp));
+	return (0);
+}
+
+//TODO tratar de fazer uma copia dos envs, para nao alterar os originais
+// tratar de fazer free dos envs, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos tokens, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos comandos, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos argumentos, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos pipes, e de todas as variaveis que sao alocadas
+// tratar de fazer free dos redirecionamentos, e de todas as variaveis que sao alocadas
+// talvez criar uma estrutura por causa das ENVs
 
 int main(int argc, char *argv[], char **envp)
 {
@@ -21,35 +45,84 @@ int main(int argc, char *argv[], char **envp)
 	(void)envp;
 	
 	char	*line;
-	t_token	*tokens;
 	char *dir = NULL;
-	//t_cmd *lst = NULL;
+	char *cwd = NULL;
+	t_token	*tokens;
+	t_cmd *lst = NULL;
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 
-	t_parser parserola;
-	ft_memset(&parserola, 0, sizeof(t_parser));
-	dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
-	dir = ft_strjoin(dir, "$ ");
+	t_envp *cp_envp = NULL;
+	copy_env(envp, &cp_envp);
+	t_envp *tmp;
+	tmp = cp_envp;
+	// while (tmp)
+	// {
+	// 	printf("index:%d key: %s | ", tmp->index, tmp->key);
+	// 	if (tmp->flag == '=')
+	// 		printf("value: %s\n", tmp->value);
+	// 	else
+	// 		printf("sem valor (só exportado, não no env)\n");
+	// 	tmp = tmp->next;
+	// }
+	// int i = 0;
+	// while (envp[i])
+	// {
+	// 	printf("%s\n", envp[i]);
+	// 	i++;
+	// }
 
+	t_shell shell;
 	while (1)
 	{
-		line = readline(dir);
-		if (!line)
+
+		//printf("argumentos %s \n", lst->cmd_args[0]);
+		free(shell.pwd);
+		cwd = getcwd(NULL, 0);  //dar free a dir, pk e alocado
+		if (!cwd)
 			break;
-		add_history(line);
-		tokens = tokenize(line, envp);
-		t_token *tmp;
-		tmp = tokens;
+		shell.pwd = ft_strjoin(cwd, "$ ");
+		shell.oldpwd = NULL;
+		free(cwd);
+		line = readline(shell.pwd);
+		if (!line)
+		{
+			printf("exit\n");
+			break;
+		}
+		if (*line)
+			add_history(line);	
+		tokens = tokenize(line, &cp_envp);
+		t_token *tmp1 = tokens;
+		while (tmp1)
+		{
+			printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
+			tmp1 = tmp1->next;
+		}
+		parser(&lst, tokens);
+		free_tokens(&tokens);
+		t_cmd *tmp = lst;
 		while (tmp)
 		{
-			printf("TOKEN |%s|\n", tmp->value);
+			// printf("COMMAND: ");
+			// int i = 0;
+			// while (lst->cmd_args[i])
+			// {
+			// 	printf("%s ", lst->cmd_args[i]);
+			// 	i++;
+			// }
+			// printf("\n");
+			execute_command(&tmp, &cp_envp, &shell);
 			tmp = tmp->next;
 		}
-		parser(&parserola, tokens);
-		executor(tokens, parserola.cmd_lst, envp);
-		cmd_clear(&parserola.cmd_lst, 0);
-		free_tokens(tokens);
+		cmd_clear(&lst, 10);
+		//free_envp(&cp_envp); // para testar se tem links nas envs
+
+		//printf("argumentos %s \n", lst->cmd_args[0]);
 		free(line);
 	}
+	//free(shell.oldpwd);
+	free_envp(&cp_envp);
+	free(dir);
 	return (0);
 }
-
