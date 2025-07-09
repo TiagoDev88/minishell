@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 19:34:48 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:37:47 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,20 @@ static char	*get_path_from_path_env(t_exec *exec, char **path_split, char *cmd)
 		path = build_cmd_path(path_split[i], cmd);
 		if (!path)
 			return (NULL);
-		if (access(path, X_OK) == 0)
-			return (path);
+		if (access(path, F_OK) == 0)
+			break ;
 		free(path);
+		path = NULL;
 		i++;
 	}
-	if (access(path, F_OK) != 0)
-	{
-		free(path);
+	if (!path)
 		print_cmd_err_exit(cmd, 0, 127, exec);
-	}
-	else if (access(path, X_OK) != 0)
+	if (access(path, X_OK) != 0)
 	{
 		free(path);
 		print_cmd_err_exit(cmd, 0, 126, exec);
 	}
-	return (NULL);
+	return (path);
 }
 
 static char	*get_path_from_curr_dir(t_exec *exec, char *cmd)
@@ -108,8 +106,8 @@ char	*get_cmd_path(t_exec *exec, char *cmd)
 		if (!path_split)
 			return (NULL);
 		cmd_path = get_path_from_path_env(exec, path_split, cmd);
+		cmd_clean_split(path_split, 0);
 	}
-	cmd_clean_split(path_split, 0);
 	if (!cmd_path)
 	{
 		print_error_msg(NULL, strerror(ENOMEM), 1);
