@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 19:34:21 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:02:51 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ int	add_file(t_files_container *f_con, char *filename, int redir_type)
 	add_file_back(&f_con->lst, new_file);
 	if (!new_file->filename)
 		return (-1);
+	g_exit_status = 0;
 	return (0);
 }

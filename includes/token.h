@@ -30,9 +30,9 @@ typedef struct s_token_builder
 
 
 t_token	*tokenize(char *, char **);
-void	free_tokens(t_token *);
+void	free_tokens(t_token **);
 void handle_word(t_token **, t_token_builder *);
 void add_token(t_token **, t_token *);
-t_token *new_token(t_token_type , const char *);
+t_token *new_token(t_token_type , char *);
 
 #endif

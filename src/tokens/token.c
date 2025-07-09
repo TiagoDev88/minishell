@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-t_token	*new_token(t_token_type type, const char *value)
+t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*token;
 	
@@ -9,6 +9,7 @@ t_token	*new_token(t_token_type type, const char *value)
 		return (NULL);
 	token->type = type;
 	token->value = ft_strdup(value);
+	//free(value);
 	token->next = NULL;
 	return (token);
 }
@@ -142,16 +143,18 @@ t_token	*tokenize(char *input, char **envp)
 	return (tk);
 }
 
-void	free_tokens(t_token *tk)
+void	free_tokens(t_token **tk)
 {
 	t_token	*tmp;
+	t_token	*curr;
 
-	while (tk)
+	curr = *tk;
+	while (curr)
 	{
-		tmp = tk;
-		tk = tk->next;
-		free(tmp->value);
-		free(tmp);
+		tmp = curr->next;
+		free(curr->value);
+		free(curr);
+		curr = tmp;
 	}
 }
 

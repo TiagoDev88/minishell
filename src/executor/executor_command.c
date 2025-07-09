@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 12:45:56 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/09 00:52:26 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void	execute_command(t_exec *exec, t_cmd **curr_cmd, char **envp)
 	*curr_cmd = (*curr_cmd)->next;
 	new = create_proccess();
 	procc_add_back(&exec->procc_lst, new);
+	signal(SIGINT, SIG_IGN);
+	
 	new->pid = fork();
 	if (new->pid == -1)
 	{
@@ -73,6 +75,7 @@ void	execute_command(t_exec *exec, t_cmd **curr_cmd, char **envp)
 	}
 	else if (new->pid == 0)
 	{
+		signal(SIGINT, sigint_handler);
 		handle_redirects(exec);
 		close_last_fds(exec);
 		close_pipes(&exec->pipe_lst);

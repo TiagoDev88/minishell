@@ -1,13 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/09 12:55:25 by edfreder          #+#    #+#             */
+/*   Updated: 2025/07/09 14:15:37 by edfreder         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_H
 
 # define PARSER_H
 
-# define ERR_SINTAX_PIPE "bash: syntax error near unexpected token `|'\n"
-# define ERR_SINTAX_APPEND  "bash: syntax error near unexpected token `>>'\n"
-# define ERR_SINTAX_HEREDOC  "bash: syntax error near unexpected token `<<'\n"
-# define ERR_SINTAX_REDIR_IN  "bash: syntax error near unexpected token `<'\n"
-# define ERR_SINTAX_REDIR_OUT "bash: syntax error near unexpected token `>'\n"
-# define ERR_SINTAX_AFTER "bash: syntax error near unexpected token `newline'\n"
+# define ERR_NEAR_PIPE "bash: syntax error near unexpected token `|'"
+# define ERR_NEAR_APPEND  "bash: syntax error near unexpected token `>>'"
+# define ERR_NEAR_HEREDOC  "bash: syntax error near unexpected token `<<'"
+# define ERR_NEAR_REDIR_IN  "bash: syntax error near unexpected token `<'"
+# define ERR_NEAR_REDIR_OUT "bash: syntax error near unexpected token `>'"
+# define ERR_TOKEN_AFTER "bash: syntax error near unexpected token `newline'"
+# define ERR_D ".: filename argument required\n.: usage: . filename [arguments]"
 
 typedef struct s_redir
 {
@@ -25,7 +38,7 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-typedef struct	s_parser
+typedef struct s_parser
 {
 	t_cmd	*cmd_lst;
 	int		n_pipes;
