@@ -66,19 +66,19 @@ int ft_cd(t_cmd *cmd, t_envp **envp, t_shell *shell)
     return (0);
 }
 
-static char *build_env_path(char *dir, char *cmd)
-{
-    char    *tmp_dir;
-    char    *cmd_dir;
-    if (!dir || !cmd)
-        return (NULL);
-    tmp_dir = ft_strjoin(dir, "/");
-    if (!tmp_dir)
-        return (NULL);
-    cmd_dir = ft_strjoin(tmp_dir, cmd);
-    free(tmp_dir);
-    return (cmd_dir);
-}
+// static char *build_env_path(char *dir, char *cmd)
+// {
+//     char    *tmp_dir;
+//     char    *cmd_dir;
+//     if (!dir || !cmd)
+//         return (NULL);
+//     tmp_dir = ft_strjoin(dir, "/");
+//     if (!tmp_dir)
+//         return (NULL);
+//     cmd_dir = ft_strjoin(tmp_dir, cmd);
+//     free(tmp_dir);
+//     return (cmd_dir);
+// }
 
 // int ft_cd(t_shell *ss)
 // {

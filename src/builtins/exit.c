@@ -29,8 +29,8 @@ tfilipe-@c1r16s7:~$ echo $?
 255
 */
 
-#include "../includes/minishell.h"
-#include "../includes/builtins.h"
+#include "../../includes/minishell.h"
+#include "../../includes/builtins.h"
 
 int	ft_exit(t_cmd **cmd)
 {

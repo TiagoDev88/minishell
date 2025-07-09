@@ -49,7 +49,6 @@ int	ft_export(t_cmd *cmd, t_envp **envp)
 		return (print_export_envp(*envp), 0);
 	int		i;
 	int		key_status;
-	char	*cmd_key;
 
 	i = 1;
 	while (cmd->cmd_args[i])

@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   test_mai.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/08 23:13:07 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/09 17:36:15 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../includes/minishell.h"
 
@@ -40,6 +40,7 @@ int is_interactive(void)
     return isatty(STDIN_FILENO) && isatty(STDOUT_FILENO);
 }
 
+
 int main(int argc, char *argv[], char **envp)
 {
 	(void)argc;
@@ -52,6 +53,9 @@ int main(int argc, char *argv[], char **envp)
 	char *tmp_dir = NULL;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
+
+	t_envp *cp_envp = NULL;
+	copy_env(envp, &cp_envp);
 
 	t_parser parserola;
 	ft_memset(&parserola, 0, sizeof(t_parser));
@@ -72,7 +76,7 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break;
 		add_history(line);
-		tokens = tokenize(line, envp);
+		tokens = tokenize(line, &cp_envp);
 		if (parser(&parserola, tokens))
 			executor(tokens, parserola.cmd_lst, envp);
 		cmd_clear(&parserola.cmd_lst, 0);
