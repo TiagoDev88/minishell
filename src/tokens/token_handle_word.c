@@ -32,7 +32,7 @@ static char *extract_variable(t_token_builder *bd)
     if (bd->input[bd->pos] == '?')
     {
         bd->pos++;
-        return (ft_itoa(10)); // substituir $? pelo exit status (exemplo fixo 10)
+        return (ft_itoa(g_exit_status)); // substituir $? pelo exit status (exemplo fixo 10)
     }
     if (ft_isdigit(bd->input[bd->pos]))
         return (bd->pos++, ft_strdup(""));
@@ -118,7 +118,9 @@ static char *extract_word(t_token_builder **bd, int start)
         (*bd)->pos++;
     }
     if ((*bd)->pos > start)
+    {
         append_dollar(bd, &part, &start, 0);
+    }
     return (part);
 }
 
@@ -156,12 +158,12 @@ static void	word_append(char **word, char *part)
 	char	*tmp;
 
 	if (!*word)
-		*word = part;
+		*word = ft_strdup(part);
 	else
 	{
+        //printf("Appending\n");
 		tmp = ft_strjoin(*word, part);
 		free(*word);
-		free(part);
 		if (!tmp)
 			return ;
 		*word = tmp;
@@ -188,9 +190,11 @@ void handle_word(t_token **tokens, t_token_builder *bd)
         start = bd->pos;
         part = extract_word(&bd, start);
         word_append(&word, part);
+        free(part);
         res = check_state(bd);
         if (res == 1)
             break;
     }
     add_token(tokens, new_token(TOKEN_WORD, word));
+    free(word);
 }

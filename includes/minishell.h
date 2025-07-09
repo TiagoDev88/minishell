@@ -22,4 +22,6 @@
 
 extern int g_exit_status;
 
+void sigint_handler(int sig);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 12:43:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/09 00:04:50 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 static void	get_last_cmd_exit_code(t_exec *exec)
 {
 	t_proccess	*curr;
-	int			exit_code;
 	int			status;
+	int			sig;
 
-	exit_code = 0;
 	if (!exec->procc_lst)
 		return ;
 	curr = exec->procc_lst;
@@ -27,12 +26,19 @@ static void	get_last_cmd_exit_code(t_exec *exec)
 	while (curr)
 	{
 		waitpid(curr->pid, &status, 0);
+		signal(SIGINT, sigint_handler);
 		if (WIFEXITED(status))
-			exit_code = WEXITSTATUS(status);
+			g_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			sig = WTERMSIG(status);
+			if (sig == SIGINT)
+				ft_putstr_fd("\n", 1);
+			g_exit_status = 128 + sig;
+		}
 		curr = curr->next;
 	}
 	clean_proccess_s(&exec->procc_lst);
-	g_exit_status = exit_code;
 }
 
 static void	exec_line(t_token *tokens, t_cmd *cmds, t_exec *exec, char **envp)
@@ -73,5 +79,4 @@ void	executor(t_token *tokens, t_cmd *cmd_lst, char **envp)
 	exec_line(tokens, cmd_lst, &exec, envp);
 	if (cmd_lst)
 		get_last_cmd_exit_code(&exec);
-	printf("EXIT_CODE = %i\n", g_exit_status);
 }
