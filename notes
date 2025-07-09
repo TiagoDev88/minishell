@@ -3,3 +3,9 @@ Testes para fazer:
 > comandos com flags
 > comandos com pipes
 > 
+
+9 Julho:
+> Tratar de erro syntax '.' Done.
+> Incluir no parser_test.sh Done.
+> Guardar o exit code caso so haja redirects Done.
+> Acabar a implementacao de testes do executor
