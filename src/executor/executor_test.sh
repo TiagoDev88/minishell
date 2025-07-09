@@ -2,6 +2,7 @@
 
 res_errors=0
 exit_code_errors=0
+file_errors=0
 
 run_cmds_test() {
     local input="$1"
@@ -27,6 +28,46 @@ run_cmds_test() {
 		((exit_code_errors++))
 	fi
     echo "----------------------------"
+}
+
+run_rw_test()
+{
+	local input="$1"
+	local test_file="$2"
+	bash_test_file="$2_"
+
+    BASH_OUT=$(bash -c "$input"_ 2>&1)
+	BASH_EXIT_CODE=$(echo $?)
+    MINI_OUT=$(../../minishell <<< "$input" 2>&1)
+	MINI_EXIT_CODE=$(echo $?)
+	FILES_DIFF=$(diff $test_file $bash_test_file)
+
+    echo "Testing:   $input"
+
+	if [[ "$BASH_OUT" == "$MINI_OUT" ]]; then
+		echo "✅ Result: OK"
+	else
+		echo "❌ Result: KO"
+		((res_errors++))
+	fi
+
+	if [[ "$BASH_EXIT_CODE" == "$MINI_EXIT_CODE" ]]; then
+		echo "✅ Exit code: OK"
+	else
+		echo "❌ Exit code: KO"
+		((exit_code_errors++))
+	fi
+
+	if [[ -z "$FILES_DIFF" ]]; then
+		echo "✅ File: OK"
+	else
+		echo "❌ File: KO"
+		((file_errors++))
+	fi
+
+    echo "----------------------------"
+
+	echo ""
 }
 
 run_simple_cmds()
@@ -90,13 +131,45 @@ run_cmds_with_pipes()
 	echo ""
 }
 
+run_read_write_files_test()
+{
+	echo "              Read/write files"
+	echo ""
+
+	run_rw_test "ls > executor_tests/rw_tests/1" "executor_tests/rw_tests/1"
+	run_rw_test "cat executor_tests/rw_tests/1 > executor_tests/rw_tests/2" "executor_tests/rw_tests/2"
+	run_rw_test "cat < executor_tests/rw_tests/2 | grep banana > executor_tests/rw_tests/3" "executor_tests/rw_tests/3"
+	run_rw_test "cat executor_tests/rw_tests/3 | wc -l | cat > executor_tests/rw_tests/4" "executor_tests/rw_tests/4"
+	run_rw_test "cat < executor_tests/rw_tests/4" "executor_tests/rw_tests/4"
+	run_rw_test "echo "4" | cat >> executor_tests/rw_tests/4" "executor_tests/rw_tests/4"
+	rm executor_tests/rw_tests/*
+	echo ""
+}
+
+run_heredoc_test()
+{
+	echo "              Read/write files"
+	echo ""
+
+	run_hdoc_test "executor_tests/heredoc_tests/1" "Hello" "   World" "E" "EOF" "EOF"
+	run_hdoc_test "executor_tests/heredoc_tests/2" "Hello" "   World" "eof" "EOF" "EOF"
+	run_hdoc_test "executor_tests/heredoc_tests/3" "Hello" "   World" "eo" "EOF" "EOF"
+	rm executor_tests/rw_heredoc/*
+	echo ""
+}
+
+
 echo "---------- Minishell tester ----------"
+echo ""
+echo ""
 make test -C ../../ > /dev/null
 
 run_simple_cmds
 run_cmds_with_flags
 run_cmds_with_pipes
+run_read_write_files_test
 
 echo "Result errors: $res_errors"
 echo "Exit code errors: $exit_code_errors"
+echo "File errors: $file_errors"
 make fclean -C ../../ > /dev/null
