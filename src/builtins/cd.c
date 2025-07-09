@@ -7,18 +7,25 @@
 
 //TODO falta atualizar o OLDPWD e o PWD
 // usar talvez o getcwd para uma estrutura t_envp ou outra e chamar aqui para atualizar
+// testar com por exemplo cd ~/path/ ou cd -/path/ acho que era assim.
 int ft_cd(t_cmd *cmd, t_envp **envp)
 {
     char *path;
 
     if (!cmd || !cmd->cmd_args)
         return (1);
-    if (!cmd->cmd_args[1] || cmd->cmd_args[1][0] == '~')
+    if (!cmd->cmd_args[1] || (cmd->cmd_args[1][0] == '~' && cmd->cmd_args[1][1] == '\0'))
     {
         path = get_env_value("HOME", envp);
-        printf("%s\n", path);
         if (!path)
             return (ft_putstr_fd("bash: cd: HOME not set\n", 2), 1);
+    }
+    else if (ft_strncmp(cmd->cmd_args[1], "-", 2) == 0)
+    {
+        path = get_env_value("OLDPWD", envp);
+        printf("%s\n", path);
+        if (!path)
+            return (ft_putstr_fd("bash: cd: OLDPWD not set\n", 2), 1);// TRATAR DISTO, PORQUE AQUI FICA O OLDPWD
     }
     else
         path = cmd->cmd_args[1];
