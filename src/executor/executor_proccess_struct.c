@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_proccess_struct.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:54:14 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:29 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 00:49:33 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -17,6 +17,8 @@ void	clean_proccess_s(t_proccess **procc_lst)
 	t_proccess	*curr;
 	t_proccess	*tmp;
 
+	if (!procc_lst || !(*procc_lst))
+		return ;
 	curr = *procc_lst;
 	while (curr)
 	{
@@ -24,6 +26,7 @@ void	clean_proccess_s(t_proccess **procc_lst)
 		free(curr);
 		curr = tmp;
 	}
+	*procc_lst = NULL;
 }
 
 void	procc_add_back(t_proccess **procc_lst, t_proccess *new_proccess)

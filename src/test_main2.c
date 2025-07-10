@@ -12,7 +12,7 @@ void sigint_handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-int execute_command(t_cmd **cmd, t_envp **envp, t_shell *shell)
+int execute_built_in(t_shell *shell, t_cmd **cmd, t_envp **envp, t_shell *shell)
 {
 	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);

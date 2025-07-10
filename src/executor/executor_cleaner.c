@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_cleaner.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:27:57 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 14:50:20 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -43,16 +43,30 @@ void	close_last_fds(t_exec *exec)
 	}
 }
 
-void	exit_clean(t_exec *exec, int exit_s)
+void	exit_clean(t_shell *shell, int exit_s)
 {
-	if (exec->files_container.lst)
-		clean_files_s(&exec->files_container.lst);
-	if (exec->pipe_lst)
-		clean_pipe_s(&exec->pipe_lst);
-	if (exec->procc_lst)
-		clean_proccess_s(&exec->procc_lst);
-	g_exit_status = exit_s;
-	exit(exit_s);
+	// Envp clean
+	
+	if (shell->envp && exit_s >= 0)
+		free_envp(&shell->envp);
+	// Tokens clean
+	if (shell->tokens)
+		free_tokens(&shell->tokens);
+	// Parser clean
+	if (shell->parser.cmd_lst)
+		clean_cmds(&shell->parser.cmd_lst, 0);
+	// Exec clean
+	if (shell->exec.files_container.lst)
+		clean_files_s(&shell->exec.files_container.lst);
+	if (shell->exec.pipe_lst)
+		clean_pipe_s(&shell->exec.pipe_lst);
+	if (shell->exec.procc_lst)
+		clean_proccess_s(&shell->exec.procc_lst);
+	if (exit_s >= 0)
+	{
+		g_exit_status = exit_s;
+		exit(exit_s);
+	}
 }
 
 int	clean_mem(void *p1, void *p2, void *p3, int exit_s)

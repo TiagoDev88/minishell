@@ -39,7 +39,7 @@ static char	*extract_variable(t_token_builder *bd)
 	bd->pos++;
 	var[0] = '\0';
 	if (bd->input[bd->pos] == '?')
-		return (bd->pos++, ft_itoa(69));
+		return (bd->pos++, ft_itoa(g_exit_status));
 	if (!ft_isalpha(bd->input[bd->pos]) && bd->input[bd->pos] != '_')
 		return (bd->pos++, ft_strdup(""));
 	while (bd->input[bd->pos] && ((ft_isalnum(bd->input[bd->pos])

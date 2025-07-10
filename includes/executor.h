@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 22:45:04 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:52:55 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,20 @@ typedef struct s_exec
 	t_exec_helper		exec_h;
 }	t_exec;
 
+typedef struct s_shell t_shell;
+
 /* Main */
-void		executor(t_token *tokens, t_cmd *cmd_lst, char **envp);
+void	executor(t_shell *shell, char **envp);
 /* Cleaner */
 void		close_pipes(t_pipe **pipe_lst);
-void		exit_clean(t_exec *exec, int exit_s);
+void		exit_clean(t_shell *shell, int exit_s);
 int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
 /* Command execution */
-void		execute_command(t_exec *exec, t_cmd **curr_cmd, char **envp);
+void		execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
-void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_exec *exec);
+void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell);
 int			print_file_err(char *filename, char *error, int exit_s);
 /* File struct */
 void		clean_files_s(t_file **file_lst);
@@ -78,17 +80,17 @@ int			add_file(t_files_container *f_con, char *filename, int redir_type);
 /* Heredoc */
 int			heredoc(t_file **new, char *delimiter, t_files_container **f_con);
 /* Path */
-char		*get_cmd_path(t_exec *exec, char *cmd);
+char		*get_cmd_path(t_shell *shell, char *cmd);
 /* Pipes */
-t_pipe		*handle_pipe(t_exec *exec, t_token **curr_token);
+t_pipe		*handle_pipe(t_shell *shell, t_token **curr_token);
 void		clean_pipe_s(t_pipe **pipe_lst);
 /* Proccess struct */
 t_proccess	*create_proccess(void);
 void		procc_add_back(t_proccess **procc_lst, t_proccess *new_proccess);
 void		clean_proccess_s(t_proccess **procc_lst);
 /* Validator */
-int			validate_and_open_files(t_token **curr_token, t_exec *exec);
+int			validate_and_open_files(t_token **curr_token, t_shell *shell);
 int			has_cmd(t_token **curr);
-void		validate_cmd(char *cmd_path, t_exec *exec);
+void		validate_cmd(char *cmd_path, t_shell *shell);
 
 #endif

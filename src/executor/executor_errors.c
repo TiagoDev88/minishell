@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_errors.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 23:06:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:11 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 00:17:45 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -23,7 +23,7 @@ void	print_error_msg(char *arg, char *error, int mode)
 		ft_putendl_fd(error, 2);
 }
 
-void	print_cmd_err_exit(char *cmd, int mode, int exit_s, t_exec *exec)
+void	print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell)
 {
 	if (exit_s == 127)
 	{
@@ -39,7 +39,7 @@ void	print_cmd_err_exit(char *cmd, int mode, int exit_s, t_exec *exec)
 		else if (mode == 0)
 			print_error_msg(cmd, "Is a directory", 1);
 	}
-	exit_clean(exec, exit_s);
+	exit_clean(shell, exit_s);
 }
 
 int	print_file_err(char *filename, char *error, int exit_s)

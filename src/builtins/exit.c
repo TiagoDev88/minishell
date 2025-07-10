@@ -44,7 +44,7 @@ int	ft_exit(t_cmd **cmd)
         ft_putstr_fd("bash: exit: ", 2);
         ft_putstr_fd((*cmd)->cmd_args[1], 2);
         ft_putstr_fd(": numeric argument required\n", 2);
-        cmd_clear(cmd, 0);
+        clean_cmds(cmd, 0);
         exit(EXIT_FAILURE);
     }
 	exit_code = ft_atoi((*cmd)->cmd_args[1]);
@@ -53,6 +53,6 @@ int	ft_exit(t_cmd **cmd)
         ft_putstr_fd("bash: exit: too many arguments\n", 2);
         return (1);
     }
-	cmd_clear(cmd, 0);
+	clean_cmds(cmd, 0);
 	exit(exit_code);
 }

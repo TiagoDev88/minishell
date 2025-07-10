@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   test_mai.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/09 17:36:15 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 14:50:05 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -47,18 +47,16 @@ int main(int argc, char *argv[], char **envp)
 	(void)argv;
 	(void)envp;
 
+	t_shell shell;
 	char	*line;
-	t_token	*tokens;
 	char *dir = NULL;
 	char *tmp_dir = NULL;
+	
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
-
-	t_envp *cp_envp = NULL;
-	copy_env(envp, &cp_envp);
-
-	t_parser parserola;
-	ft_memset(&parserola, 0, sizeof(t_parser));
+	t_envp *tmp = NULL;
+	ft_memset(&shell, 0, sizeof(t_shell));
+	copy_env(envp, &shell.envp);
 	while (1)
 	{
 		tmp_dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
@@ -71,16 +69,22 @@ int main(int argc, char *argv[], char **envp)
 			line = get_next_line(STDIN_FILENO);
 			line[ft_strlen(line) - 1] = '\0';
 		}
-		//line = readline(dir);
 		free(dir);
 		if (!line)
 			break;
 		add_history(line);
-		tokens = tokenize(line, &cp_envp);
-		if (parser(&parserola, tokens))
-			executor(tokens, parserola.cmd_lst, envp);
-		cmd_clear(&parserola.cmd_lst, 0);
-		free_tokens(&tokens);
+		shell.tokens = tokenize(line, &shell.envp);
+		if (!shell.envp)
+			printf("antes do parser envp is null\n");
+		if (parser(&shell.parser, shell.tokens))
+			executor(&shell, envp);
+		if (!envp)
+			printf("a envp do bash esta nul\n");
+		if (!shell.envp)
+			printf("envp is null\n");
+		exit_clean(&shell, -1);
+		//cmd_clear(&shell.parser.cmd_lst, 0);
+		//free_tokens(&shell.tokens);
 		free(line);
 		if (TEST_MODE == 1)
 		{
@@ -88,7 +92,9 @@ int main(int argc, char *argv[], char **envp)
 			exit(g_exit_status);
 		}
 	}
+	printf("Saiu\n");
 	rl_clear_history();
+	exit_clean(shell, 0);
 	return (0);
 }
 
