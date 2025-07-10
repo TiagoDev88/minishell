@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:24 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:10:19 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -48,7 +48,7 @@ static char	*get_path_from_path_env(t_exec *exec, char **path_split, char *cmd)
 		path = build_cmd_path(path_split[i], cmd);
 		if (!path)
 			return (NULL);
-		if (access(path, F_OK) == 0)
+		if (access(path, F_OK) == 0 && ft_strcmp("..", cmd) != 0)
 			break ;
 		free(path);
 		path = NULL;
@@ -94,7 +94,7 @@ char	*get_cmd_path(t_exec *exec, char *cmd)
 	char	**path_split;
 	char	*cmd_path;
 
-	if (cmd[0] == '.')
+	if (cmd[0] == '.' && cmd[1] == '/')
 		cmd_path = get_path_from_curr_dir(exec, cmd);
 	else
 	{

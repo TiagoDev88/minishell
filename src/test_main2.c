@@ -3,6 +3,9 @@
 #include "../includes/minishell.h"
 #include "../includes/utils.h"
 
+
+int g_exit_status = 0;
+
 void sigint_handler(int sig)
 {
     (void)sig;
@@ -12,7 +15,7 @@ void sigint_handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-int execute_command(t_cmd **cmd, t_envp **envp, t_shell *shell)
+int execute_command1(t_cmd **cmd, t_envp **envp, t_shell *shell)
 {
 	if (!cmd || !*cmd || !(*cmd)->cmd_args || !(*cmd)->cmd_args[0])
 		return (1);
@@ -21,7 +24,7 @@ int execute_command(t_cmd **cmd, t_envp **envp, t_shell *shell)
 	if (ft_strncmp((*cmd)->cmd_args[0], "exit", 5) == 0)
 		return (ft_exit(cmd));
 	if (ft_strncmp((*cmd)->cmd_args[0], "cd", 3) == 0)
-        return (ft_cd(*cmd, envp, shell));
+        return (ft_cd(*cmd, *envp, shell));
 	if (ft_strncmp((*cmd)->cmd_args[0], "env", 4) == 0)
         return (ft_env(*cmd, *envp));
 	if (ft_strncmp((*cmd)->cmd_args[0], "export", 7) == 0)
@@ -48,10 +51,11 @@ int main(int argc, char *argv[], char **envp)
 	char *dir = NULL;
 	char *cwd = NULL;
 	t_token	*tokens;
-	t_cmd *lst = NULL;
+	t_parser parser_s;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 
+	ft_memset(&parser_s, 0, sizeof(t_parser));
 	t_envp *cp_envp = NULL;
 	copy_env(envp, &cp_envp);
 	t_envp *tmp;
@@ -92,16 +96,16 @@ int main(int argc, char *argv[], char **envp)
 		}
 		if (*line)
 			add_history(line);	
-		tokens = tokenize(line, &cp_envp);
+		tokens = tokenize(line, cp_envp);
 		t_token *tmp1 = tokens;
 		while (tmp1)
 		{
 			printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
 			tmp1 = tmp1->next;
 		}
-		parser(&lst, tokens);
+		parser(&parser_s, tokens);
 		free_tokens(&tokens);
-		t_cmd *tmp = lst;
+		t_cmd *tmp = parser_s.cmd_lst;
 		while (tmp)
 		{
 			// printf("COMMAND: ");
@@ -112,10 +116,10 @@ int main(int argc, char *argv[], char **envp)
 			// 	i++;
 			// }
 			// printf("\n");
-			execute_command(&tmp, &cp_envp, &shell);
+			execute_command1(&tmp, &cp_envp, &shell);
 			tmp = tmp->next;
 		}
-		cmd_clear(&lst, 10);
+		cmd_clear(&parser_s.cmd_lst, 10);
 		//free_envp(&cp_envp); // para testar se tem links nas envs
 
 		//printf("argumentos %s \n", lst->cmd_args[0]);

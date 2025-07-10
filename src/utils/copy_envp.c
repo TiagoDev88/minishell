@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/08 16:54:50 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:16:44 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -68,13 +68,13 @@ void	copy_env(char **envp, t_envp **env_list)
 	assign_indexes(*env_list);
 }
 
-char *get_env_value(char *name, t_envp **lst_envp)
+char *get_env_value(char *name, t_envp *lst_envp)
 {
     int i;
     int len;
 	t_envp *envp;
 
-	envp = *lst_envp;
+	envp = lst_envp;
 	len = ft_strlen(name);
     i = 0;
     while (envp->next)

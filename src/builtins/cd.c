@@ -8,7 +8,19 @@
 //TODO falta atualizar o OLDPWD e o PWD
 // usar talvez o getcwd para uma estrutura t_envp ou outra e chamar aqui para atualizar
 // testar com por exemplo cd ~/path/
-int ft_cd(t_cmd *cmd, t_envp **envp, t_shell *shell)
+
+// static char *get_path_cd(char *arg, t_envp **envp)
+// {
+
+// }
+
+// int ft_cd(t_cmd *cmd, t_envp **envp, t_shell *shell)
+// {
+//     char *path;
+
+//     path = get_path_cd()
+// }
+int ft_cd(t_cmd *cmd, t_envp *envp, t_shell *shell)
 {
     char *path;
 
@@ -17,7 +29,7 @@ int ft_cd(t_cmd *cmd, t_envp **envp, t_shell *shell)
     shell->oldpwd = shell->pwd;
     printf("OLDPWD: %s\n", shell->oldpwd);
 
-    if (!cmd || !cmd->cmd_args || !envp || !*envp || !shell)
+    if (!cmd || !cmd->cmd_args || !envp || !shell)
         return (1);
     if (!cmd->cmd_args[1] || cmd->cmd_args[1][0] == '~')
     {
@@ -52,8 +64,8 @@ int ft_cd(t_cmd *cmd, t_envp **envp, t_shell *shell)
     //shell->oldpwd[ft_strlen(shell->oldpwd - 1)] = '\0';
     shell->oldpwd = ft_strjoin("OLDPWD=", shell->oldpwd);
 
-    is_update_or_add_env(shell->oldpwd, envp, 0);
-    is_update_or_add_env(shell->pwd, envp, 0);
+    is_update_or_add_env(shell->oldpwd, &envp, 0);
+    is_update_or_add_env(shell->pwd, &envp, 0);
 
     // if (path)
     // {

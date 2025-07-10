@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/09 17:36:15 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:09:13 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -54,8 +54,8 @@ int main(int argc, char *argv[], char **envp)
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 
-	t_envp *cp_envp = NULL;
-	copy_env(envp, &cp_envp);
+	t_envp *envp_struct = NULL;
+	copy_env(envp, &envp_struct);
 
 	t_parser parserola;
 	ft_memset(&parserola, 0, sizeof(t_parser));
@@ -76,7 +76,7 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break;
 		add_history(line);
-		tokens = tokenize(line, &cp_envp);
+		tokens = tokenize(line, envp_struct);
 		if (parser(&parserola, tokens))
 			executor(tokens, parserola.cmd_lst, envp);
 		cmd_clear(&parserola.cmd_lst, 0);
