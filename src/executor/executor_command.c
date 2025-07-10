@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 14:47:46 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/10 15:41:06 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
@@ -59,13 +59,13 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 int	exec_built_in(t_shell *shell, t_cmd *curr_cmd)
 {
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
-		g_exit_status = ft_cd(curr_cmd, &shell->envp, shell);
+		g_exit_status = ft_cd(curr_cmd, shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
 		g_exit_status = ft_echo(curr_cmd);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
 		g_exit_status = ft_env(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
-		ft_exit(&shell->parser.cmd_lst);
+		g_exit_status = ft_exit(&shell->parser.cmd_lst, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
 		g_exit_status = ft_export(curr_cmd, &shell->envp);
 	/*
@@ -90,7 +90,6 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp
 	{
 		new = create_proccess();
 		procc_add_back(&exec->procc_lst, new);
-		printf("Fork\n");
 		signal(SIGINT, SIG_IGN);
 		new->pid = fork();
 		if (new->pid == -1)

@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 15:03:44 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 15:14:00 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -73,15 +73,9 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break;
 		add_history(line);
-		shell.tokens = tokenize(line, &shell.envp);
-		if (!shell.envp)
-			printf("antes do parser envp is null\n");
+		shell.tokens = tokenize(line, shell.envp);
 		if (parser(&shell.parser, shell.tokens))
 			executor(&shell, envp);
-		if (!envp)
-			printf("a envp do bash esta nul\n");
-		if (!shell.envp)
-			printf("envp is null\n");
 		exit_clean(&shell, -1);
 		//cmd_clear(&shell.parser.cmd_lst, 0);
 		//free_tokens(&shell.tokens);
@@ -94,7 +88,7 @@ int main(int argc, char *argv[], char **envp)
 	}
 	printf("Saiu\n");
 	rl_clear_history();
-	exit_clean(shell, 0);
+	exit_clean(&shell, 0);
 	return (0);
 }
 

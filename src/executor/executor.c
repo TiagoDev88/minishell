@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 13:01:43 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/10 15:37:14 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
@@ -25,7 +25,6 @@ static void	get_last_cmd_exit_code(t_shell *shell)
 	clean_pipe_s(&shell->exec.pipe_lst);
 	clean_cmds(&shell->parser.cmd_lst, 0);
 	free_tokens(&shell->tokens);
-	free_envp(&shell->envp);
 	while (curr)
 	{
 		waitpid(curr->pid, &status, 0);
