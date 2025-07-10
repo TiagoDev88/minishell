@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 15:37:14 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:03:35 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -63,29 +63,20 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 			exec->exec_h.last_pipe = handle_pipe(shell, &curr_token);
 		if (!exec->exec_h.err_file && exec->exec_h.exec_cmd && curr_cmd)
 			execute_command(shell, exec, &curr_cmd, envp);
-		if (!shell->envp)
-			printf("is null after exec 1?\n");
 		if (exec->exec_h.last_pipe)
 			exec->files_container.last_in_fd = exec->exec_h.last_pipe->read_fd;
 		ft_memset(&exec->exec_h, 0, sizeof(t_exec_helper));
 		clean_files_s(&exec->files_container.lst);
 		exec->files_container.last_out_fd = 1;
 	}
-	if (!shell->envp)
-		printf("is null after exec 2?\n");
 }
 
 void	executor(t_shell *shell, char **envp)
 {
-	if (!shell->envp)
-			printf("a envp do bash esta nul1 \n");
 	shell->exec.files_container.last_in_fd = 0;
 	shell->exec.files_container.last_out_fd = 1;
 	exec_line(shell, &shell->exec, envp);
-	if (!shell->envp)
-			printf("a envp do bash esta nul 2\n");
 	if (shell->exec.procc_lst)
 		get_last_cmd_exit_code(shell);
-	if (!shell->envp)
-		printf("a envp do bash esta nul 3\n");
+
 }

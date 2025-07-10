@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 15:14:00 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:03:09 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -62,13 +62,14 @@ int main(int argc, char *argv[], char **envp)
 		tmp_dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
 		dir = ft_strjoin(tmp_dir, "$ ");
 		free(tmp_dir);
-		if (is_interactive())
-			line = readline(dir);
-		else
-		{
-			line = get_next_line(STDIN_FILENO);
-			line[ft_strlen(line) - 1] = '\0';
-		}
+		line = readline(dir);
+		// if (is_interactive())
+		// 	line = readline(dir);
+		// else
+		// {
+		// 	line = get_next_line(STDIN_FILENO);
+		// 	line[ft_strlen(line) - 1] = '\0';
+		// }
 		free(dir);
 		if (!line)
 			break;
@@ -86,7 +87,6 @@ int main(int argc, char *argv[], char **envp)
 			exit(g_exit_status);
 		}
 	}
-	printf("Saiu\n");
 	rl_clear_history();
 	exit_clean(&shell, 0);
 	return (0);

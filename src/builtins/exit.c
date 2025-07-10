@@ -36,18 +36,21 @@ int	ft_exit(t_cmd **cmd, t_shell *sh)
 {
 	int	exit_code;
 
-	//printf("exit\n");
-    ft_putstr_fd("exit", 2);
+	printf("exit\n");
+    //ft_putstr_fd("exit", 2);
 	if (!cmd || !*cmd || !(*cmd)->cmd_args[1])
         exit(EXIT_SUCCESS);
-	if (!ft_atoi((*cmd)->cmd_args[1]))
+	if (!ft_atol((*cmd)->cmd_args[1]))
     {
         ft_putstr_fd("bash: exit: ", 2);
         ft_putstr_fd((*cmd)->cmd_args[1], 2);
         ft_putstr_fd(": numeric argument required\n", 2);
         exit_clean(sh, 2);
     }
-	exit_code = ft_atoi((*cmd)->cmd_args[1]);
+	exit_code = ft_atol((*cmd)->cmd_args[1]);
+    //printf("exit code: %d\n", exit_code);
+    if (exit_code < 0)
+        exit_code += 256; // Ensure exit code is in the range 0-255
 	if ((*cmd)->cmd_args[2])
     {
         ft_putstr_fd("bash: exit: too many arguments\n", 2);

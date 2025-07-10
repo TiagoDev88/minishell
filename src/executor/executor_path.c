@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 15:04:43 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:03:58 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -43,7 +43,6 @@ static char	*get_path_from_path_env(t_shell *shell, char **path_split, char *cmd
 	char	*path;
 
 	i = 0;
-	printf("from path env\n");
 	while (path_split[i])
 	{
 		path = build_cmd_path(path_split[i], cmd);
@@ -71,7 +70,6 @@ static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 	char	*curr_dir;
 	char	*cmd_path;
 
-	printf("current dir\n");
 	curr_dir = get_envp("PWD", shell, cmd);
 	if (!curr_dir)
 		return (NULL);
