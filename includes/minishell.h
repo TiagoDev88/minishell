@@ -19,6 +19,7 @@
 # include "builtins.h"
 # include "utils.h"
 # include "errno.h"
+# include <limits.h>
 
 extern int g_exit_status;
 

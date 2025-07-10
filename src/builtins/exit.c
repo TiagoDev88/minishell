@@ -39,7 +39,7 @@ int	ft_exit(t_cmd **cmd, t_shell *sh)
 	printf("exit\n");
     //ft_putstr_fd("exit", 2);
 	if (!cmd || !*cmd || !(*cmd)->cmd_args[1])
-        exit(EXIT_SUCCESS);
+        exit_clean(sh, EXIT_SUCCESS);
 	if (!ft_atol((*cmd)->cmd_args[1]))
     {
         ft_putstr_fd("bash: exit: ", 2);
