@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_validator.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:33 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/10 00:19:22 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -24,19 +24,19 @@ int	has_cmd(t_token **curr)
 	return (0);
 }
 
-void	validate_cmd(char *cmd_path, t_exec *exec)
+void	validate_cmd(char *cmd_path, t_shell *shell)
 {
 	struct stat	sb;
 
 	if (stat(cmd_path, &sb) != 0)
-		print_cmd_err_exit(cmd_path, 1, 127, exec);
+		print_cmd_err_exit(cmd_path, 1, 127, shell);
 	if (S_ISDIR(sb.st_mode))
-		print_cmd_err_exit(cmd_path, 0, 126, exec);
+		print_cmd_err_exit(cmd_path, 0, 126, shell);
 	if (access(cmd_path, X_OK) != 0)
-		print_cmd_err_exit(cmd_path, 1, 126, exec);
+		print_cmd_err_exit(cmd_path, 1, 126, shell);
 }
 
-int	validate_and_open_files(t_token **curr_token, t_exec *exec)
+int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 {
 	int	exit_s;
 
@@ -44,12 +44,12 @@ int	validate_and_open_files(t_token **curr_token, t_exec *exec)
 	while (*curr_token && ((*curr_token)->type >= TOKEN_REDIR_OUT
 			&& (*curr_token)->type <= TOKEN_HEREDOC))
 	{
-		exit_s = add_file(&exec->files_container, \
+		exit_s = add_file(&shell->exec.files_container, \
 			(*curr_token)->next->value, (*curr_token)->type);
 		if (exit_s == -1)
 		{
 			print_error_msg(NULL, strerror(ENOMEM), 1);
-			exit_clean(exec, ENOMEM);
+			exit_clean(shell, ENOMEM);
 		}
 		if (exit_s > 0)
 		{
