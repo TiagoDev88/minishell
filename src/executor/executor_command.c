@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 15:41:06 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:34:07 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -67,13 +67,11 @@ int	exec_built_in(t_shell *shell, t_cmd *curr_cmd)
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
 		g_exit_status = ft_exit(&shell->parser.cmd_lst, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
-		g_exit_status = ft_export(curr_cmd, &shell->envp);
-	/*
-	else if (ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
-		ft_
-	else if (ft_strcmp(curr_cmd->cmd_args[0], "unset"))
-		ft_echo(curr_cmd);
-	*/
+		g_exit_status = ft_export(curr_cmd, &shell->envp);	
+	else if (!ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
+		g_exit_status = ft_pwd(curr_cmd, shell->envp);
+	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
+		g_exit_status = ft_unset(curr_cmd, &shell->envp);
 	else
 		return (0);
 	return (1);
