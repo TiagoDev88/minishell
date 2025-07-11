@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 03:06:50 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:51:36 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	exit_clean(t_shell *shell, int exit_s)
 		clean_proccess_s(&shell->exec.procc_lst);
 	if (exit_s >= 0)
 	{
-		g_exit_status = exit_s;
+		shell->last_status_code = exit_s;
 		exit(exit_s);
 	}
 }

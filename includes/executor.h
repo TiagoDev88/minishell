@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 02:39:56 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:53:42 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,13 @@ typedef struct s_exec
 	t_files_container	files_container;
 	t_pipe				*pipe_lst;
 	t_exec_helper		exec_h;
+	int					file_exit_code;
 }	t_exec;
 
 typedef struct s_shell t_shell;
 
 /* Main */
-void	executor(t_shell *shell, char **envp);
+void		executor(t_shell *shell, char **envp);
 /* Cleaner */
 void		close_pipes(t_pipe **pipe_lst);
 void		exit_clean(t_shell *shell, int exit_s);
@@ -79,7 +80,7 @@ int			print_file_err(char *filename, char *error, int exit_s);
 void		clean_files_s(t_file **file_lst);
 t_file		*create_file_node(void);
 void		add_file_back(t_file **file_lst, t_file *new_file);
-int			add_file(t_files_container *f_con, char *filename, int redir_type);
+int			add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *shell);
 /* Heredoc */
 int			heredoc(t_file **new, char *delimiter, t_files_container **f_con);
 /* Path */

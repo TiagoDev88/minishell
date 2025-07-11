@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/09 17:21:39 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:16:51 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -91,7 +91,7 @@ static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
  *  shown code but passed).
  * @return Pointer to the head of the generated token linked list.
  */
-t_token	*tokenize(char *input, t_envp **envp)
+t_token	*tokenize(char *input, t_envp **envp, t_shell *shell)
 {
 	t_token_builder	bd;
 	t_token			*tk;
@@ -100,6 +100,7 @@ t_token	*tokenize(char *input, t_envp **envp)
 	bd.input = input;
 	bd.envp = envp;
 	bd.pos = 0;
+	bd.last_status_code = &shell->last_status_code;
 	tk = NULL;
 	substr = NULL;
 	while (bd.input[bd.pos])

@@ -70,6 +70,46 @@ run_rw_test()
 	echo ""
 }
 
+run_rw_test()
+{
+	local input="$1"
+	local test_file="$2"
+	bash_test_file="$2_"
+
+    BASH_OUT=$(bash -c "$input"_ 2>&1)
+	BASH_EXIT_CODE=$(echo $?)
+    MINI_OUT=$(../../minishell <<< "$input" 2>&1)
+	MINI_EXIT_CODE=$(echo $?)
+	FILES_DIFF=$(diff $test_file $bash_test_file)
+
+    echo "Testing:   $input"
+
+	if [[ "$BASH_OUT" == "$MINI_OUT" ]]; then
+		echo "✅ Result: OK"
+	else
+		echo "❌ Result: KO"
+		((res_errors++))
+	fi
+
+	if [[ "$BASH_EXIT_CODE" == "$MINI_EXIT_CODE" ]]; then
+		echo "✅ Exit code: OK"
+	else
+		echo "❌ Exit code: KO"
+		((exit_code_errors++))
+	fi
+
+	if [[ -z "$FILES_DIFF" ]]; then
+		echo "✅ File: OK"
+	else
+		echo "❌ File: KO"
+		((file_errors++))
+	fi
+
+    echo "----------------------------"
+
+	echo ""
+}
+
 run_simple_cmds()
 {
 	echo "              Simple commands"

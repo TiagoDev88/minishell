@@ -3,6 +3,7 @@
 
 struct s_envp;
 typedef struct s_envp t_envp;
+typedef struct s_shell t_shell;
 
 typedef enum e_check_state {
 	STATE_ERROR = -1,
@@ -35,11 +36,12 @@ typedef struct s_token_builder
     t_envp	**envp;
     int     pos;
     char    del;
+	int		*last_status_code;
 }   t_token_builder;
 
 
 
-t_token	*tokenize(char *input, t_envp **envp);
+t_token	*tokenize(char *input, t_envp **envp, t_shell *shell);
 void	free_tokens(t_token **);
 void handle_word(t_token **, t_token_builder *);
 void add_token(t_token **, t_token *);

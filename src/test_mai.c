@@ -6,13 +6,13 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 01:02:30 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:10:04 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int g_exit_status = 0;
+int g_signal = 0;
 
 #ifndef TEST_MODE
 	#define TEST_MODE 0
@@ -32,7 +32,7 @@ void sigint_handler(int sig)
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
-	g_exit_status = 130;
+	g_signal = 130;
 }
 
 int is_interactive(void)
@@ -75,8 +75,11 @@ int main(int argc, char *argv[], char **envp)
 		free(dir);
 		if (!line)
 			break;
+		if (g_signal > 0)
+			shell.last_status_code = g_signal;
+		g_signal = 0;
 		add_history(line);
-		shell.tokens = tokenize(line, &shell.envp);
+		shell.tokens = tokenize(line, &shell.envp, &shell);
 		if (parser(&shell.parser, shell.tokens))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);
@@ -84,7 +87,7 @@ int main(int argc, char *argv[], char **envp)
 		if (TEST_MODE == 1)
 		{
 			rl_clear_history();
-			exit(g_exit_status);
+			exit(shell.last_status_code);
 		}
 	}
 	rl_clear_history();

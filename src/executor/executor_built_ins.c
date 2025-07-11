@@ -22,15 +22,15 @@ static void	get_dup_original_stds(int *dup_ori_std)
 static void execute(t_shell *shell, t_cmd *curr_cmd)
 {
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
-		g_exit_status = ft_cd(curr_cmd, &shell->envp, shell);
+		shell->last_status_code = ft_cd(curr_cmd, &shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
-		g_exit_status = ft_echo(curr_cmd);
+		shell->last_status_code = ft_echo(curr_cmd);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
-		g_exit_status = ft_env(curr_cmd, shell->envp);
+		shell->last_status_code = ft_env(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
-		g_exit_status = ft_exit(&shell->parser.cmd_lst);
+		shell->last_status_code = ft_exit(&shell->parser.cmd_lst);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
-		g_exit_status = ft_export(curr_cmd, &shell->envp);
+		shell->last_status_code = ft_export(curr_cmd, &shell->envp);
 	/*
 	else if (ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
 		ft_

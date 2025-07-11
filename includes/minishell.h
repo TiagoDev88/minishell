@@ -20,7 +20,7 @@
 # include "utils.h"
 # include "errno.h"
 
-extern int g_exit_status;
+extern int g_signal;
 
 void sigint_handler(int sig);
 typedef struct s_shell

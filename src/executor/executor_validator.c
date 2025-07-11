@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 03:10:11 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 16:47:37 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 			&& (*curr_token)->type <= TOKEN_HEREDOC))
 	{
 		exit_s = add_file(&shell->exec.files_container, \
-			(*curr_token)->next->value, (*curr_token)->type);
+			(*curr_token)->next->value, (*curr_token)->type, shell);
 		if (exit_s == -1)
 		{
 			print_error_msg(NULL, strerror(ENOMEM), 1);
@@ -66,11 +66,13 @@ int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 		}
 		if (exit_s > 0)
 		{
-			g_exit_status = 1;
+			//printf("Error in file\n");
+			shell->last_status_code = 1;
 			print_file_err((*curr_token)->next->value, strerror(exit_s), 0);
 			while (*curr_token && ((*curr_token)->type >= TOKEN_REDIR_OUT
 					&& (*curr_token)->type <= TOKEN_HEREDOC))
 				*curr_token = (*curr_token)->next->next;
+	
 			return (0);
 		}
 		*curr_token = (*curr_token)->next->next;

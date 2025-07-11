@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 03:09:23 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:50:53 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 	validate_cmd(cmd_path, shell);
 	execve(cmd_path, cmd->cmd_args, envp);
 	print_error_msg(NULL, strerror(errno), 1);
-	g_exit_status = errno;
+	shell->last_status_code = errno;
 	if (cmd_path && ft_strchr(cmd->cmd_args[0], '/'))
 		free(cmd_path);
-	exit_clean_child(shell, g_exit_status);
+	exit_clean_child(shell, shell->last_status_code);
 }
 
 void	execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp)
@@ -89,11 +89,11 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp
 			else if (is_built_in(cmd->cmd_args[0]))
 			{
 				exec_built_in(shell, cmd, 0);
-				exit_clean_child(shell, g_exit_status);
+				exit_clean_child(shell, shell->last_status_code);
 			}
 			else
 				exec_cmd(get_cmd_path(shell, cmd->cmd_args[0]), shell, cmd, envp);
-			exit_clean_child(shell, g_exit_status);
+			exit_clean_child(shell, shell->last_status_code);
 		}
 	}
 }

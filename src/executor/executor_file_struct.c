@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_file_struct.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:18 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:53:54 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -64,7 +64,7 @@ t_file	*create_file_node(void)
 	return (new_file);
 }
 
-int	add_file(t_files_container *f_con, char *filename, int redir_type)
+int	add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *shell)
 {
 	t_file	*new_file;
 
@@ -87,6 +87,6 @@ int	add_file(t_files_container *f_con, char *filename, int redir_type)
 	add_file_back(&f_con->lst, new_file);
 	if (!new_file->filename)
 		return (-1);
-	g_exit_status = 0;
+	shell->last_status_code = 0;
 	return (0);
 }
