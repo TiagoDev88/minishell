@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 17:56:49 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 18:15:43 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
@@ -98,7 +98,7 @@ t_token	*tokenize(char *input, t_envp **envp, t_shell *shell)
 	char			*substr;
 
 	bd.input = input;
-	bd.envp = envp;
+	bd.envp = *envp;
 	bd.pos = 0;
 	bd.last_status_code = &shell->last_status_code;
 	tk = NULL;

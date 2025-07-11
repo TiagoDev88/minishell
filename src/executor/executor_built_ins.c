@@ -22,22 +22,40 @@ static void	get_dup_original_stds(int *dup_ori_std)
 static void execute(t_shell *shell, t_cmd *curr_cmd)
 {
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
-		shell->last_status_code = ft_cd(curr_cmd, &shell->envp, shell);
+		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
 		shell->last_status_code = ft_echo(curr_cmd);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
 		shell->last_status_code = ft_env(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
-		shell->last_status_code = ft_exit(&shell->parser.cmd_lst);
+		shell->last_status_code = ft_exit(&shell->parser.cmd_lst, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
-		shell->last_status_code = ft_export(curr_cmd, &shell->envp);
-	/*
-	else if (ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
-		ft_
-	else if (ft_strcmp(curr_cmd->cmd_args[0], "unset"))
-		ft_echo(curr_cmd);
-	*/
+		shell->last_status_code = ft_export(curr_cmd, &shell->envp, shell);	
+	else if (!ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
+		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
+	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
+		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
 }
+// int	exec_built_in(t_shell *shell, t_cmd *curr_cmd)
+// {
+// 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
+// 		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
+// 		shell->last_status_code = ft_echo(curr_cmd);
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
+// 		shell->last_status_code = ft_env(curr_cmd, shell->envp);
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
+// 		shell->last_status_code = ft_exit(&shell->parser.cmd_lst, shell);
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
+// 		shell->last_status_code = ft_export(curr_cmd, &shell->envp);	
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
+// 		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
+// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
+// 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
+// 	else
+// 		return (0);
+// 	return (1);
+// }
 
 int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
 {

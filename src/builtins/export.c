@@ -41,7 +41,7 @@ static int valid_key(char *cmd)
  * @param envp  Double pointer to the environment variable linked list.
  * @return int  Returns 0 on success, 1 if an error occurs (e.g., invalid input).
  */
-int	ft_export(t_cmd *cmd, t_envp **envp)
+int	ft_export(t_cmd *cmd, t_envp **envp, t_shell *shell)
 {
 	if (!cmd || !envp|| !(*envp))
 		return (1);
@@ -59,12 +59,12 @@ int	ft_export(t_cmd *cmd, t_envp **envp)
 			ft_putstr_fd("bash: export: `", 2);
        		ft_putstr_fd(cmd->cmd_args[i], 2);
         	ft_putstr_fd("': not a valid identifier\n", 2);
-			g_exit_status = 1;
+			shell->last_status_code = 1;
 			i++;
 			continue;
 		}
 		is_update_or_add_env(cmd->cmd_args[i], envp, key_status);
 		i++;
 	}
-	return (g_exit_status);
+	return (shell->last_status_code);
 }
