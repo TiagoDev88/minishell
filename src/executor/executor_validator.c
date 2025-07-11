@@ -6,11 +6,24 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 00:19:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 03:10:11 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int	is_built_in(char *cmd)
+{
+	if (ft_strchr(cmd, '/'))
+		return (0);
+	return (!ft_strcmp(cmd, "cd") ||
+			!ft_strcmp(cmd, "echo") ||
+			!ft_strcmp(cmd, "env") ||
+			!ft_strcmp(cmd, "exit") ||
+			!ft_strcmp(cmd, "export") ||
+			!ft_strcmp(cmd, "pwd") ||
+			!ft_strcmp(cmd, "unset"));
+}
 
 int	has_cmd(t_token **curr)
 {

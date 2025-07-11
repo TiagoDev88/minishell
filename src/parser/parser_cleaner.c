@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 00:41:29 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 01:51:11 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	redir_clean(t_redir **redir)
 }
 
 // Main cleaner function. 
-int	clean_cmds(t_cmd **lst, int status)
+int	clean_cmds(t_parser *parser, t_cmd **lst, int status)
 {
 	t_cmd	*curr;
 	t_cmd	*tmp;
@@ -73,5 +73,6 @@ int	clean_cmds(t_cmd **lst, int status)
 		curr = tmp;
 	}
 	*lst = NULL;
+	parser->n_pipes = 0;
 	return (status);
 }

@@ -22,3 +22,19 @@ Token: [0] |ls|
 
 foraalinux@Revision-PC:/mnt/c/Users/foraa/Documents/Programacao/C/42school/minishell$ "" ls
 Command '' not found, but can be installed with:
+
+Problemas:
+-> Sigpipe -> Erro 141 em certos comandos
+-> o conteudo dos built-ins nao esta a ser redireccionado -> Parece me corrigido
+UPDATE: 
+.Problema em erros de ficheiros e linha nao executa se tiver outro pipe
+-> mudar o codigo do get path 
+
+Solucao para o conteudo dos built-ins nao estar a ser redireccionado.
+. Quando é uma linha sem pipes, se for um built-in -> 
+-> executar sem fork.
+-> fazer redireccionamentos
+-> fechar ultimos fds
+-> salvar o stdin e o stdout original com dup.
+-> No fim duplicar os fds guardados com o stdin e stdout original e direcionalos para o stdin_fileno e stdout_fileno e fecha-los.
+-> Quando é uma linha com pipes, se for um built-in -> executar com fork.

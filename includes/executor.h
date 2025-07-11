@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 12:52:55 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 02:39:56 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,11 @@ void		close_pipes(t_pipe **pipe_lst);
 void		exit_clean(t_shell *shell, int exit_s);
 int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
+void		exit_clean_child(t_shell *shell, int exit_s);
+
 /* Command execution */
 void		execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp);
+void		handle_redirects(t_shell *shell);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
 void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell);
@@ -92,5 +95,9 @@ void		clean_proccess_s(t_proccess **procc_lst);
 int			validate_and_open_files(t_token **curr_token, t_shell *shell);
 int			has_cmd(t_token **curr);
 void		validate_cmd(char *cmd_path, t_shell *shell);
+int			is_built_in(char *cmd);
+
+/* Built-ins */
+int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
 
 #endif

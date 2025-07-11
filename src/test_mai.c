@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 14:50:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 01:02:30 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int main(int argc, char *argv[], char **envp)
 		tmp_dir = getcwd(NULL, 0);  //dar free a dir, pk e alocado
 		dir = ft_strjoin(tmp_dir, "$ ");
 		free(tmp_dir);
+		line = readline(dir);
+		/*
 		if (is_interactive())
 			line = readline(dir);
 		else
@@ -69,22 +71,15 @@ int main(int argc, char *argv[], char **envp)
 			line = get_next_line(STDIN_FILENO);
 			line[ft_strlen(line) - 1] = '\0';
 		}
+		*/
 		free(dir);
 		if (!line)
 			break;
 		add_history(line);
 		shell.tokens = tokenize(line, &shell.envp);
-		if (!shell.envp)
-			printf("antes do parser envp is null\n");
 		if (parser(&shell.parser, shell.tokens))
 			executor(&shell, envp);
-		if (!envp)
-			printf("a envp do bash esta nul\n");
-		if (!shell.envp)
-			printf("envp is null\n");
 		exit_clean(&shell, -1);
-		//cmd_clear(&shell.parser.cmd_lst, 0);
-		//free_tokens(&shell.tokens);
 		free(line);
 		if (TEST_MODE == 1)
 		{
@@ -92,9 +87,8 @@ int main(int argc, char *argv[], char **envp)
 			exit(g_exit_status);
 		}
 	}
-	printf("Saiu\n");
 	rl_clear_history();
-	exit_clean(shell, 0);
+	exit_clean(&shell, 0);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 00:41:44 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 01:52:37 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ int		save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr);
 int		save_cmd_redirects(t_cmd *cmd, t_token **prev, t_token **curr);
 /* Validator */
 int		is_valid_redirect(t_token *curr);
-int		is_valid_pipe(t_token **prev, t_token **curr);
+int		is_valid_pipe(t_token **prev, t_token **curr, int *n_pipes);
 int		lst_to_arr(t_list *args_lst, char ***cmd_args);
 /* Cleaner */
-int		clean_cmds(t_cmd **lst, int status);
+int		clean_cmds(t_parser *parser, t_cmd **lst, int status);
 void	redir_clean(t_redir **redir);
 int		cmd_clean_split(char **split, int status);
 
