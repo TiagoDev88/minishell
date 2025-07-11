@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 00:24:55 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:48:39 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -44,10 +44,7 @@ static void	add_export_env(char *envp, t_envp **env_list, int new)
 }
 
 
-//TODO se criar uma variavel sem '=' e depois tentar concatenar da erro,
-// porque ela nao vai ter o '=' para encontrar e vai gravar como NULL
-//exemplo: export abc e depois export abc+=VALOR fica abc=NULL
-static void	update_export_env(char *envp, t_envp *node, int conc)
+static void	update_export_env(char *envp, t_envp **node, int conc)
 {
 	char	*value;
 	char	*equal;
@@ -59,18 +56,18 @@ static void	update_export_env(char *envp, t_envp *node, int conc)
 		return ;
 	key_len = equal - envp;
 	value = ft_strdup(equal + 1);
-	if (conc == 2)
+	if (conc == 2 && (*node)->value != NULL)
 	{
-		tmp = ft_strjoin(node->value, value);
-		free(node->value);
-		node->value = tmp;
+		tmp = ft_strjoin((*node)->value, value);
+		free((*node)->value);
+		(*node)->value = tmp;
 	}
 	else
 	{
-		free(node->value);
-		node->value = value;
+		free((*node)->value);
+		(*node)->value = value;
 	}
-	node->flag = '=';
+	(*node)->flag = '=';
 }
 
 /**
@@ -98,7 +95,7 @@ void is_update_or_add_env(char *arg, t_envp **envp, int k_stats)
 		if (!ft_strncmp(tmp_envp->key, arg, key_len) &&
 			(arg[key_len] == '=' || arg[key_len] == '+' || arg[key_len] == '\0'))
 		{
-			update_export_env(arg, tmp_envp, k_stats);
+			update_export_env(arg, &tmp_envp, k_stats);
 			updated = 1;
 			return;
 		}
