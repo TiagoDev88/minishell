@@ -22,7 +22,7 @@ static int	unset_first_envp(char *cmd_env, t_envp **envp)
 
 int	ft_unset(t_cmd *cmd, t_envp **envp)
 {
-	if (!cmd || !cmd->cmd_args[1] || !envp || !*envp)
+	if (!cmd || !envp || !*envp)
 		return (1);
 	t_envp *tmp;
 	t_envp *curr;
