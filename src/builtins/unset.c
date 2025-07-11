@@ -19,12 +19,32 @@ static int	unset_first_envp(char *cmd_env, t_envp **envp)
 	}
 	return (0);
 }
+static void	unset_next_envp(char *cmd_env, t_envp **envp)
+{
+	t_envp	*curr;
+	t_envp *tmp;
+
+	curr = *envp;
+	while (curr)
+	{
+		if (!ft_strncmp(cmd_env, curr->key, ft_strlen(curr->key)))
+		{
+			tmp->next = curr->next;
+			free(curr->key);
+			if (curr->value)
+				free(curr->value);
+			free(curr);
+			break;
+		}
+		tmp = curr;
+		curr = curr->next;
+	}
+}
 
 int	ft_unset(t_cmd *cmd, t_envp **envp)
 {
 	if (!cmd || !envp || !*envp)
 		return (1);
-	t_envp *tmp;
 	t_envp *curr;
 	int i;
 
@@ -32,22 +52,9 @@ int	ft_unset(t_cmd *cmd, t_envp **envp)
 	while (cmd->cmd_args[i])
 	{
 		if (unset_first_envp(cmd->cmd_args[i], envp))
-			return (0);
+			continue;
 		curr = (*envp)->next;
-		while (curr)
-		{
-			if (!ft_strncmp(cmd->cmd_args[i], curr->key, ft_strlen(curr->key)))
-			{
-				tmp->next = curr->next;
-				free(curr->key);
-				if (curr->value)
-					free(curr->value);
-				free(curr);
-				break;
-			}
-			tmp = curr;
-			curr = curr->next;
-		}
+		unset_next_envp(cmd->cmd_args[i], &curr);
 		i++;
 	}
 	return (0);
