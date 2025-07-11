@@ -1,18 +1,18 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   test_mai.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 16:03:09 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 17:55:43 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int g_exit_status = 0;
+int g_signal = 0;
 
 #ifndef TEST_MODE
 	#define TEST_MODE 0
@@ -32,7 +32,7 @@ void sigint_handler(int sig)
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
-	g_exit_status = 130;
+	g_signal = 130;
 }
 
 int is_interactive(void)
@@ -63,28 +63,31 @@ int main(int argc, char *argv[], char **envp)
 		dir = ft_strjoin(tmp_dir, "$ ");
 		free(tmp_dir);
 		line = readline(dir);
-		// if (is_interactive())
-		// 	line = readline(dir);
-		// else
-		// {
-		// 	line = get_next_line(STDIN_FILENO);
-		// 	line[ft_strlen(line) - 1] = '\0';
-		// }
+		/*
+		if (is_interactive())
+			line = readline(dir);
+		else
+		{
+			line = get_next_line(STDIN_FILENO);
+			line[ft_strlen(line) - 1] = '\0';
+		}
+		*/
 		free(dir);
 		if (!line)
 			break;
+		if (g_signal > 0)
+			shell.last_status_code = g_signal;
+		g_signal = 0;
 		add_history(line);
-		shell.tokens = tokenize(line, shell.envp);
+		shell.tokens = tokenize(line, &shell.envp, &shell);
 		if (parser(&shell.parser, shell.tokens))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);
-		//cmd_clear(&shell.parser.cmd_lst, 0);
-		//free_tokens(&shell.tokens);
 		free(line);
 		if (TEST_MODE == 1)
 		{
 			rl_clear_history();
-			exit(g_exit_status);
+			exit(shell.last_status_code);
 		}
 	}
 	rl_clear_history();

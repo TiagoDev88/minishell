@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 12:52:55 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:53:42 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,23 @@ typedef struct s_exec
 	t_files_container	files_container;
 	t_pipe				*pipe_lst;
 	t_exec_helper		exec_h;
+	int					file_exit_code;
 }	t_exec;
 
 typedef struct s_shell t_shell;
 
 /* Main */
-void	executor(t_shell *shell, char **envp);
+void		executor(t_shell *shell, char **envp);
 /* Cleaner */
 void		close_pipes(t_pipe **pipe_lst);
 void		exit_clean(t_shell *shell, int exit_s);
 int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
+void		exit_clean_child(t_shell *shell, int exit_s);
+
 /* Command execution */
 void		execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp);
+void		handle_redirects(t_shell *shell);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
 void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell);
@@ -76,7 +80,7 @@ int			print_file_err(char *filename, char *error, int exit_s);
 void		clean_files_s(t_file **file_lst);
 t_file		*create_file_node(void);
 void		add_file_back(t_file **file_lst, t_file *new_file);
-int			add_file(t_files_container *f_con, char *filename, int redir_type);
+int			add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *shell);
 /* Heredoc */
 int			heredoc(t_file **new, char *delimiter, t_files_container **f_con);
 /* Path */
@@ -92,5 +96,9 @@ void		clean_proccess_s(t_proccess **procc_lst);
 int			validate_and_open_files(t_token **curr_token, t_shell *shell);
 int			has_cmd(t_token **curr);
 void		validate_cmd(char *cmd_path, t_shell *shell);
+int			is_built_in(char *cmd);
+
+/* Built-ins */
+int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
 
 #endif

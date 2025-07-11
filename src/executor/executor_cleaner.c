@@ -6,11 +6,22 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 14:50:20 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 14:51:36 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	exit_clean_child(t_shell *shell, int exit_s)
+{
+	if (shell->exec.files_container.lst)
+		clean_files_s(&shell->exec.files_container.lst);
+	if (shell->exec.pipe_lst)
+		clean_pipe_s(&shell->exec.pipe_lst);
+	if (shell->exec.procc_lst)
+		clean_proccess_s(&shell->exec.procc_lst);
+	exit(exit_s);
+}
 
 void	close_pipes(t_pipe **pipe_lst)
 {
@@ -54,7 +65,7 @@ void	exit_clean(t_shell *shell, int exit_s)
 		free_tokens(&shell->tokens);
 	// Parser clean
 	if (shell->parser.cmd_lst)
-		clean_cmds(&shell->parser.cmd_lst, 0);
+		clean_cmds(&shell->parser, &shell->parser.cmd_lst, 0);
 	// Exec clean
 	if (shell->exec.files_container.lst)
 		clean_files_s(&shell->exec.files_container.lst);
@@ -64,7 +75,7 @@ void	exit_clean(t_shell *shell, int exit_s)
 		clean_proccess_s(&shell->exec.procc_lst);
 	if (exit_s >= 0)
 	{
-		g_exit_status = exit_s;
+		shell->last_status_code = exit_s;
 		exit(exit_s);
 	}
 }

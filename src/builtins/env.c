@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:02:34 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 02:15:27 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/11 03:34:35 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_env(t_cmd *cmd, t_envp *envp)
 	if (!cmd || !envp)
 		return (1);
 	t_envp *tmp;
-	
+
 	tmp = envp;
 	while (tmp)
 	{
