@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/10 12:16:44 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 01:15:44 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -77,12 +77,13 @@ char *get_env_value(char *name, t_envp *lst_envp)
 	envp = lst_envp;
 	len = ft_strlen(name);
     i = 0;
-    while (envp->next)
+    while (envp)
     {
         if (!ft_strcmp(envp->key, name) && envp->flag == '=')
             return (ft_strdup(envp->value));
 		envp = envp->next;
 		i++;
     }
-    return (ft_strdup(""));
+   // return (ft_strdup(""));
+	return (NULL);
 }

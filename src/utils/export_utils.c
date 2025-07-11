@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/08 17:04:11 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 00:24:55 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -44,7 +44,9 @@ static void	add_export_env(char *envp, t_envp **env_list, int new)
 }
 
 
-
+//TODO se criar uma variavel sem '=' e depois tentar concatenar da erro,
+// porque ela nao vai ter o '=' para encontrar e vai gravar como NULL
+//exemplo: export abc e depois export abc+=VALOR fica abc=NULL
 static void	update_export_env(char *envp, t_envp *node, int conc)
 {
 	char	*value;
@@ -102,7 +104,7 @@ void is_update_or_add_env(char *arg, t_envp **envp, int k_stats)
 		}
 		tmp_envp = tmp_envp->next;
 	}
-	if (k_stats > 0)
+	if (updated == 0)
 		add_export_env(arg, envp, k_stats);
 }
 
