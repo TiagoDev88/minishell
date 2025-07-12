@@ -76,20 +76,31 @@ cd /pathinvalid/..
 cd /pathinvalid/../pathinvalid
 exi
 exita
+exit -9223372036854775808
+exit -256
+exit -255
+exit -250
+exit -100
+exit -10
+exit 0
+exit 1
+exit -1
+exit +1
+exit 255
+exit 256
+exit 257
 exit 123
 exit 298
 exit +100
 exit "+100"
 exit +"100"
-exit -100
 exit "-100"
 exit -"100"
 exit hello
-exit -1
-exit +1
 exit --
 exit ++
 exit -+
+exit +-
 exit +=+=+=+=+=+=+=+=+=+=+=+=+=+=
 exit ++42
 exit --42
@@ -98,6 +109,5 @@ exit -a
 exit 42 world
 exit 42 42
 exit 9223372036854775807
-exit -9223372036854775808
 exit 9223372036854775808
 
