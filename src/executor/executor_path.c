@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 03:05:49 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/12 03:19:42 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 	char	*curr_dir;
 	char	*cmd_path;
 
-	curr_dir = get_env_value("PWD", &shell->envp);
+	curr_dir = get_env_value("PWD", shell->envp);
 	if (!curr_dir)
 		print_cmd_err_exit(cmd, 1, 127, shell);
 	cmd_path = build_cmd_path(curr_dir, cmd);
@@ -101,7 +101,7 @@ char	*get_cmd_path(t_shell *shell, char *cmd)
 		print_cmd_err_exit(cmd, 0, 127, shell);
 	else
 	{
-		path_envp = get_env_value("PATH", &shell->envp);
+		path_envp = get_env_value("PATH", shell->envp);
 		if (!path_envp)
 			print_cmd_err_exit(cmd, 1, 127, shell);
 		path_split = ft_split(path_envp, ':');

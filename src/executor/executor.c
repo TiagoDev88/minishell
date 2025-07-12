@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 03:06:03 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/12 03:23:32 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ static void	get_last_cmd_exit_code(t_shell *shell)
 	{
 		waitpid(curr->pid, &status, 0);
 		signal(SIGINT, sigint_handler);
+		clean_pipe_s(&shell->exec.pipe_lst);
+		clean_files_s(&shell->exec.files_container.lst);
 		if (WIFEXITED(status))
 			shell->last_status_code = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
