@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 18:12:26 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 03:05:31 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -58,13 +58,28 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 	exit_clean_child(shell, shell->last_status_code);
 }
 
-void	execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp)
+void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
+{
+	signal(SIGINT, sigint_handler);
+	handle_redirects(shell);
+	close_last_fds(exec);
+	close_pipes(&exec->pipe_lst);
+	if (ft_strchr(cmd->cmd_args[0], '/'))
+		exec_cmd(cmd->cmd_args[0], shell, cmd, envp);
+	else if (is_built_in(cmd->cmd_args[0]))
+	{
+		exec_built_in(shell, cmd, 0);
+		exit_clean_child(shell, shell->last_status_code);
+	}
+	else
+		exec_cmd(get_cmd_path(shell, cmd->cmd_args[0]), shell, cmd, envp);
+	exit_clean_child(shell, shell->last_status_code);
+}
+
+void	execute_command(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 {
 	t_proccess	*new;
-	t_cmd		*cmd;
 
-	cmd = *curr_cmd;
-	*curr_cmd = (*curr_cmd)->next;
 	if (is_built_in(cmd->cmd_args[0]) && !shell->parser.n_pipes)
 		exec_built_in(shell, cmd, 1);
 	else
@@ -79,21 +94,6 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp
 			exit_clean(shell, EXIT_FAILURE);
 		}
 		else if (new->pid == 0)
-		{
-			signal(SIGINT, sigint_handler);
-			handle_redirects(shell);
-			close_last_fds(exec);
-			close_pipes(&exec->pipe_lst);
-			if (ft_strchr(cmd->cmd_args[0], '/'))
-				exec_cmd(cmd->cmd_args[0], shell, cmd, envp);
-			else if (is_built_in(cmd->cmd_args[0]))
-			{
-				exec_built_in(shell, cmd, 0);
-				exit_clean_child(shell, shell->last_status_code);
-			}
-			else
-				exec_cmd(get_cmd_path(shell, cmd->cmd_args[0]), shell, cmd, envp);
-			exit_clean_child(shell, shell->last_status_code);
-		}
+			fork_proccess(shell, exec, cmd, envp);
 	}
 }

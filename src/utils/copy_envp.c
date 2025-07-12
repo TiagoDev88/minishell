@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   copy_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 01:15:44 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 03:06:25 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 //TODO ordenar pela tabela ascii
@@ -70,9 +70,10 @@ void	copy_env(char **envp, t_envp **env_list)
 
 char *get_env_value(char *name, t_envp *lst_envp)
 {
-    int i;
-    int len;
-	t_envp *envp;
+    int		i;
+    int		len;
+	t_envp	*envp;
+	char	*value;
 
 	envp = lst_envp;
 	len = ft_strlen(name);

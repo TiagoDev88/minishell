@@ -6,12 +6,14 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 14:53:42 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/12 01:46:04 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
+
+typedef struct s_shell t_shell;
 
 typedef struct s_file
 {
@@ -58,7 +60,6 @@ typedef struct s_exec
 	int					file_exit_code;
 }	t_exec;
 
-typedef struct s_shell t_shell;
 
 /* Main */
 void		executor(t_shell *shell, char **envp);
@@ -70,12 +71,13 @@ void		close_last_fds(t_exec *exec);
 void		exit_clean_child(t_shell *shell, int exit_s);
 
 /* Command execution */
-void		execute_command(t_shell *shell, t_exec *exec, t_cmd **curr_cmd, char **envp);
+void		execute_command(t_shell *shell, t_exec *exec, t_cmd *curr_cmd, char **envp);
 void		handle_redirects(t_shell *shell);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
 void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell);
 int			print_file_err(char *filename, char *error, int exit_s);
+int			file_has_error(t_shell *shell, t_token **curr_token, int exit_status);
 /* File struct */
 void		clean_files_s(t_file **file_lst);
 t_file		*create_file_node(void);
@@ -97,7 +99,7 @@ int			validate_and_open_files(t_token **curr_token, t_shell *shell);
 int			has_cmd(t_token **curr);
 void		validate_cmd(char *cmd_path, t_shell *shell);
 int			is_built_in(char *cmd);
-
+int			is_redirect(t_token *token);
 /* Built-ins */
 int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
 
