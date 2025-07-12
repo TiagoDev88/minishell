@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 02:40:19 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/12 03:26:37 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void	get_last_cmd_exit_code(t_shell *shell)
 	if (!shell->exec.procc_lst)
 		return ;
 	curr = shell->exec.procc_lst;
+	close_last_fds(&shell->exec);
+	close_pipes(&shell->exec.pipe_lst);
 	while (curr)
 	{
 		waitpid(curr->pid, &status, 0);
