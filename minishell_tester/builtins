@@ -3,15 +3,23 @@ echo "hello world"
 echo 'hello world'
 echo hello'world'
 echo hello""world
+echo "hello '$USER'$USER!$USER"hello'mini'
 echo ''
 echo "'$USER'"
 echo '"$USER"'
 echo "$PWD"
+echo "$42"
+echo "$?"
+echo "$?HELLO"
+echo "$!HELLO"
+echo "$!$USER"
+echo "$!$USER!"
 echo '$PWD'
 echo "aspas ->'"
 echo "aspas -> ' "
 echo 'aspas ->"'
 echo 'aspas -> " '
+echo ""''""''"''"'""'
 echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $ \ <<"
 echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $ \ <<'
 echo "exit_code ->$? user ->$USER home -> $HOME"
@@ -19,8 +27,11 @@ echo 'exit_code ->$? user ->$USER home -> $HOME'
 echo "$"
 echo '$'
 echo $
+echo $42
+echo $!
 echo $?
 echo $?HELLO
+echo $?!
 pwd
 pwd oi
 export hello
@@ -31,10 +42,15 @@ export HELLO="123 A-"
 export hello world
 export HELLO-=123
 export =
+export ==hello
+export HELLO=123 A- B
 export =hello
 export 123
 export ZZ+=hello
 export ZZ+=:hello
+export ZZ$=hello
+export ZZ+=hello world
+export ZZ+=hello world!
 export ZZ=hello
 export ZZ-=hello
 export ZZ-A=hello
@@ -52,6 +68,12 @@ c
 cda
 cd $PWD
 cd $PWD hi 
+cd .
+cd pathinvalid
+cd ../pathinvalid
+cd /pathinvalid
+cd /pathinvalid/..
+cd /pathinvalid/../pathinvalid
 exi
 exita
 exit 123
@@ -67,9 +89,14 @@ exit -1
 exit +1
 exit --
 exit ++
+exit -+
+exit +=+=+=+=+=+=+=+=+=+=+=+=+=+=
+exit ++42
+exit --42
 exit a
 exit -a
 exit 42 world
+exit 42 42
 exit 9223372036854775807
 exit -9223372036854775808
 exit 9223372036854775808
