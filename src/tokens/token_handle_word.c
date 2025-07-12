@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/09 17:21:17 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 02:06:26 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -145,13 +145,7 @@ static char	*extract_word(t_token_builder **bd, int start)
 			(*bd)->pos++;
 	}
 	if ((*bd)->pos > start)
-	{
-		if (!append_dollar(bd, &part, &start, 0))
-		{
-			printf("entrou no que nao e append");
-			return (free(part), NULL);
-		}
-	}
+		append_dollar(bd, &part, &start, 0);
 	return (part);
 }
 
