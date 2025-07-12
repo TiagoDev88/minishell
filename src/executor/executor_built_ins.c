@@ -45,6 +45,7 @@ int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
 
 	if (!is_built_in(curr_cmd->cmd_args[0]))
 		return (0);
+	//get_cmd_path(shell, curr_cmd->cmd_args[0]);
 	if (!shell->parser.n_pipes)
 	{
 		get_dup_original_stds(&dup_ori_stds[0]);

@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 01:17:32 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:27:38 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/11 23:54:31 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -73,6 +73,10 @@ int	add_mode_one(t_cmd **cmd_lst, t_token **prev, t_token **curr)
 	if (*curr && (*curr)->type == TOKEN_WORD)
 	{
 		cmd_add_back(cmd_lst, new);
+		if (!save_cmd_args(&new->args_lst, prev, curr))
+			return (0);
+		if (!save_cmd_redirects(new, prev, curr))
+			return (0);
 		if (!save_cmd_args(&new->args_lst, prev, curr))
 			return (0);
 		return (lst_to_arr(new->args_lst, &new->cmd_args));

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 23:07:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/12 02:58:19 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ static char	*get_path_from_path_env(t_shell *shell, char **path_split, char *cmd
 		print_cmd_err_exit(cmd, 0, 127, shell);
 	if (access(path, X_OK) != 0)
 	{
+		print_cmd_err_exit(path, 1, 126, shell);
 		free(path);
-		print_cmd_err_exit(cmd, 0, 126, shell);
 	}
 	return (path);
 }
@@ -70,9 +70,9 @@ static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 	char	*curr_dir;
 	char	*cmd_path;
 
-	curr_dir = get_envp("PWD", shell, cmd);
+	curr_dir = get_env_value("PWD", &shell->envp);
 	if (!curr_dir)
-		return (NULL);
+		print_cmd_err_exit(cmd, 1, 127, shell);
 	cmd_path = build_cmd_path(curr_dir, cmd);
 	if (!cmd_path)
 		return (NULL);
@@ -97,11 +97,13 @@ char	*get_cmd_path(t_shell *shell, char *cmd)
 
 	if (cmd[0] == '.' && cmd[1] == '/')
 		cmd_path = get_path_from_curr_dir(shell, cmd);
+	else if (!cmd[0])
+		print_cmd_err_exit(cmd, 0, 127, shell);
 	else
 	{
-		path_envp = get_envp("PATH", shell, cmd);
+		path_envp = get_env_value("PATH", &shell->envp);
 		if (!path_envp)
-			return (NULL);
+			print_cmd_err_exit(cmd, 1, 127, shell);
 		path_split = ft_split(path_envp, ':');
 		free(path_envp);
 		if (!path_split)
