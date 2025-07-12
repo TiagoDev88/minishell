@@ -1,7 +1,6 @@
 .vscode
 minishell
 readline.supp
-minishell_tester
 # Prerequisites
 *.d
 
