@@ -21,9 +21,8 @@
 # include "errno.h"
 # include <limits.h>
 
-extern int g_signal;
-
-void sigint_handler(int sig);
+extern int	g_signal;
+void	sigint_handler(int sig);
 typedef struct s_shell
 {
 	t_envp		*envp;
@@ -34,6 +33,6 @@ typedef struct s_shell
 	char		*pwd;
 	char		*underscore;
 	int			last_status_code;
-} t_shell;
+}	t_shell;
 
 #endif

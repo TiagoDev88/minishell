@@ -6,16 +6,22 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/13 23:36:53 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 00:37:31 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 
-//TODO: depois tenho que ver como vou tratar do exit status
-// vai ser com a variavel global, o EXIT CODE
-// substituir $? pelo exit status
-// TALVEZ USAR UMA VARIAVEL E GUARDAR O VALOR, E ANDAR COM A VARIAVEL NO PONTEIRO
+void	clean_words(t_token **tk, char *word, int res)
+{
+	if (res == -1)
+		ft_putendl_fd("bash: syntax error: unclosed quote", STDERR_FILENO);
+	if (word)
+		free(word);
+	if (tk && *tk)
+		free_tokens(tk);
+}
+
 /**
  * @brief Extracts the value of an environment variable from the input string.
  *
@@ -43,7 +49,7 @@ static char	*extract_variable(t_token_builder *bd)
 	if (!ft_isalpha(bd->input[bd->pos]) && bd->input[bd->pos] != '_')
 		return (bd->pos++, ft_strdup(""));
 	while (bd->input[bd->pos] && ((ft_isalnum(bd->input[bd->pos])
-			|| bd->input[bd->pos] == '_')))
+				|| bd->input[bd->pos] == '_')))
 	{
 		var[j] = bd->input[bd->pos];
 		j++;
@@ -54,34 +60,6 @@ static char	*extract_variable(t_token_builder *bd)
 	if (!value)
 		return (NULL);
 	return (ft_strdup(value));
-}
-
-/**
- * @brief Checks if the variable after the '$' symbol should be ignored.
- *
- * This function handles cases like:
- * 
- * - `$` at the end of the input.
- * 
- * - `$` followed by a digit (positional parameter, which is ignored in 
- * this implementation).
- *
- * @param bd Pointer to the token builder.
- * @param start Pointer to the start position index to update if needed.
- * @return int
- * 
- * - 1: Variable should be ignored (e.g., `$5` or `$` at end).
- * 
- * - 0: Continue processing.
- */
-static int	is_ignored_variable(t_token_builder **bd, int *start)
-{
-	if ((*bd)->input[(*bd)->pos + 1] == '\0')
-	{
-		(*bd)->pos++;
-		return (1);
-	}
-	return (0);
 }
 
 /**
@@ -147,10 +125,10 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 		env_val = extract_variable((*bd));
 		if (!env_val)
 		{
-    		if ((*bd)->del == '"')
-        		return (env_val = ft_strdup(""), 1);
-    		else
-        		return (0);
+			if ((*bd)->del == '"')
+				return (env_val = ft_strdup(""), 1);
+			else
+				return (0);
 		}
 		tmp = ft_strjoin(*part, env_val);
 		if (!tmp)
@@ -193,7 +171,7 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 	if ((*bd)->input[(*bd)->pos] == '$' && (*bd)->del != '\'')
 	{
 		next = (*bd)->input[(*bd)->pos + 1];
-		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=$", next))// se der asneiras retirar o =
+		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=$", next))
 		{
 			(*bd)->pos++;
 			return (STATE_CONTINUE);
