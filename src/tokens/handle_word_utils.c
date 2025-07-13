@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 19:30:49 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 22:37:59 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -52,7 +52,7 @@ static char	*extract_variable(t_token_builder *bd)
 	var[j] = '\0';
 	value = get_env_value(var, bd->envp);
 	if (!value)
-		return (ft_strdup(""));
+		return (NULL);
 	return (ft_strdup(value));
 }
 
@@ -147,12 +147,23 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 	char	*env_val;
 
 	if ((*bd)->pos > *start)
+	{
+		//printf("entro pos > start\n");
 		append_text(bd, part, start);
+		//*start = (*bd)->pos;
+
+	}
 	if (flag == 1)
 	{
+		//printf("entro flag 1\n");
 		env_val = extract_variable((*bd));
 		if (!env_val)
-			return (0);
+		{
+    		if ((*bd)->del == '"') // Se dentro de aspas, usar string vazia
+        		return (env_val = ft_strdup(""), 1);
+    		else // fora de aspas — não deve gerar token
+        		return (0);
+		}
 		tmp = ft_strjoin(*part, env_val);
 		if (!tmp)
 		{
@@ -162,6 +173,7 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 		free(*part);
 		free(env_val);
 		*part = tmp;
+		//printf("%s\n", *part);
 		*start = (*bd)->pos;
 	}
 	return (1);
@@ -194,7 +206,7 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 {
 	char	next;
 
-	if ((*bd)->input[(*bd)->pos] == '$')
+	if ((*bd)->input[(*bd)->pos] == '$' && (*bd)->del != '\'')
 	{
 		next = (*bd)->input[(*bd)->pos + 1];
 		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=", next))// se der asneiras retirar o =
@@ -206,7 +218,11 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 			return (STATE_BREAK);
 		if ((*bd)->del != '\'')
 		{
-			append_dollar(bd, part, start, 1);
+			if (append_dollar(bd, part, start, 1) == 0)
+			{
+				*start = (*bd)->pos;
+				return (3);
+			}
 			return (STATE_BREAK);
 		}
 	}

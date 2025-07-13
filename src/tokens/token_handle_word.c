@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/12 02:06:26 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 23:49:16 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -18,7 +18,7 @@ static void	clean_words(t_token **tk, char *word, int res)
 		printf("minishell: syntax error: unclosed quote\n");
 	if (word)
 		free(word);
-	if (tk || *tk)
+	if (tk && *tk)
 		free_tokens(tk);
 }
 
@@ -52,7 +52,7 @@ static void	clean_words(t_token **tk, char *word, int res)
  * -  1: Word is complete (delimiter found outside of quotes).
  * -  2: State change (opened or closed a quote).
  */
-static int	check_state(t_token_builder *bd)
+static int	check_state(t_token_builder *bd, int *start)
 {
 	if (bd->del != ' ' && bd->input[bd->pos] == bd->del)
 	{
@@ -62,9 +62,10 @@ static int	check_state(t_token_builder *bd)
 	}
 	if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
 	{
-		if (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')
+		if (bd->input[bd->pos + 1] != '\0' && (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"'))
 		{
 			bd->del = bd->input[bd->pos];
+			*start = bd->pos;
 			bd->pos++;
 			return (STATE_QUOTE_CHANGE);
 		}
@@ -123,7 +124,7 @@ static int	word_append(char **word, char *part)
  * @return A dynamically allocated string containing the extracted word, or
  *  NULL on failure.
  */
-static char	*extract_word(t_token_builder **bd, int start)
+static char	*extract_word(t_token_builder **bd, int *start)
 {
 	char	*part;
 	int		check;
@@ -133,20 +134,27 @@ static char	*extract_word(t_token_builder **bd, int start)
 		return (NULL);
 	while ((*bd)->input[(*bd)->pos])
 	{
-		check = check_dollar_cases(bd, &part, &start);
+		check = check_dollar_cases(bd, &part, start);
 		if (check == STATE_BREAK)
+			return (part);
+		if (check == 3)
 			break ;
 		if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
 			break ;
 		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|",
 				(*bd)->input[(*bd)->pos]))
-			break ;
+			break;
 		if ((*bd)->input[(*bd)->pos])
 			(*bd)->pos++;
 	}
-	if ((*bd)->pos > start)
-		append_dollar(bd, &part, &start, 0);
-	return (part);
+	if ((*bd)->pos > *start)
+	{
+		append_dollar(bd, &part, start, 0);
+		return (part);
+	}
+	if ((*bd)->pos == *start && (*bd)->del == ' ')
+		return (ft_strdup(""));
+	return (NULL);
 }
 
 /**
@@ -168,30 +176,71 @@ static char	*extract_word(t_token_builder **bd, int start)
  *  position.
  * @return void
  */
-void	handle_word(t_token **tokens, t_token_builder *bd)
-{
-	char	*word;
-	char	*part;
-	int		start;
-	int		res;
+// void	handle_word(t_token **tokens, t_token_builder *bd)
+// {
+// 	char	*word;
+// 	char	*part;
+// 	int		start;
+// 	int		res;
 
-	word = ft_strdup("");
-	res = check_state(bd);
-	if (res == STATE_ERROR)
-		return (clean_words(tokens, word, STATE_ERROR));
-	while (bd->input[bd->pos])
-	{
-		start = bd->pos;
-		part = extract_word(&bd, start);
-		if (!part)
-			return (clean_words(tokens, word, STATE_ERROR));
-		if (!word_append(&word, part))
-			return (free(word));
-		res = check_state(bd);
-		if (res == STATE_ERROR)
-			return (clean_words(tokens, word, STATE_ERROR));
-		if (res == STATE_BREAK)
-			break ;
-	}
-	add_token(tokens, new_token(TOKEN_WORD, word));
-}
+// 	word = ft_strdup("");
+// 	while (bd->input[bd->pos])
+// 	{
+// 		res = check_state(bd, &start);
+// 		printf("check_state at pos %d (%c): %d\n", bd->pos, bd->input[bd->pos], res);
+// 		if (res == 2 && (bd->input[bd->pos] == '\0' || bd->input[bd->pos] == ' '))
+// 			break ;
+// 		if (res == STATE_ERROR)
+// 			return (clean_words(tokens, word, STATE_ERROR));
+// 		start = bd->pos;
+// 		part = extract_word(&bd, &start);
+// 		if (!part)
+// 			return ;
+// 		if (!word_append(&word, part))
+// 			return (free(word));
+// 		res = check_state(bd, &start);
+// 		if (res == STATE_ERROR)
+// 			return (clean_words(tokens, word, STATE_ERROR));
+// 		if (res == STATE_BREAK)
+// 			break ;
+// 		if (res == STATE_CONTINUE)
+// 			continue;
+// 	}
+// 	add_token(tokens, new_token(TOKEN_WORD, word));
+// }
+
+ void	handle_word(t_token **tokens, t_token_builder *bd)
+ {
+     char	*word;
+     char	*part;
+     int		start;
+     int		res;
+
+     word = ft_strdup("");
+     while (bd->input[bd->pos])
+     {
+        res = check_state(bd, &start);
+        if (res == STATE_ERROR)
+             return (clean_words(tokens, word, STATE_ERROR));
+         if (res == STATE_QUOTE_CHANGE)
+             continue;           // só mudou aspas; não corta o token nem aborta
+        start = bd->pos;
+        part = extract_word(&bd, &start);
+        if (!part)
+            return ;
+        if (!word_append(&word, part))
+            return (free(word));
+
+        res = check_state(bd, &start);
+        if (res == STATE_ERROR)
+            return (clean_words(tokens, word, STATE_ERROR));
+        if (res == STATE_BREAK)
+            break ;
+        if (res == STATE_CONTINUE)
+            continue;
+     }
+     add_token(tokens, new_token(TOKEN_WORD, word));
+ }
+
+ 
+ 
