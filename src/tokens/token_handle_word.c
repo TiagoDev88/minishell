@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/13 20:13:05 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:29:24 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -60,7 +60,7 @@ static int	check_state(t_token_builder *bd, int *start)
 		bd->del = ' ';
 		return (STATE_QUOTE_CHANGE);
 	}
-	if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
+	if (bd->del == ' ' && ft_strchr("'\" \t><|$", bd->input[bd->pos]))
 	{
 		if ((bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')) // se estiver errado voltar a colocar a verificacao bd->input[bd->pos + 1] != '\0' && 
 		{
@@ -150,10 +150,7 @@ static char	*extract_word(t_token_builder **bd, int *start)
 			(*bd)->pos++;
 	}
 	if ((*bd)->pos > *start)
-	{
-		append_dollar(bd, &part, start, 0);
-		return (part);
-	}
+		return (append_dollar(bd, &part, start, 0), part);
 	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->input[0] != '$')
 		return (ft_strdup(""));
 	return (NULL);
@@ -209,6 +206,5 @@ static char	*extract_word(t_token_builder **bd, int *start)
      }
      add_token(tokens, new_token(TOKEN_WORD, word));
  }
-
  
  

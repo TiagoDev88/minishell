@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/12 22:37:59 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:23:49 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -81,12 +81,6 @@ static int	is_ignored_variable(t_token_builder **bd, int *start)
 		(*bd)->pos++;
 		return (1);
 	}
-	// if (ft_isdigit((*bd)->input[(*bd)->pos + 1]))
-	// {
-	// 	(*bd)->pos += 2;
-	// 	*start = (*bd)->pos;
-	// 	return (0);
-	// }
 	return (0);
 }
 
@@ -147,33 +141,23 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 	char	*env_val;
 
 	if ((*bd)->pos > *start)
-	{
-		//printf("entro pos > start\n");
 		append_text(bd, part, start);
-		//*start = (*bd)->pos;
-
-	}
 	if (flag == 1)
 	{
-		//printf("entro flag 1\n");
 		env_val = extract_variable((*bd));
 		if (!env_val)
 		{
-    		if ((*bd)->del == '"') // Se dentro de aspas, usar string vazia
+    		if ((*bd)->del == '"')
         		return (env_val = ft_strdup(""), 1);
-    		else // fora de aspas — não deve gerar token
+    		else
         		return (0);
 		}
 		tmp = ft_strjoin(*part, env_val);
 		if (!tmp)
-		{
-			free(env_val);
-			return (0);
-		}
+			return (free(env_val), 0);
 		free(*part);
 		free(env_val);
 		*part = tmp;
-		//printf("%s\n", *part);
 		*start = (*bd)->pos;
 	}
 	return (1);
@@ -209,13 +193,13 @@ int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 	if ((*bd)->input[(*bd)->pos] == '$' && (*bd)->del != '\'')
 	{
 		next = (*bd)->input[(*bd)->pos + 1];
-		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=", next))// se der asneiras retirar o =
+		if (next == '\0' || next == ' ' || ft_strchr("\"\'\t><|=$", next))// se der asneiras retirar o =
 		{
 			(*bd)->pos++;
 			return (STATE_CONTINUE);
 		}
-		if (is_ignored_variable(bd, start))
-			return (STATE_BREAK);
+		if (next == '\0')
+			return ((*bd)->pos++, STATE_BREAK);
 		if ((*bd)->del != '\'')
 		{
 			if (append_dollar(bd, part, start, 1) == 0)
