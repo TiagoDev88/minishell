@@ -82,12 +82,12 @@ int main(int argc, char *argv[], char **envp)
 		g_signal = 0;
 		add_history(line);
 		shell.tokens = tokenize(line, &shell.envp, &shell);
-		t_token *tmp1 = shell.tokens;
-		while (tmp1)
-		{
-			printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
-			tmp1 = tmp1->next;
-		}
+		// t_token *tmp1 = shell.tokens;
+		// while (tmp1)
+		// {
+		// 	printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
+		// 	tmp1 = tmp1->next;
+		// }
 		if (parser(&shell.parser, shell.tokens))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);

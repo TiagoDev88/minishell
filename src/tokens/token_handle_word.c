@@ -62,7 +62,7 @@ static int	check_state(t_token_builder *bd, int *start)
 	}
 	if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
 	{
-		if (bd->input[bd->pos + 1] != '\0' && (bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"'))
+		if ((bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"')) // se estiver errado voltar a colocar a verificacao bd->input[bd->pos + 1] != '\0' && 
 		{
 			bd->del = bd->input[bd->pos];
 			*start = bd->pos;
