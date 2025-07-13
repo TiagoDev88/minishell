@@ -9,7 +9,8 @@ typedef enum e_check_state {
 	STATE_ERROR = -1,
 	STATE_CONTINUE = 0,
 	STATE_BREAK = 1,
-	STATE_QUOTE_CHANGE = 2
+	STATE_QUOTE_CHANGE = 2,
+	STATE_NULL = 3
 }	t_check_state;
 
 

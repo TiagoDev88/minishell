@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/13 23:29:24 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:49:39 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -15,7 +15,7 @@
 static void	clean_words(t_token **tk, char *word, int res)
 {
 	if (res == -1)
-		printf("minishell: syntax error: unclosed quote\n");
+		ft_putendl_fd("bash: syntax error: unclosed quote", STDERR_FILENO);
 	if (word)
 		free(word);
 	if (tk && *tk)
@@ -139,15 +139,14 @@ static char	*extract_word(t_token_builder **bd, int *start)
 		check = check_dollar_cases(bd, &part, start);
 		if (check == STATE_BREAK)
 			return (part);
-		if (check == 3)
+		if (check == STATE_NULL)
 			break ;
 		if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
 			break ;
 		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|",
 				(*bd)->input[(*bd)->pos]))
 			break;
-		if ((*bd)->input[(*bd)->pos])
-			(*bd)->pos++;
+		(*bd)->pos++;
 	}
 	if ((*bd)->pos > *start)
 		return (append_dollar(bd, &part, start, 0), part);
