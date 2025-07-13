@@ -152,7 +152,7 @@ static char	*extract_word(t_token_builder **bd, int *start)
 		append_dollar(bd, &part, start, 0);
 		return (part);
 	}
-	if ((*bd)->pos == *start && (*bd)->del == ' ')
+	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->input[0] != '$')
 		return (ft_strdup(""));
 	return (NULL);
 }
