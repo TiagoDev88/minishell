@@ -12,3 +12,10 @@ EXEMPLO
 -> $1ola -> guarda ola como TOKEN
 se colocar "" ou '' isto guarda como uma string VAZIA
 so nao guarda tokens no exemplo de $VAR_NAO_EXISTE
+
+/home/foraalinux/42/minishell$ |
+bash: syntax error near unexpected token `|'/home/foraalinux/42/minishell$ echo $?
+0
+/home/foraalinux/42/minishell$ 
+
+falta uma quebra de linha
