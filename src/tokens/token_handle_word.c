@@ -176,39 +176,6 @@ static char	*extract_word(t_token_builder **bd, int *start)
  *  position.
  * @return void
  */
-// void	handle_word(t_token **tokens, t_token_builder *bd)
-// {
-// 	char	*word;
-// 	char	*part;
-// 	int		start;
-// 	int		res;
-
-// 	word = ft_strdup("");
-// 	while (bd->input[bd->pos])
-// 	{
-// 		res = check_state(bd, &start);
-// 		printf("check_state at pos %d (%c): %d\n", bd->pos, bd->input[bd->pos], res);
-// 		if (res == 2 && (bd->input[bd->pos] == '\0' || bd->input[bd->pos] == ' '))
-// 			break ;
-// 		if (res == STATE_ERROR)
-// 			return (clean_words(tokens, word, STATE_ERROR));
-// 		start = bd->pos;
-// 		part = extract_word(&bd, &start);
-// 		if (!part)
-// 			return ;
-// 		if (!word_append(&word, part))
-// 			return (free(word));
-// 		res = check_state(bd, &start);
-// 		if (res == STATE_ERROR)
-// 			return (clean_words(tokens, word, STATE_ERROR));
-// 		if (res == STATE_BREAK)
-// 			break ;
-// 		if (res == STATE_CONTINUE)
-// 			continue;
-// 	}
-// 	add_token(tokens, new_token(TOKEN_WORD, word));
-// }
-
  void	handle_word(t_token **tokens, t_token_builder *bd)
  {
      char	*word;
