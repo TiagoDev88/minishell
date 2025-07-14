@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 02:33:34 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:20:15 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -73,7 +73,7 @@ static void	util_print_export_envp(t_envp *envp, int size)
 		tmp = envp;
 		while (tmp)
 		{
-			if (tmp->index == i && tmp->key[0] != '_')
+			if (tmp->index == i && (tmp->key[0] != '_' || tmp->key[1] != '\0'))
 			{
 				if (tmp->flag == '=')
 					printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
