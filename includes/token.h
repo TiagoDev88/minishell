@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 00:43:29 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 00:43:39 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 10:09:42 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -49,6 +49,7 @@ typedef struct s_token_builder
 	t_envp	*envp;
 	int		pos;
 	char	del;
+	int		startbefdol;
 	int		*last_status_code;
 }	t_token_builder;
 

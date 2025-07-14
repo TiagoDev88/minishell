@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 00:34:59 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 10:17:10 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -137,7 +137,7 @@ static char	*extract_word(t_token_builder **bd, int *start)
 	}
 	if ((*bd)->pos > *start)
 		return (append_dollar(bd, &part, start, 0), part);
-	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->input[0] != '$')
+	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->startbefdol != '$')
 		return (ft_strdup(""));
 	return (NULL);
 }
@@ -208,37 +208,3 @@ void	handle_word(t_token **tokens, t_token_builder *bd)
 	}
 	add_token(tokens, new_token(TOKEN_WORD, word));
 }
-
-//  void	handle_word(t_token **tokens, t_token_builder *bd)
-//  {
-//      char	*word;
-//      char	*part;
-//      int	start;
-//      int	res;
-
-//      word = ft_strdup("");
-// 	 if (!word)
-// 		return ;
-// 	 while (bd->input[bd->pos])
-//      {
-//         res = check_state(bd, &start);
-//         if (res == STATE_ERROR)
-//              return (clean_words(tokens, word, STATE_ERROR));
-//          if (res == STATE_QUOTE_CHANGE)
-//              continue;
-//         start = bd->pos;
-//         part = extract_word(&bd, &start);
-//         if (!part)
-//             return ;
-//         if (!word_append(&word, part))
-//             return (free(word));
-//         res = check_state(bd, &start);
-//         if (res == STATE_ERROR)
-//             return (clean_words(tokens, word, STATE_ERROR));
-//         if (res == STATE_BREAK)
-//             break ;
-//         if (res == STATE_CONTINUE)
-//             continue;
-//      }
-//      add_token(tokens, new_token(TOKEN_WORD, word));
-// }

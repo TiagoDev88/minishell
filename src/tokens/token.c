@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/12 23:42:18 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 10:14:45 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -100,6 +100,7 @@ t_token	*tokenize(char *input, t_envp **envp, t_shell *shell)
 	bd.input = input;
 	bd.envp = *envp;
 	bd.pos = 0;
+	bd.startbefdol = '\0';
 	bd.last_status_code = &shell->last_status_code;
 	tk = NULL;
 	substr = NULL;

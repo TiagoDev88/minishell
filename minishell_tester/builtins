@@ -7,6 +7,10 @@ echo "hello '$USER'$USER!$USER"hello'mini'
 echo ''
 echo "'$USER'"
 echo '"$USER"'
+echo $s$USER
+echo $USER$s
+echo "$s$USER"
+echo "$USER$s"
 echo "$PWD"
 echo "$42"
 echo "$?"
