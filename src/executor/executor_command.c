@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 03:05:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:31:44 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static void	redirect(int redir_type, t_shell *shell, int fd)
 				print_error_msg(NULL, strerror(errno), 1);
 				exit_clean(shell, errno);
 			}
-			
 		}
 	}
 	else
@@ -49,7 +48,6 @@ void	handle_redirects(t_shell *shell)
 
 static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 {
-	validate_cmd(cmd_path, shell);
 	execve(cmd_path, cmd->cmd_args, envp);
 	print_error_msg(NULL, strerror(errno), 1);
 	shell->last_status_code = errno;
@@ -65,14 +63,14 @@ void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 	close_last_fds(exec);
 	close_pipes(&exec->pipe_lst);
 	if (ft_strchr(cmd->cmd_args[0], '/'))
-		exec_cmd(cmd->cmd_args[0], shell, cmd, envp);
+		exec_cmd(cmd->cmd_path, shell, cmd, envp);
 	else if (is_built_in(cmd->cmd_args[0]))
 	{
 		exec_built_in(shell, cmd, 0);
 		exit_clean_child(shell, shell->last_status_code);
 	}
 	else
-		exec_cmd(get_cmd_path(shell, cmd->cmd_args[0]), shell, cmd, envp);
+		exec_cmd(cmd->cmd_path, shell, cmd, envp);
 	exit_clean_child(shell, shell->last_status_code);
 }
 
@@ -84,7 +82,13 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 		exec_built_in(shell, cmd, 1);
 	else
 	{
+		if (!is_valid_cmd(shell, cmd))
+			return ;
+		else
+			update_last_cmd_env(shell, get_envp_node("_", shell->envp), cmd);
 		new = create_proccess();
+		if (!new)
+			return ;
 		procc_add_back(&exec->procc_lst, new);
 		signal(SIGINT, SIG_IGN);
 		new->pid = fork();

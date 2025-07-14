@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 14:51:36 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:33:46 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,12 @@ void	close_last_fds(t_exec *exec)
 
 void	exit_clean(t_shell *shell, int exit_s)
 {
-	// Envp clean
-	
-	if (shell->envp && exit_s >= 0)
+	if (shell->envp && exit_s == 0)
 		free_envp(&shell->envp);
-	// Tokens clean
 	if (shell->tokens)
 		free_tokens(&shell->tokens);
-	// Parser clean
 	if (shell->parser.cmd_lst)
 		clean_cmds(&shell->parser, &shell->parser.cmd_lst, 0);
-	// Exec clean
 	if (shell->exec.files_container.lst)
 		clean_files_s(&shell->exec.files_container.lst);
 	if (shell->exec.pipe_lst)
@@ -75,6 +70,10 @@ void	exit_clean(t_shell *shell, int exit_s)
 		clean_proccess_s(&shell->exec.procc_lst);
 	if (exit_s >= 0)
 	{
+		if (shell->underscore)
+			free(shell->underscore);
+		if (exit_s == ENOMEM)
+			print_error_msg(NULL, strerror(ENOMEM), 1);
 		shell->last_status_code = exit_s;
 		exit(exit_s);
 	}

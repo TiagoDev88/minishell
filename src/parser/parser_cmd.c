@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 01:17:32 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 23:54:31 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 00:25:23 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_cmd	*cmd_create_node(void)
 	t_cmd_new->redir_out = NULL;
 	t_cmd_new->args_lst = NULL;
 	t_cmd_new->cmd_args = NULL;
+	t_cmd_new->cmd_path = NULL;
 	return (t_cmd_new);
 }
 

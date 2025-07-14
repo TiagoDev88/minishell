@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 01:46:04 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 00:57:23 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_exec
 	t_pipe				*pipe_lst;
 	t_exec_helper		exec_h;
 	int					file_exit_code;
+	int					cmd_exit_code;
 }	t_exec;
 
 
@@ -69,13 +70,13 @@ void		exit_clean(t_shell *shell, int exit_s);
 int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
 void		exit_clean_child(t_shell *shell, int exit_s);
-
 /* Command execution */
 void		execute_command(t_shell *shell, t_exec *exec, t_cmd *curr_cmd, char **envp);
 void		handle_redirects(t_shell *shell);
+void		update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
-void		print_cmd_err_exit(char *cmd, int mode, int exit_s, t_shell *shell);
+void		print_cmd_err(char *cmd, int mode, int exit_s, t_shell *shell);
 int			print_file_err(char *filename, char *error, int exit_s);
 int			file_has_error(t_shell *shell, t_token **curr_token, int exit_status);
 /* File struct */
@@ -97,10 +98,10 @@ void		clean_proccess_s(t_proccess **procc_lst);
 /* Validator */
 int			validate_and_open_files(t_token **curr_token, t_shell *shell);
 int			has_cmd(t_token **curr);
-void		validate_cmd(char *cmd_path, t_shell *shell);
-int			is_built_in(char *cmd);
-int			is_redirect(t_token *token);
+int			validate_abs_cmd(char *cmd_path, t_shell *shell);
+int			is_valid_cmd(t_shell *shell, t_cmd *cmd);
 /* Built-ins */
 int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
+
 
 #endif

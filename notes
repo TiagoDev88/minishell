@@ -38,3 +38,9 @@ Solucao para o conteudo dos built-ins nao estar a ser redireccionado.
 -> salvar o stdin e o stdout original com dup.
 -> No fim duplicar os fds guardados com o stdin e stdout original e direcionalos para o stdin_fileno e stdout_fileno e fecha-los.
 -> Quando é uma linha com pipes, se for um built-in -> executar com fork.
+
+a variavel $_ nao actualiza em pipelines.
+a variavel $_ actualiza para uma string vazia so com redireccionamentos.
+a variavel $_ so actualiza com um so comando, valido ou nao, e atualiza para o ultimo argumento.
+
+O que falta -> Expandir $_ para shell->underscore.

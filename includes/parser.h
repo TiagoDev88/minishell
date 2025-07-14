@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 01:52:37 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:29:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_cmd
 {
 	char			**cmd_args;
 	t_list			*args_lst;
+	char			*cmd_path;
 	t_redir			*redir_in;
 	t_redir			*redir_out;
 	struct s_cmd	*next;
@@ -45,7 +46,7 @@ typedef struct s_parser
 }	t_parser;
 
 /* Main function */
-int		parser(t_parser *parser_s, t_token *tokens);
+int			parser(t_parser *parser_s, t_token *tokens, t_shell *shell);
 /* Command struct utils */
 int		add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
 int		is_valid_redirect(t_token *curr);

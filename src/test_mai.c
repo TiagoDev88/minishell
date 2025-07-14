@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 17:55:43 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 02:34:25 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[], char **envp)
 		g_signal = 0;
 		add_history(line);
 		shell.tokens = tokenize(line, &shell.envp, &shell);
-		if (parser(&shell.parser, shell.tokens))
+		if (parser(&shell.parser, shell.tokens, &shell))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);
 		free(line);
@@ -94,4 +94,3 @@ int main(int argc, char *argv[], char **envp)
 	exit_clean(&shell, 0);
 	return (0);
 }
-
