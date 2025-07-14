@@ -6,29 +6,11 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/12 00:32:33 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:48:11 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int	is_built_in(char *cmd)
-{
-	if (ft_strchr(cmd, '/'))
-		return (0);
-	return (!ft_strcmp(cmd, "cd") ||
-			!ft_strcmp(cmd, "echo") ||
-			!ft_strcmp(cmd, "env") ||
-			!ft_strcmp(cmd, "exit") ||
-			!ft_strcmp(cmd, "export") ||
-			!ft_strcmp(cmd, "pwd") ||
-			!ft_strcmp(cmd, "unset"));
-}
-
-int	is_redirect(t_token *token)
-{
-	return (token->type >= TOKEN_REDIR_OUT && token->type <= TOKEN_HEREDOC);
-}
 
 int	has_cmd(t_token **curr)
 {
@@ -42,16 +24,47 @@ int	has_cmd(t_token **curr)
 	return (0);
 }
 
-void	validate_cmd(char *cmd_path, t_shell *shell)
+int	validate_abs_cmd(char *cmd_path, t_shell *shell)
 {
 	struct stat	sb;
 
 	if (stat(cmd_path, &sb) != 0)
-		print_cmd_err_exit(cmd_path, 1, 127, shell);
+	{
+		print_cmd_err(cmd_path, 1, 127, shell);
+		return (0);
+	}
 	if (S_ISDIR(sb.st_mode))
-		print_cmd_err_exit(cmd_path, 0, 126, shell);
+	{
+		print_cmd_err(cmd_path, 0, 126, shell);
+		return (0);
+	}
 	if (access(cmd_path, X_OK) != 0)
-		print_cmd_err_exit(cmd_path, 1, 126, shell);
+	{
+		print_cmd_err(cmd_path, 1, 126, shell);
+		return (0);
+	}
+	return (1);
+}
+
+int	is_valid_cmd(t_shell *shell, t_cmd *cmd)
+{
+	if (shell->exec.cmd_exit_code)
+		shell->exec.cmd_exit_code = 0;
+	if (is_built_in(cmd->cmd_args[0]))
+		return (1);
+	if (ft_strchr(cmd->cmd_args[0], '/'))
+	{
+		cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
+		if (!cmd->cmd_path)
+			exit_clean(shell, ENOMEM);
+		if (!validate_abs_cmd(cmd->cmd_path, shell))
+			return (0);
+	}
+	else
+		cmd->cmd_path = get_cmd_path(shell, cmd->cmd_args[0]);
+	if (!cmd->cmd_path)
+		return (0);
+	return (1);
 }
 
 int	validate_and_open_files(t_token **curr_token, t_shell *shell)
@@ -71,8 +84,8 @@ int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 		if (exit_s > 0)
 			return (file_has_error(shell, curr_token, exit_s));
 		*curr_token = (*curr_token)->next->next;
-		if (*curr_token && (*curr_token)->type == TOKEN_WORD && ((*curr_token)->next
-					&& is_redirect((*curr_token)->next)))
+		if (*curr_token && (*curr_token)->type == TOKEN_WORD
+			&& ((*curr_token)->next && is_redirect((*curr_token)->next)))
 			*curr_token = (*curr_token)->next;
 	}
 	return (1);

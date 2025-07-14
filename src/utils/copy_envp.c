@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   copy_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 02:31:33 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:39:38 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -70,7 +70,6 @@ char	*get_env_value(char *name, t_envp *lst_envp)
 	int		i;
 	int		len;
 	t_envp	*envp;
-	char	*value;
 
 	envp = lst_envp;
 	len = ft_strlen(name);
@@ -81,6 +80,8 @@ char	*get_env_value(char *name, t_envp *lst_envp)
 			return (ft_strdup(envp->value));
 		envp = envp->next;
 		i++;
-	}
+    }
 	return (NULL);
 }
+
+

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:54:14 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 00:49:33 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/13 14:50:49 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ t_proccess	*create_proccess(void)
 
 	new = malloc(sizeof(t_proccess));
 	if (!new)
+	{
+		print_error_msg(NULL, strerror(ENOMEM), 1);
 		return (NULL);
+	}
 	new->next = NULL;
 	return (new);
 }

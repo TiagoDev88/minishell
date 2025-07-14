@@ -1,21 +1,26 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:07:53 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/09 17:28:21 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:38:14 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 int	is_delimiter(char *line, char *delimiter)
 {
-	return (ft_strlen(line) - 1 == ft_strlen(delimiter)
-		&& !ft_strncmp(line, delimiter, ft_strlen(line) - 1));
+	if (ft_strlen(line) - 1 == ft_strlen(delimiter)
+		&& !ft_strncmp(line, delimiter, ft_strlen(line) - 1))
+	{
+		free(line);
+		return (1);
+	}
+	return (0);
 }
 
 char	*get_heredoc_filename(int n_heredocs)
@@ -27,11 +32,9 @@ char	*get_heredoc_filename(int n_heredocs)
 	if (!n_heredocs_str)
 		return (NULL);
 	filename = ft_strjoin(".heredoc_", n_heredocs_str);
+	free(n_heredocs_str);
 	if (!filename)
-	{
-		free(n_heredocs_str);
 		return (NULL);
-	}
 	return (filename);
 }
 

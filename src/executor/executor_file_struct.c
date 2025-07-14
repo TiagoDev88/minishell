@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 14:53:54 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:50:10 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,22 @@ t_file	*create_file_node(void)
 	return (new_file);
 }
 
-int	add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *shell)
+int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 {
 	t_file	*new_file;
 
 	new_file = create_file_node();
-	if (redir_type == TOKEN_REDIR_IN)
+	if (redir == TOKEN_REDIR_IN)
 		new_file->fd = open(filename, O_RDONLY);
-	else if (redir_type == TOKEN_HEREDOC)
+	else if (redir == TOKEN_HEREDOC)
 		return (heredoc(&new_file, filename, &f_con));
-	else if (redir_type == TOKEN_REDIR_OUT)
+	else if (redir == TOKEN_REDIR_OUT)
 		new_file->fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (redir_type == TOKEN_APPEND)
+	else if (redir == TOKEN_APPEND)
 		new_file->fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (new_file->fd == -1)
 		return (clean_mem(new_file, NULL, NULL, errno));
-	if (redir_type == TOKEN_REDIR_IN || redir_type == TOKEN_HEREDOC)
+	if (redir == TOKEN_REDIR_IN || redir == TOKEN_HEREDOC)
 		f_con->last_in_fd = new_file->fd;
 	else
 		f_con->last_out_fd = new_file->fd;
@@ -87,6 +87,6 @@ int	add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *
 	add_file_back(&f_con->lst, new_file);
 	if (!new_file->filename)
 		return (-1);
-	shell->last_status_code = 0;
+	sh->last_status_code = 0;
 	return (0);
 }

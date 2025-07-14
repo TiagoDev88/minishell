@@ -19,7 +19,7 @@ static void	get_dup_original_stds(int *dup_ori_std)
 	dup_ori_std[1] = ori_std_out;
 }
 
-static void execute(t_shell *shell, t_cmd *curr_cmd)
+static void	execute(t_shell *shell, t_cmd *curr_cmd)
 {
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
 		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
@@ -30,42 +30,23 @@ static void execute(t_shell *shell, t_cmd *curr_cmd)
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
 		shell->last_status_code = ft_exit(&shell->parser.cmd_lst, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
-		shell->last_status_code = ft_export(curr_cmd, &shell->envp, shell);	
+		shell->last_status_code = ft_export(curr_cmd, &shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
 		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
 }
-// int	exec_built_in(t_shell *shell, t_cmd *curr_cmd)
-// {
-// 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
-// 		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
-// 		shell->last_status_code = ft_echo(curr_cmd);
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
-// 		shell->last_status_code = ft_env(curr_cmd, shell->envp);
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
-// 		shell->last_status_code = ft_exit(&shell->parser.cmd_lst, shell);
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "export"))
-// 		shell->last_status_code = ft_export(curr_cmd, &shell->envp);	
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "pwd"))
-// 		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
-// 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
-// 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
-// 	else
-// 		return (0);
-// 	return (1);
-// }
 
 int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
 {
-	int dup_ori_stds[2];
+	int		dup_ori_stds[2];
+	t_envp	*under_envp;
 
 	if (!is_built_in(curr_cmd->cmd_args[0]))
 		return (0);
-	//get_cmd_path(shell, curr_cmd->cmd_args[0]);
 	if (!shell->parser.n_pipes)
 	{
+		update_last_cmd_env(shell, get_envp_node("_", shell->envp), curr_cmd);
 		get_dup_original_stds(&dup_ori_stds[0]);
 		handle_redirects(shell);
 		close_last_fds(&shell->exec);
@@ -75,4 +56,3 @@ int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
 		restaure_original_stds(&dup_ori_stds[0]);
 	return (1);
 }
-

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 01:49:35 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:42:12 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,26 @@ static int	check_prompt_syntax(t_parser **parser_s, t_cmd **cmds_lst, t_token *t
 	return (1);
 }
 
-int	parser(t_parser *parser_s, t_token *tokens)
+void	update_underscore_exp(t_parser *parser_s, t_shell *shell)
+{
+	int	i;
+
+	if (shell->underscore)
+		free(shell->underscore);
+	if (!parser_s->cmd_lst)
+		shell->underscore = ft_strdup("");
+	else
+	{
+		i = 0;
+		while (parser_s->cmd_lst->cmd_args[i + 1])
+			i++;
+		shell->underscore = ft_strdup(parser_s->cmd_lst->cmd_args[i]);
+	}
+	if (!shell->underscore)
+		exit_clean(shell, ENOMEM);
+}
+
+int	parser(t_parser *parser_s, t_token *tokens, t_shell *shell)
 {
 	if (!tokens)
 		return (0);
@@ -48,10 +67,12 @@ int	parser(t_parser *parser_s, t_token *tokens)
 		&& (ft_strlen(tokens->value) == 1 && tokens->value[0] == '.'))
 	{
 		print_error_msg(NULL, ERR_D, 1);
+		shell->last_status_code = 2;
 		return (0);
 	}
 	if (!check_prompt_syntax(&parser_s, &parser_s->cmd_lst, tokens))
 		return (0);
-	// Update env variable '_'
+	if (!parser_s->n_pipes)
+		update_underscore_exp(parser_s, shell);
 	return (1);
 }

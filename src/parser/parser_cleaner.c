@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/11 01:51:11 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 01:51:09 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	clean_cmds(t_parser *parser, t_cmd **lst, int status)
 	curr = *lst;
 	while (curr)
 	{
+		if (curr->cmd_path)
+			free(curr->cmd_path);
 		cmd_clean_split(curr->cmd_args, 0);
 		redir_clean(&curr->redir_in);
 		redir_clean(&curr->redir_out);
