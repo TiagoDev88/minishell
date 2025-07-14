@@ -54,3 +54,13 @@ void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
 	else
 		add_last_cmd_env(shell, last_cmd_env, lc_env_value);
 }
+
+t_envp *get_envp_node(char *envp, t_envp *lst_envp)
+{
+	t_envp	*curr;
+
+	curr = lst_envp;
+	while (curr && ft_strcmp(curr->key, envp))
+		curr = curr->next;
+	return (curr);
+}

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/13 22:14:40 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:36:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,6 @@ char *get_env_value(char *name, t_envp *lst_envp)
 		i++;
     }
 	return (NULL);
-}
-
-t_envp *get_envp_node(char *envp, t_envp *lst_envp)
-{
-	t_envp	*curr;
-
-	curr = lst_envp;
-	while (curr && ft_strcmp(curr->key, envp))
-		curr = curr->next;
-	return (curr);
 }
 
 
