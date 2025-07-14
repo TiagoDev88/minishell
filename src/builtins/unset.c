@@ -1,5 +1,4 @@
 
-
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
@@ -19,10 +18,11 @@ static int	unset_first_envp(char *cmd_env, t_envp **envp)
 	}
 	return (0);
 }
+
 static void	unset_next_envp(char *cmd_env, t_envp **envp)
 {
 	t_envp	*curr;
-	t_envp *tmp;
+	t_envp	*tmp;
 
 	curr = *envp;
 	while (curr)
@@ -34,7 +34,7 @@ static void	unset_next_envp(char *cmd_env, t_envp **envp)
 			if (curr->value)
 				free(curr->value);
 			free(curr);
-			break;
+			break ;
 		}
 		tmp = curr;
 		curr = curr->next;
@@ -43,16 +43,16 @@ static void	unset_next_envp(char *cmd_env, t_envp **envp)
 
 int	ft_unset(t_cmd *cmd, t_envp **envp)
 {
+	t_envp	*curr;
+	int		i;
+
 	if (!cmd || !envp || !*envp)
 		return (1);
-	t_envp *curr;
-	int i;
-
 	i = 1;
 	while (cmd->cmd_args[i])
 	{
 		if (unset_first_envp(cmd->cmd_args[i], envp))
-			continue;
+			continue ;
 		curr = (*envp)->next;
 		unset_next_envp(cmd->cmd_args[i], &curr);
 		i++;

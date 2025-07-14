@@ -6,15 +6,15 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 11:20:29 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 02:33:34 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 
-t_envp *new_envp(char *key, char flag, char *value)
+t_envp	*new_envp(char *key, char flag, char *value)
 {
-	t_envp *new_envp;
+	t_envp	*new_envp;
 
 	new_envp = malloc(sizeof(t_envp));
 	if (!new_envp)
@@ -26,14 +26,15 @@ t_envp *new_envp(char *key, char flag, char *value)
 	new_envp->next = NULL;
 	return (new_envp);
 }
+
 void	add_envp(t_envp **envp, t_envp *new)
 {
-	t_envp *tmp;
-	
+	t_envp	*tmp;
+
 	if (!*envp)
 	{
 		*envp = new;
-		return;
+		return ;
 	}
 	tmp = *envp;
 	while (tmp->next)
@@ -62,8 +63,8 @@ void	free_envp(t_envp **envp)
 
 static void	util_print_export_envp(t_envp *envp, int size)
 {
-	t_envp *tmp;
-	int i;
+	t_envp	*tmp;
+	int		i;
 
 	tmp = envp;
 	i = 0;
@@ -78,7 +79,7 @@ static void	util_print_export_envp(t_envp *envp, int size)
 					printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
 				else
 					printf("declare -x %s\n", tmp->key);
-				break;
+				break ;
 			}
 			tmp = tmp->next;
 		}
@@ -86,17 +87,17 @@ static void	util_print_export_envp(t_envp *envp, int size)
 	}
 }
 
-void print_export_envp(t_envp *envp)
+void	print_export_envp(t_envp *envp)
 {
-	t_envp *tmp;
-	int i;
-	int size;
+	t_envp	*tmp;
+	int		i;
+	int		size;
 
 	assign_indexes(envp);
 	tmp = envp;
 	i = 0;
 	size = 0;
-	while(tmp)
+	while (tmp)
 	{
 		size++;
 		tmp = tmp->next;

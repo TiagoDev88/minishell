@@ -1,18 +1,17 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   copy_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/12 03:06:25 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/14 02:31:33 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
-//TODO ordenar pela tabela ascii
-//talvez usar o strncmp para verificar a diferenca nas palavras
+
 void	assign_indexes(t_envp *env_list)
 {
 	t_envp	*current_node;
@@ -28,13 +27,11 @@ void	assign_indexes(t_envp *env_list)
 		others_node = env_list;
 		while (others_node)
 		{
-			//printf("CURRENT node %s\n", current_node->key);
 			if (ft_strcmp(current_node->key, others_node->key) > 0)
 				index++;
 			others_node = others_node->next;
 		}
 		current_node->index = index;
-		//printf("KEY: %s com index %d\n", current_node->key, current_node->index);
 		current_node = current_node->next;
 	}
 }
@@ -68,23 +65,22 @@ void	copy_env(char **envp, t_envp **env_list)
 	assign_indexes(*env_list);
 }
 
-char *get_env_value(char *name, t_envp *lst_envp)
+char	*get_env_value(char *name, t_envp *lst_envp)
 {
-    int		i;
-    int		len;
+	int		i;
+	int		len;
 	t_envp	*envp;
 	char	*value;
 
 	envp = lst_envp;
 	len = ft_strlen(name);
-    i = 0;
-    while (envp)
-    {
-        if (!ft_strcmp(envp->key, name) && envp->flag == '=')
-            return (ft_strdup(envp->value));
+	i = 0;
+	while (envp)
+	{
+		if (!ft_strcmp(envp->key, name) && envp->flag == '=')
+			return (ft_strdup(envp->value));
 		envp = envp->next;
 		i++;
-    }
-   // return (ft_strdup(""));
+	}
 	return (NULL);
 }

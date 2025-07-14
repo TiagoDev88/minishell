@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/11 12:48:39 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 02:37:14 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -43,7 +43,6 @@ static void	add_export_env(char *envp, t_envp **env_list, int new)
 	assign_indexes(*env_list);
 }
 
-
 static void	update_export_env(char *envp, t_envp **node, int conc)
 {
 	char	*value;
@@ -73,35 +72,36 @@ static void	update_export_env(char *envp, t_envp **node, int conc)
 /**
  * @brief Updates an existing environment variable or adds a new one.
  *
- * Searches through the environment variable list to find a match for the given key.
- * If found and the key is valid, the value is updated (or concatenated if using '+=' syntax).
- * If not found and the key is valid, a new variable is created and added to the list.
- *
+ * Searches through the environment variable list to find a match for 
+ * the given key. If found and the key is valid, the value is updated 
+ * (or concatenated if using '+=' syntax). If not found and the key is valid,
+ *  a new variable is created and added to the list.
+ * 
  * @param arg      The input string containing key=value or key+=value.
  * @param envp     Double pointer to the environment variable list.
- * @param k_stats  Key status returned from valid_key: 1 = update, 2 = concatenate.
+ * @param k_stats  Key status returned from valid_key:
+ *  1 = update, 2 = concatenate.
  */
-void is_update_or_add_env(char *arg, t_envp **envp, int k_stats)
+void	is_update_or_add_env(char *arg, t_envp **envp, int k_stats)
 {
-	int		key_len;
+	int		k_len;
 	t_envp	*tmp_envp;
-	int updated;
+	int		updated;
 
 	tmp_envp = *envp;
 	updated = 0;
 	while (tmp_envp)
 	{
-		key_len = ft_strlen(tmp_envp->key);
-		if (!ft_strncmp(tmp_envp->key, arg, key_len) &&
-			(arg[key_len] == '=' || arg[key_len] == '+' || arg[key_len] == '\0'))
+		k_len = ft_strlen(tmp_envp->key);
+		if (!ft_strncmp(tmp_envp->key, arg, k_len)
+			&& (arg[k_len] == '=' || arg[k_len] == '+' || arg[k_len] == '\0'))
 		{
 			update_export_env(arg, &tmp_envp, k_stats);
 			updated = 1;
-			return;
+			return ;
 		}
 		tmp_envp = tmp_envp->next;
 	}
 	if (updated == 0)
 		add_export_env(arg, envp, k_stats);
 }
-

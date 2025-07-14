@@ -19,3 +19,9 @@ bash: syntax error near unexpected token `|'/home/foraalinux/42/minishell$ echo 
 /home/foraalinux/42/minishell$ 
 
 falta uma quebra de linha
+
+resolver estes testes
+echo $s$USER
+echo $USER$s
+echo "$s$USER"
+echo "$USER$s"

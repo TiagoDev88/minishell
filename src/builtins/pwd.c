@@ -1,11 +1,10 @@
 
-
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
 int	ft_pwd(t_cmd *cmd, t_envp *envp)
 {
-	char *pwd;
+	char	*pwd;
 
 	if (!cmd->cmd_args || !cmd || !envp)
 		return (1);
