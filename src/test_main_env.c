@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   test_main_env.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/13 20:12:32 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:43:05 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[], char **envp)
 		// 	printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
 		// 	tmp1 = tmp1->next;
 		// }
-		if (parser(&shell.parser, shell.tokens))
+		if (parser(&shell.parser, shell.tokens, &shell))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);
 		free(line);

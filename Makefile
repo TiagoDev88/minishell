@@ -23,7 +23,7 @@ SRC_EXECUTOR =	$(addprefix executor/, executor.c executor_cleaner.c executor_com
 							executor_errors.c executor_file_struct.c executor_heredoc.c \
 							executor_path.c executor_pipe_struct.c executor_proccess_struct.c  \
 							executor_validator.c executor_built_ins.c)
-SRC_UTILS	=	$(addprefix utils/, copy_envp.c envp_utils.c export_utils.c)
+SRC_UTILS	=	$(addprefix utils/, copy_envp.c envp_utils.c export_utils.c exec_utils.c)
 SRC_PARSER =	$(addprefix parser/, parser.c parser_cmd.c parser_cmd_utils.c parser_cleaner.c \
 							parser_validator.c)
 SRC_TOKENS =	$(addprefix tokens/, token.c token_handle_word.c handle_word_utils.c tokens_utils.c)
