@@ -44,3 +44,7 @@ a variavel $_ actualiza para uma string vazia so com redireccionamentos.
 a variavel $_ so actualiza com um so comando, valido ou nao, e atualiza para o ultimo argumento.
 
 O que falta -> Expandir $_ para shell->underscore.
+
+ERRORS:
+cd.
+echo ~

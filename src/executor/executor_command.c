@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:31:44 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 01:11:20 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 {
 	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_DFL);
 	handle_redirects(shell);
 	close_last_fds(exec);
 	close_pipes(&exec->pipe_lst);
