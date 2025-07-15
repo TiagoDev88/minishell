@@ -1,5 +1,9 @@
 #include "../../includes/minishell.h"
 
+/**
+ * restore_original_stds - Restores original stdin and stdout fds.
+ * @dup_ori_std: Array holding duplicated original stdin and stdout fds.
+ */
 static void	restaure_original_stds(int *dup_ori_std)
 {
 	dup2(dup_ori_std[0], STDIN_FILENO);
@@ -8,6 +12,10 @@ static void	restaure_original_stds(int *dup_ori_std)
 	close(dup_ori_std[1]);
 }
 
+/**
+ * get_dup_original_stds - Saves original stdin and stdout fds by duplicating.
+ * @dup_ori_std: Array to store duplicated fds.
+ */
 static void	get_dup_original_stds(int *dup_ori_std)
 {
 	int	ori_std_in;
@@ -37,6 +45,14 @@ static void	execute(t_shell *shell, t_cmd *curr_cmd)
 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
 }
 
+/**
+ * exec_built_in - Executes a built-in command, handling redirections and pipes.
+ * @shell: Shell context.
+ * @curr_cmd: Command to execute.
+ * @single_cmd: Flag indicating if this is a single command (no pipes).
+ *
+ * Returns 1 if command is built-in and executed, else 0.
+ */
 int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
 {
 	int		dup_ori_stds[2];

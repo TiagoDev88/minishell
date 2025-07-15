@@ -6,18 +6,22 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:45:55 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/07 22:46:45 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:18:21 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-	Contain helper functions to construct *t_cmd main struct and sub structures
-	in parser_cmd.c
-*/
-
 #include "../../includes/minishell.h"
 
-// Creates an array of char* from a t_list* linked list.
+/**
+ * lst_to_arr - Converts a linked list of arguments into a NULL-terminated array.
+ * @args_lst: Linked list containing the command arguments.
+ * @cmd_args: Address of the array to be filled with duplicated argument strings.
+ *
+ * Allocates and populates a char ** array from a t_list * of strings.
+ * Used to convert parsed command arguments into execv-style format.
+ *
+ * Return: 1 on success, 0 on failure (e.g., malloc or strdup error).
+ */
 int	lst_to_arr(t_list *args_lst, char ***cmd_args)
 {
 	t_list	*curr;
@@ -44,6 +48,17 @@ int	lst_to_arr(t_list *args_lst, char ***cmd_args)
 	return (1);
 }
 
+/**
+ * save_cmd_args - Saves WORD tokens as arguments into a linked list.
+ * @args_lst: Pointer to the argument list to populate.
+ * @prev: Pointer to the previous token pointer.
+ * @curr: Pointer to the current token pointer.
+ *
+ * Iterates through TOKEN_WORD tokens, duplicates their content,
+ * and adds them to the argument list.
+ *
+ * Return: 1 on success, 0 on failure (malloc error).
+ */
 int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
 {
 	t_list	*new;
@@ -53,7 +68,7 @@ int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
 	{
 		arg = ft_strdup((*curr)->value);
 		if (!arg)
-			return (0);
+			return (0);e
 		new = ft_lstnew(arg);
 		if (!new)
 		{
@@ -68,7 +83,13 @@ int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
 	return (1);
 }
 
-// Push node to the end of t_redir* linked list.
+/**
+ * redir_add_back - Appends a redirection node to the end of a redirection list.
+ * @redir_lst: Pointer to the head of the redirection list.
+ * @new: Redirection node to append.
+ *
+ * Ensures redirections are kept in order as parsed from the input.
+ */
 void	redir_add_back(t_redir **redir_lst, t_redir *new)
 {
 	t_redir	*curr;
@@ -84,8 +105,17 @@ void	redir_add_back(t_redir **redir_lst, t_redir *new)
 	}
 }
 
-// Create a *t_redir node. t_redir saves redirect tokens
-// and his info like type and filename -> FILE or DELIMIT for heredoc
+/**
+ * add_redir - Creates and appends a redirection node based on the current token.
+ * @redir_lst: Pointer to the list of redirections (input or output).
+ * @prev: Pointer to the previous token pointer.
+ * @curr: Pointer to the current token pointer.
+ *
+ * Validates the redirect syntax, allocates a t_redir struct, sets the type,
+ * duplicates the associated filename (or heredoc delimiter), and appends the node.
+ *
+ * Return: 1 on success, 0 on error (invalid redirect or memory allocation failure).
+ */
 int	add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 {
 	t_redir	*new;
@@ -109,6 +139,17 @@ int	add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 	return (1);
 }
 
+/**
+ * save_cmd_redirects - Saves redirection tokens into the appropriate cmd fields.
+ * @cmd: Command structure to which redirections will be saved.
+ * @prev: Pointer to the previous token pointer.
+ * @curr: Pointer to the current token pointer.
+ *
+ * Processes consecutive redirection tokens and saves them into
+ * either redir_in or redir_out, depending on the type.
+ *
+ * Return: 1 on success, 0 on failure.
+ */
 int	save_cmd_redirects(t_cmd *cmd, t_token **prev, t_token **curr)
 {
 	while (*curr)

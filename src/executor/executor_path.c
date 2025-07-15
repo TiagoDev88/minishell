@@ -6,12 +6,23 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:47:04 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:30:56 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * get_path_env_splitted - Retrieves and splits the PATH environment variable.
+ * @shell: Pointer to the shell structure containing the environment.
+ * @cmd: Command string used for error reporting if PATH is missing.
+ *
+ * Fetches the PATH variable from the environment, splits it by ':' into directories,
+ * frees the original PATH string, and returns the split array.
+ * Prints a command error if PATH is not found.
+ *
+ * Return: Array of directory strings or NULL if PATH not found.
+ */
 char	**get_path_env_splitted(t_shell *shell, char *cmd)
 {
 	char	*path_envp;
@@ -30,6 +41,18 @@ char	**get_path_env_splitted(t_shell *shell, char *cmd)
 	return (path_split);
 }
 
+/**
+ * build_cmd_path - Constructs a full path by joining directory and command.
+ * @dir: Directory path string.
+ * @cmd: Command name string.
+ *
+ * Concatenates the directory, a '/', and the command into a new string.
+ * Returns NULL if either input is NULL or allocation fails.
+ *
+ * Return: Newly allocated full command path string or NULL.
+ * 
+ * Note: Caller is responsible for freeing the returned string.
+ */
 static char	*build_cmd_path(char *dir, char *cmd)
 {
 	char	*tmp_dir;
@@ -45,6 +68,18 @@ static char	*build_cmd_path(char *dir, char *cmd)
 	return (cmd_dir);
 }
 
+/**
+ * get_path_from_path_env - Searches for the command in directories from PATH.
+ * @sh: Pointer to the shell structure.
+ * @path_split: Array of directories from PATH variable.
+ * @cmd: Command name string.
+ *
+ * Iterates over PATH directories, builds candidate paths, and checks for existence
+ * and executability. Frees path_split array after use. Prints error messages if
+ * command is not found or is not executable.
+ *
+ * Return: Full valid command path or NULL if not found or accessible.
+ */
 static char	*get_path_from_path_env(t_shell *sh, char **path_split, char *cmd)
 {
 	int		i;
@@ -74,6 +109,16 @@ static char	*get_path_from_path_env(t_shell *sh, char **path_split, char *cmd)
 	return (path);
 }
 
+/**
+ * get_path_from_curr_dir - Attempts to resolve command path relative to PWD.
+ * @shell: Pointer to the shell structure.
+ * @cmd: Command name string.
+ *
+ * Gets the current working directory from environment, constructs the full path,
+ * and checks if the file exists and is executable. Prints errors accordingly.
+ *
+ * Return: Full command path if accessible, NULL otherwise.
+ */
 static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 {
 	char	*curr_dir;
@@ -103,6 +148,17 @@ static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 	return (cmd_path);
 }
 
+/**
+ * get_cmd_path - Resolves the absolute command path for a given command.
+ * @shell: Pointer to the shell structure.
+ * @cmd: Command string to resolve.
+ *
+ * If command starts with "./", searches in current directory.
+ * Otherwise, searches in PATH environment directories.
+ * Handles errors if command is empty or not found.
+ *
+ * Return: Absolute path to command or NULL on failure.
+ */
 char	*get_cmd_path(t_shell *shell, char *cmd)
 {
 	char	**path_split;
