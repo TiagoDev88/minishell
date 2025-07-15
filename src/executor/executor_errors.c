@@ -6,12 +6,24 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 23:06:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:47:35 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:35:08 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * file_has_error - Handles a file-related error during parsing redirections.
+ * @shell: Pointer to the shell structure.
+ * @curr_token: Pointer to the current token pointer in the token list.
+ * @exit_status: The error code returned by system calls (e.g., errno).
+ *
+ * Prints the corresponding error message for the file, sets the shell's last
+ * status code to 1, and advances the token pointer past all related redirection
+ * tokens.
+ *
+ * Return: Always returns 0.
+ */
 int	file_has_error(t_shell *shell, t_token **curr_token, int exit_status)
 {
 	shell->last_status_code = 1;
@@ -26,6 +38,15 @@ int	file_has_error(t_shell *shell, t_token **curr_token, int exit_status)
 	return (0);
 }
 
+/**
+ * print_error_msg - Prints an error message to standard error.
+ * @arg: The argument or filename related to the error (can be NULL).
+ * @error: The error description string.
+ * @mode: Mode to control prefix printing (1 to print "bash: ", 0 otherwise).
+ *
+ * Prints the error message in the format:
+ *  [bash:] arg: error\n
+ */
 void	print_error_msg(char *arg, char *error, int mode)
 {
 	if (mode == 1)
@@ -37,6 +58,18 @@ void	print_error_msg(char *arg, char *error, int mode)
 		ft_putendl_fd(error, 2);
 }
 
+/**
+ * print_cmd_err - Prints a command execution error message and sets status.
+ * @cmd: The command string that caused the error.
+ * @mode: Mode to select between error messages for "not found" or "no access".
+ * @exit_s: The exit status code to set in the shell.
+ * @shell: Pointer to the shell structure.
+ *
+ * Depending on exit_s and mode, prints an appropriate error message like
+ * "command not found", "No such file or directory", "Permission denied",
+ * or "Is a directory". Also updates the shell's last status code and the
+ * exec command exit code.
+ */
 void	print_cmd_err(char *cmd, int mode, int exit_s, t_shell *shell)
 {
 	if (exit_s == 127)
@@ -57,6 +90,16 @@ void	print_cmd_err(char *cmd, int mode, int exit_s, t_shell *shell)
 	shell->exec.cmd_exit_code = exit_s;
 }
 
+/**
+ * print_file_err - Prints a file error message to standard error.
+ * @filename: The filename related to the error.
+ * @error: The error description string.
+ * @exit_s: The exit status code to return.
+ *
+ * Prints the error message with the "bash: " prefix.
+ *
+ * Return: The provided exit status code.
+ */
 int	print_file_err(char *filename, char *error, int exit_s)
 {
 	print_error_msg(filename, error, 1);

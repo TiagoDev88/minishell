@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:48:44 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:21:44 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,26 @@ int	handle_cmds_redirs(t_exec *exec, t_cmd *cmd, t_token **token, t_shell *sh)
 	return (1);
 }
 
+/**
+ * executor - Main function to handle the execution phase of the shell.
+ * @shell: Pointer to the main shell structure containing all execution context.
+ * @envp: Environment variables passed to execve.
+ *
+ * This function:
+ * - Initializes I/O defaults (stdin and stdout).
+ * - Iterates through the token and command lists, dispatching execution logic.
+ * - Handles redirections, file opening errors, and command execution.
+ * - Tracks child process exit statuses and updates the shell’s last status code.
+ *
+ * Logic flow:
+ * - Calls exec_line() to iterate through the parsed command list and tokens.
+ * - Waits for child processes and captures their exit codes.
+ * - Updates shell->last_status_code based on:
+ *    - Command execution result
+ *    - File redirection failure
+ *
+ * Return: void
+ */
 static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 {
 	t_token	*curr_token;

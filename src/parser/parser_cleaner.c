@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 01:39:00 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:19:32 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,15 @@
 
 #include "../../includes/minishell.h"
 
-// Clean cmd_args**
+/**
+ * cmd_clean_split - Frees a NULL-terminated array of strings.
+ * @split: The array to free.
+ * @status: Status code to return after cleanup.
+ *
+ * Iterates over the string array, freeing each string, then frees the array itself.
+ *
+ * Return: The provided status value.
+ */
 int	cmd_clean_split(char **split, int status)
 {
 	int	i;
@@ -34,7 +42,13 @@ int	cmd_clean_split(char **split, int status)
 	return (status);
 }
 
-// Clean t_redir*
+/**
+ * redir_clean - Frees a list of redirection structures.
+ * @redir: Pointer to the head of the t_redir list.
+ *
+ * Frees each node in the redirection list, including the filename,
+ * and sets the list pointer to NULL.
+ */
 void	redir_clean(t_redir **redir)
 {
 	t_redir	*curr;
@@ -53,7 +67,22 @@ void	redir_clean(t_redir **redir)
 	*redir = NULL;
 }
 
-// Main cleaner function. 
+/**
+ * clean_cmds - Cleans the full command list and associated memory.
+ * @parser: Pointer to the parser structure (used to reset n_pipes).
+ * @lst: Pointer to the head of the t_cmd command list.
+ * @status: Status code to return after cleanup.
+ *
+ * Frees all resources allocated in each t_cmd node including:
+ * - cmd_path
+ * - cmd_args array
+ * - redirection lists
+ * - argument linked list
+ * 
+ * Also resets the command list pointer and parser's pipe counter.
+ *
+ * Return: The provided status value.
+ */
 int	clean_cmds(t_parser *parser, t_cmd **lst, int status)
 {
 	t_cmd	*curr;

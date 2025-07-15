@@ -1,14 +1,10 @@
 #include "../../includes/minishell.h"
 
 /**
- * @brief Checks if the given command is a shell built-in.
- * 
- * Returns 1 if cmd is one of the built-ins 
- * (cd, echo, env, exit, export, pwd, unset)
- * and does not contain a '/' character. Returns 0 otherwise.
- * 
- * @param cmd Command string to check.
- * @return int 1 if built-in, 0 if not.
+ * is_built_in - Checks if a command is a built-in shell command.
+ * @cmd: The command string to check.
+ *
+ * Returns 1 if the command is built-in, 0 otherwise.
  */
 int	is_built_in(char *cmd)
 {
@@ -21,13 +17,10 @@ int	is_built_in(char *cmd)
 }
 
 /**
- * @brief Checks if the given token is a redirection token.
- * 
- * Assumes token types are defined so that redirections
- * have types between TOKEN_REDIR_OUT and TOKEN_HEREDOC inclusive.
- * 
- * @param token Pointer to the token to check.
- * @return int 1 if token is a redirection, 0 otherwise.
+ * is_redirect - Checks if a token represents a redirection operator.
+ * @token: Pointer to the token to check.
+ *
+ * Returns 1 if the token is a redirection, 0 otherwise.
  */
 int	is_redirect(t_token *token)
 {
@@ -35,16 +28,13 @@ int	is_redirect(t_token *token)
 }
 
 /**
- * @brief Adds or updates the environment variable for last command (_=value).
- * 
- * Concatenates "_=" with the given value, then calls
- * is_update_or_add_env to add or update it in the shell environment list.
- * If allocation fails, exits cleanly with ENOMEM.
- * 
- * @param shell Pointer to the shell structure.
- * @param last_cmd_env Pointer to the environment node for the last command
- *  (may be NULL).
- * @param lcenv_val Value string to set for the last command.
+ * add_last_cmd_env - Adds or updates the "_" environment variable.
+ * @shell: Pointer to the shell structure.
+ * @last_cmd_env: Pointer to the last command environment node (can be NULL).
+ * @lcenv_val: The value to set for the "_" environment variable.
+ *
+ * Adds or updates the "_" environment variable with the given value.
+ * Exits on memory allocation failure.
  */
 void	add_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, char *lcenv_val)
 {
@@ -57,20 +47,13 @@ void	add_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, char *lcenv_val)
 }
 
 /**
- * @brief Updates the last command environment variable (_=...) 
- * based on the command executed.
- * 
- * If the command contains a '/', uses cmd_path as value.
- * If it is a built-in, uses the last argument of cmd_args as value.
- * Otherwise, uses cmd_path.
- * Frees and replaces the value if the environment node exists,
- * or adds a new one if not.
- * Exits cleanly if memory allocation fails.
- * 
- * @param shell Pointer to the shell structure.
- * @param last_cmd_env Pointer to the environment node for the last 
- * command (may be NULL).
- * @param cmd Pointer to the command structure executed.
+ * update_last_cmd_env - Updates the "_" environment variable based on the last command.
+ * @shell: Pointer to the shell structure.
+ * @last_cmd_env: Pointer to the last command environment node (can be NULL).
+ * @cmd: Pointer to the command structure.
+ *
+ * Sets the value of the "_" variable according to the last executed command.
+ * Exits on memory allocation failure.
  */
 void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
 {
@@ -100,16 +83,13 @@ void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
 }
 
 /**
- * @brief Searches for an environment variable node by key.
- * 
- * Iterates the environment linked list and returns the node
- * whose key matches the given string envp.
- * 
- * @param envp Key string to search for.
- * @param lst_envp Head of the environment variable linked list.
- * @return t_envp* Pointer to the matching node or NULL if not found.
+ * get_envp_node - Finds an environment variable node by key.
+ * @envp: The key to search for (e.g., "_").
+ * @lst_envp: Pointer to the head of the environment linked list.
+ *
+ * Returns a pointer to the matching environment node, or NULL if not found.
  */
-t_envp	*get_envp_node(char *envp, t_envp *lst_envp)
+t_envp *get_envp_node(char *envp, t_envp *lst_envp)
 {
 	t_envp	*curr;
 

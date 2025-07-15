@@ -1,17 +1,25 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_validator.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 22:47:12 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:53:22 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * has_cmd - Checks if there is at least one TOKEN_WORD starting at *curr.
+ * @curr: Pointer to the current token pointer.
+ *
+ * Advances the token pointer while tokens are TOKEN_WORD.
+ *
+ * Return: 1 if one or more TOKEN_WORD tokens were found, 0 otherwise.
+ */
 int	has_cmd(t_token **curr)
 {
 	t_token	*tmp;
@@ -24,6 +32,16 @@ int	has_cmd(t_token **curr)
 	return (0);
 }
 
+/**
+ * validate_abs_cmd - Validates an absolute or relative command path.
+ * @cmd_path: Command path string.
+ * @shell: Pointer to the shell structure (used for error handling).
+ *
+ * Checks if the command path exists, is not a directory, and is executable.
+ * Prints appropriate error messages and sets exit codes on failure.
+ *
+ * Return: 1 if valid, 0 otherwise.
+ */
 int	validate_abs_cmd(char *cmd_path, t_shell *shell)
 {
 	struct stat	sb;
@@ -46,6 +64,18 @@ int	validate_abs_cmd(char *cmd_path, t_shell *shell)
 	return (1);
 }
 
+/**
+ * is_valid_cmd - Validates if a command is executable or built-in.
+ * @shell: Pointer to the shell structure.
+ * @cmd: Pointer to the command structure.
+ *
+ * Resets any previous command exit code.
+ * If the command is a built-in, returns success immediately.
+ * If command contains a slash, treats as absolute/relative path and validates.
+ * Otherwise, attempts to resolve command path in PATH environment.
+ *
+ * Return: 1 if command is valid and executable, 0 otherwise.
+ */
 int	is_valid_cmd(t_shell *shell, t_cmd *cmd)
 {
 	if (shell->exec.cmd_exit_code)
@@ -67,6 +97,17 @@ int	is_valid_cmd(t_shell *shell, t_cmd *cmd)
 	return (1);
 }
 
+/**
+ * validate_and_open_files - Validates redirection tokens and opens files.
+ * @curr_token: Pointer to the current token pointer.
+ * @shell: Pointer to the shell structure.
+ *
+ * Iterates over redirection tokens, attempts to open files accordingly.
+ * Handles memory errors by terminating the shell cleanly.
+ * On file open errors, reports and returns failure.
+ *
+ * Return: 1 on success, 0 if file open error detected.
+ */
 int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 {
 	int	exit_s;

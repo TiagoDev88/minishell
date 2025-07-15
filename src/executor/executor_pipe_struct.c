@@ -6,12 +6,19 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:16:31 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/10 00:29:58 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:29:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * clean_pipe_s - Frees and closes all pipes in the pipe list.
+ * @pipe_lst: Pointer to the head of the t_pipe linked list.
+ *
+ * Iterates through the pipe list, closes read and write file descriptors
+ * if they are open, frees the nodes, and sets the list pointer to NULL.
+ */
 void	clean_pipe_s(t_pipe **pipe_lst)
 {
 	t_pipe	*curr;
@@ -33,6 +40,15 @@ void	clean_pipe_s(t_pipe **pipe_lst)
 	*pipe_lst = NULL;
 }
 
+/**
+ * add_pipe_back - Adds a new pipe node at the end of the pipe list.
+ * @pipe_lst: Pointer to the head of the t_pipe linked list.
+ * @new: New pipe node to add.
+ *
+ * Adds the new node to the end of the list or sets it as head if list is empty.
+ * 
+ * Note: This function is static and used internally.
+ */
 static void	add_pipe_back(t_pipe **pipe_lst, t_pipe *new)
 {
 	t_pipe	*curr;
@@ -48,6 +64,18 @@ static void	add_pipe_back(t_pipe **pipe_lst, t_pipe *new)
 	}
 }
 
+/**
+ * save_pipe - Creates a new pipe node, initializes it, and adds it to the shell's pipe list.
+ * @shell: Pointer to the main shell structure.
+ *
+ * Allocates memory for a new t_pipe, creates a new pipe using pipe(2) system call,
+ * stores the read and write file descriptors, and appends it to the shell's pipe list.
+ * On failure, prints an error and exits cleanly.
+ *
+ * Return: Pointer to the newly created t_pipe node.
+ * 
+ * Note: This function is static and used internally.
+ */
 static t_pipe	*save_pipe(t_shell *shell)
 {
 	int		pipe_fds[2];
@@ -71,6 +99,17 @@ static t_pipe	*save_pipe(t_shell *shell)
 	return (new_pipe);
 }
 
+/**
+ * handle_pipe - Handles a pipe token by creating and saving a pipe node.
+ * @shell: Pointer to the main shell structure.
+ * @curr_token: Pointer to the current token pointer, expected to be at a pipe token.
+ *
+ * Calls save_pipe to create a pipe node, updates shell's file descriptors for
+ * last output, advances the token pointer past the pipe token, and returns
+ * the new pipe node.
+ *
+ * Return: Pointer to the created t_pipe node.
+ */
 t_pipe	*handle_pipe(t_shell *shell, t_token **curr_token)
 {
 	t_pipe	*last_pipe;

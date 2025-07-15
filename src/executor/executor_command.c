@@ -6,12 +6,20 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 01:11:20 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:36:22 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * redirect - Redirects standard input or output to a given file descriptor.
+ * @redir_type: 1 for stdin redirection, 2 for stdout redirection.
+ * @shell: Pointer to the shell struct for error handling.
+ * @fd: The file descriptor to redirect from.
+ *
+ * Uses dup2 to replace stdin or stdout with fd, exiting on failure.
+ */
 static void	redirect(int redir_type, t_shell *shell, int fd)
 {
 	if (redir_type == 1)
@@ -38,6 +46,12 @@ static void	redirect(int redir_type, t_shell *shell, int fd)
 	}
 }
 
+/**
+ * handle_redirects - Applies input/output redirections for the current command.
+ * @shell: Pointer to the shell struct which contains file descriptors.
+ *
+ * Redirects stdin and stdout to the last input/output fds stored in files_container.
+ */
 void	handle_redirects(t_shell *shell)
 {
 	if (shell->exec.files_container.last_in_fd >= 0)
@@ -46,6 +60,15 @@ void	handle_redirects(t_shell *shell)
 		redirect(2, shell, shell->exec.files_container.last_out_fd);
 }
 
+/**
+ * exec_cmd - Executes the command using execve.
+ * @cmd_path: Full path to the executable.
+ * @shell: Pointer to the shell struct for error handling.
+ * @cmd: The command structure with arguments.
+ * @envp: Environment variables array.
+ *
+ * If execve fails, prints error, updates status and exits child process.
+ */
 static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 {
 	execve(cmd_path, cmd->cmd_args, envp);
@@ -56,6 +79,16 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 	exit_clean_child(shell, shell->last_status_code);
 }
 
+/**
+ * fork_proccess - Child process routine after fork.
+ * @shell: Pointer to the shell struct.
+ * @exec: Execution context containing pipes and processes.
+ * @cmd: Command to execute.
+ * @envp: Environment variables array.
+ *
+ * Sets signal handlers, handles redirections, closes unused fds,
+ * then executes the command or builtin. Exits on completion.
+ */
 void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 {
 	signal(SIGINT, sigint_handler);
@@ -75,6 +108,16 @@ void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 	exit_clean_child(shell, shell->last_status_code);
 }
 
+/**
+ * execute_command - Launches execution of a command, forking if needed.
+ * @shell: Pointer to the shell struct.
+ * @exec: Execution context.
+ * @cmd: Command structure containing args and paths.
+ * @envp: Environment variables array.
+ *
+ * Executes builtins directly if no pipes. Otherwise forks child process,
+ * setting up process list and signal handlers.
+ */
 void	execute_command(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 {
 	t_proccess	*new;
