@@ -19,3 +19,20 @@ bash: syntax error near unexpected token `|'/home/foraalinux/42/minishell$ echo 
 /home/foraalinux/42/minishell$ 
 
 falta uma quebra de linha
+
+
+PARA A MAIN
+
+SO PODE TER UM ARGUMENTO ./minishell
+caso tenha mais que um argumento colocar
+
+bash: ARGUMENTO: No such file or directory
+
+com return 127 
+
+if ac == 1 CORRER o programa
+else
+
+	printf("bash: %s: No such file or directory\n", argv[1]);
+	OU ESCREVER PARA O STDERROR, QUE E COMO O BASH FAZ
+	return (127)
