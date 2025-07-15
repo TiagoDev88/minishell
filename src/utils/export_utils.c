@@ -1,19 +1,32 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 13:39:51 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:52:04 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 #include "../../includes/utils.h"
 #include "../../includes/parser.h"
 
+/**
+ * @brief Adds a new environment variable to the list.
+ *
+ * Parses the given string and splits it into key and value.
+ * Supports both standard `key=value` and `key+=value` syntax.
+ * If there is no `=`, only the key is added.
+ *
+ * @param envp The string containing the full export argument.
+ * @param env_list Pointer to the environment list.
+ * @param new Flag indicating mode:
+ *  - 1 for normal assignment,
+ *  - 2 for `+=` concatenation.
+ */
 static void	add_export_env(char *envp, t_envp **env_list, int new)
 {
 	char	*key;
@@ -43,6 +56,18 @@ static void	add_export_env(char *envp, t_envp **env_list, int new)
 	assign_indexes(*env_list);
 }
 
+/**
+ * @brief Updates the value of an existing environment variable.
+ *
+ * Parses the value from the input string and either replaces or appends to 
+ * the existing value depending on the mode.
+ *
+ * @param envp The full input string containing key=value.
+ * @param node Pointer to the environment variable to update.
+ * @param conc Flag indicating the operation:
+ *  - 1 to replace,
+ *  - 2 to concatenate (`+=`).
+ */
 static void	update_export_env(char *envp, t_envp **node, int conc)
 {
 	char	*value;
@@ -70,17 +95,17 @@ static void	update_export_env(char *envp, t_envp **node, int conc)
 }
 
 /**
- * @brief Updates an existing environment variable or adds a new one.
+ * @brief Adds or updates an environment variable based on input.
  *
- * Searches through the environment variable list to find a match for 
- * the given key. If found and the key is valid, the value is updated 
- * (or concatenated if using '+=' syntax). If not found and the key is valid,
- *  a new variable is created and added to the list.
- * 
- * @param arg      The input string containing key=value or key+=value.
- * @param envp     Double pointer to the environment variable list.
- * @param k_stats  Key status returned from valid_key:
- *  1 = update, 2 = concatenate.
+ * Checks if the given key already exists in the list.
+ * If it does, the value is updated or concatenated depending on the syntax.
+ * If not, a new variable is added.
+ *
+ * @param arg The export argument (e.g., VAR=value or VAR+=value).
+ * @param envp Pointer to the environment list.
+ * @param k_stats The key status from `valid_key()`:
+ *  - 1 to update,
+ *  - 2 to concatenate (`+=`).
  */
 void	is_update_or_add_env(char *arg, t_envp **envp, int k_stats)
 {

@@ -2,6 +2,15 @@
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
+/**
+ * @brief Retrieves the value of OLDPWD environment variable.
+ * 
+ * Prints an error and returns NULL if OLDPWD is not set or empty.
+ * Otherwise, prints the value to stdout and returns a duplicate of it.
+ * 
+ * @param envp The environment variable linked list.
+ * @return char* Duplicate of OLDPWD value or NULL if unset.
+ */
 static char	*get_oldpwd(t_envp *envp)
 {
 	char	*oldpwd;
@@ -13,6 +22,17 @@ static char	*get_oldpwd(t_envp *envp)
 	return (ft_strdup(oldpwd));
 }
 
+/**
+ * @brief Updates the PWD and OLDPWD environment variables after changing
+ *  directory.
+ * 
+ * Retrieves current working directory and updates OLDPWD to previous PWD,
+ * then updates PWD to the current directory.
+ * Returns 0 on success, 1 on failure.
+ * 
+ * @param envp Double pointer to the environment list.
+ * @return int 0 on success, 1 on failure.
+ */
 static int	update_pwd_and_oldpwd(t_envp **envp)
 {
 	char	*oldpwd;
@@ -36,6 +56,18 @@ static int	update_pwd_and_oldpwd(t_envp **envp)
 	return (0);
 }
 
+/**
+ * @brief Resolves the home path for the cd command.
+ * 
+ * If arg is NULL, empty, or "~", returns HOME environment variable value.
+ * If arg starts with ~/, replaces ~ with HOME and appends the rest.
+ * Otherwise, returns a duplicate of arg.
+ * Prints error and returns NULL if HOME is unset.
+ * 
+ * @param arg The argument to cd.
+ * @param envp The environment linked list.
+ * @return char* The resolved path or NULL on error.
+ */
 char	*get_home_path(char *arg, t_envp *envp)
 {
 	char	*home;
@@ -54,6 +86,20 @@ char	*get_home_path(char *arg, t_envp *envp)
 	return (ft_strdup(arg));
 }
 
+/**
+ * @brief Executes the cd builtin command.
+ * 
+ * Handles zero, one, or two arguments (errors on more than one argument).
+ * Resolves the path, changing to HOME if no argument or "~".
+ * Supports "cd -" to change to OLDPWD.
+ * Prints errors for invalid paths or too many arguments.
+ * Updates PWD and OLDPWD environment variables on success.
+ * 
+ * @param cmd The command struct with arguments.
+ * @param envp The environment variables list.
+ * @param shell The shell context.
+ * @return int 0 on success, 1 on failure.
+ */
 int	ft_cd(t_cmd *cmd, t_envp *envp, t_shell *shell)
 {
 	char	*path;

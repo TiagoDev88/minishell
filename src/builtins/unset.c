@@ -2,6 +2,19 @@
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
+/**
+ * @brief Removes the first node in the environment list if it
+ *  matches the given key.
+ * 
+ * Compares the provided key with the first node's key. If they
+ *  match, the first node 
+ * is removed from the linked list and its memory is freed.
+ * 
+ * @param cmd_env The key of the environment variable to unset.
+ * @param envp Double pointer to the head of the environment variable list.
+ * 
+ * @return Returns 1 if the first node was removed, 0 otherwise.
+ */
 static int	unset_first_envp(char *cmd_env, t_envp **envp)
 {
 	t_envp	*head;
@@ -19,6 +32,18 @@ static int	unset_first_envp(char *cmd_env, t_envp **envp)
 	return (0);
 }
 
+/**
+ * @brief Removes a non-first environment variable node that 
+ * matches the given key.
+ * 
+ * Iterates through the linked list starting from the second 
+ * node to find and remove 
+ * a node whose key matches the provided key. Frees the node's memory.
+ * 
+ * @param cmd_env The key of the environment variable to unset.
+ * @param envp Double pointer to the current node's pointer
+ *  (not the head of the list).
+ */
 static void	unset_next_envp(char *cmd_env, t_envp **envp)
 {
 	t_envp	*curr;
@@ -41,6 +66,21 @@ static void	unset_next_envp(char *cmd_env, t_envp **envp)
 	}
 }
 
+/**
+ * @brief Implements the builtin `unset` command to remove
+ *  environment variables.
+ * 
+ * Iterates through the arguments passed to the `unset` command
+ *  and removes matching
+ * environment variable nodes from the linked list. Handles the special case of 
+ * removing the first node separately.
+ * 
+ * @param cmd Pointer to the command structure containing arguments.
+ * @param envp Double pointer to the environment variables linked list.
+ * 
+ * @return Returns 0 on success, or 1 if input is invalid or if the
+ *  environment is empty.
+ */
 int	ft_unset(t_cmd *cmd, t_envp **envp)
 {
 	t_envp	*curr;

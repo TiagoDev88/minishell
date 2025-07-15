@@ -6,12 +6,27 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 15:20:15 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:55:31 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Creates a new environment variable node.
+ * 
+ * Allocates and initializes a new t_envp structure with the given key,
+ *  flag, and value.
+ * The index is initialized to -1, and next pointer to NULL.
+ * 
+ * @param key The key/name of the environment variable (ownership transferred).
+ * @param flag Character indicating if variable has a value 
+ * ('=' if yes, 0 if no).
+ * @param value The value of the environment variable 
+ * (ownership transferred, can be NULL).
+ * @return Pointer to the newly created t_envp struct or NULL on malloc 
+ * failure.
+ */
 t_envp	*new_envp(char *key, char flag, char *value)
 {
 	t_envp	*new_envp;
@@ -27,6 +42,15 @@ t_envp	*new_envp(char *key, char flag, char *value)
 	return (new_envp);
 }
 
+/**
+ * @brief Adds a new environment variable node to the end of the list.
+ * 
+ * If the list is empty, sets the new node as the head.
+ * Otherwise, iterates to the last node and appends the new node.
+ * 
+ * @param envp Pointer to the head of the environment variable list.
+ * @param new The new node to be added.
+ */
 void	add_envp(t_envp **envp, t_envp *new)
 {
 	t_envp	*tmp;
@@ -42,6 +66,14 @@ void	add_envp(t_envp **envp, t_envp *new)
 	tmp->next = new;
 }
 
+/**
+ * @brief Frees the entire environment variable list.
+ * 
+ * Iterates through the list, freeing key, value, and the node itself.
+ * Sets the original pointer to NULL to avoid dangling pointers.
+ * 
+ * @param envp Double pointer to the environment variable list head.
+ */
 void	free_envp(t_envp **envp)
 {
 	t_envp	*tmp;
@@ -61,6 +93,19 @@ void	free_envp(t_envp **envp)
 	*envp = NULL;
 }
 
+/**
+ * @brief Helper function to print environment variables sorted by index.
+ * 
+ * Iterates from index 0 to size-1 and prints the variable matching that index.
+ * Skips the variable named "_" (underscore) with length 1 
+ * (usually shell internal).
+ * Prints in the format expected by `export` builtin:
+ * - If variable has a value: declare -x key="value"
+ * - If variable has no value: declare -x key
+ * 
+ * @param envp Head of the environment list.
+ * @param size Number of variables in the list.
+ */
 static void	util_print_export_envp(t_envp *envp, int size)
 {
 	t_envp	*tmp;
@@ -87,6 +132,13 @@ static void	util_print_export_envp(t_envp *envp, int size)
 	}
 }
 
+/**
+ * @brief Prints all environment variables sorted by their assigned index.
+ * 
+ * Calls assign_indexes() to update the sorting indexes, then prints the list.
+ * 
+ * @param envp Head of the environment variable list.
+ */
 void	print_export_envp(t_envp *envp)
 {
 	t_envp	*tmp;
