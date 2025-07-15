@@ -28,58 +28,22 @@ void	add_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, char *lcenv_val)
 	is_update_or_add_env(key_value, &shell->envp, 1);
 }
 
-// void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
-// {
-// 	char	*lc_env_value;
-// 	int		i;
-
-// 	if (ft_strchr(cmd->cmd_args[0], '/'))
-// 		lc_env_value = ft_strdup(cmd->cmd_path);
-// 	else if (is_built_in(cmd->cmd_args[0]))
-// 	{
-// 		i = 0;
-// 		while (cmd->cmd_args[i + 1])
-// 			i++;
-// 		lc_env_value = ft_strdup(cmd->cmd_args[i]);
-// 	}
-// 	else
-// 		lc_env_value = ft_strdup(cmd->cmd_path);
-// 	if (!lc_env_value)
-// 		exit_clean(shell, ENOMEM);
-// 	if (last_cmd_env)
-// 	{
-// 		free(last_cmd_env->value);
-// 		last_cmd_env->value = lc_env_value;
-// 	}
-// 	else
-// 		add_last_cmd_env(shell, last_cmd_env, lc_env_value);
-// }
-
 void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
 {
 	char	*lc_env_value;
 	int		i;
 
-	i = 0;
 	if (ft_strchr(cmd->cmd_args[0], '/'))
 		lc_env_value = ft_strdup(cmd->cmd_path);
 	else if (is_built_in(cmd->cmd_args[0]))
 	{
+		i = 0;
 		while (cmd->cmd_args[i + 1])
 			i++;
 		lc_env_value = ft_strdup(cmd->cmd_args[i]);
 	}
 	else
-	{
-		if (cmd->cmd_args[i + 1] != NULL)
-		{
-			while (cmd->cmd_args[i + 1])
-				i++;
-			lc_env_value = ft_strdup(cmd->cmd_args[i]);
-		}
-		else
-			lc_env_value = ft_strdup(cmd->cmd_path);	
-	}
+		lc_env_value = ft_strdup(cmd->cmd_path);
 	if (!lc_env_value)
 		exit_clean(shell, ENOMEM);
 	if (last_cmd_env)
