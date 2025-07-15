@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 10:17:10 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 01:28:41 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -188,8 +188,9 @@ void	handle_word(t_token **tokens, t_token_builder *bd)
 	int		start;
 
 	word = ft_strdup("");
-	if (!word)
-		return ;
+	res = check_state(bd, &start);
+	if (res == STATE_ERROR)
+		return (clean_words(tokens, word, STATE_ERROR));
 	while (bd->input[bd->pos])
 	{
 		res = check_state(bd, &start);
