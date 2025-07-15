@@ -6,13 +6,23 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 12:00:08 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 02:23:44 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:25:13 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
+/**
+ * @brief Checks if the argument is a valid '-n' flag.
+ * 
+ * Supports multiple 'n' characters after the dash,
+ *  like '-n', '-nn', '-nnn', etc.
+ * Returns 1 if the arg is a valid '-n' flag, 0 otherwise.
+ * 
+ * @param arg Argument string to check.
+ * @return int 1 if valid '-n' flag, else 0.
+ */
 static int	n_flag(char *arg)
 {
 	int	i;
@@ -29,6 +39,16 @@ static int	n_flag(char *arg)
 	return (0);
 }
 
+/**
+ * @brief Implementation of the echo builtin command.
+ * 
+ * Prints the arguments separated by spaces.
+ * Supports '-n' flags that suppress the trailing newline.
+ * Supports multiple '-n' flags in a row.
+ * 
+ * @param cmd Command struct containing arguments.
+ * @return int Always returns 0.
+ */
 int	ft_echo(t_cmd *cmd)
 {
 	int	i;

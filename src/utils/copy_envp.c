@@ -1,17 +1,28 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   copy_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 13:39:38 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:48:57 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Assigns a sorted index to each environment variable.
+ *
+ * This function compares all environment variable keys in the list and assigns
+ * each node an index corresponding to its alphabetical position (ASCII order).
+ * 
+ * This index can be used to print the `export` list in sorted order without 
+ * altering the original list structure.
+ *
+ * @param env_list Linked list of environment variables.
+ */
 void	assign_indexes(t_envp *env_list)
 {
 	t_envp	*current_node;
@@ -36,6 +47,18 @@ void	assign_indexes(t_envp *env_list)
 	}
 }
 
+/**
+ * @brief Builds a linked list from the environment variables array.
+ *
+ * This function takes each string from the original `envp` array and splits it 
+ * into key and value pairs. If the string contains `'='`, the key and value are 
+ * separated accordingly. If not, only the key is stored and the value is set to NULL.
+ * After processing the full array, it calls `assign_indexes` to compute the sort index
+ * of each variable.
+ *
+ * @param envp Environment array received from main.
+ * @param env_list Pointer to the linked list of environment variables.
+ */
 void	copy_env(char **envp, t_envp **env_list)
 {
 	int		i;
@@ -65,6 +88,16 @@ void	copy_env(char **envp, t_envp **env_list)
 	assign_indexes(*env_list);
 }
 
+/**
+ * @brief Retrieves the value of an environment variable by its name.
+ *
+ * Searches the environment list for a node with a matching key and flag `'='`.
+ * If found, returns a newly allocated copy of its value.
+ *
+ * @param name The name of the environment variable to search for.
+ * @param lst_envp The environment list to search in.
+ * @return A newly allocated string with the variable value, or NULL if not found.
+ */
 char	*get_env_value(char *name, t_envp *lst_envp)
 {
 	int		i;
@@ -83,5 +116,3 @@ char	*get_env_value(char *name, t_envp *lst_envp)
     }
 	return (NULL);
 }
-
-

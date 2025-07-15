@@ -6,38 +6,26 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 01:27:21 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:36:19 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 
 /**
- * @brief Checks the current parsing state regarding quotes and special
- *  characters.
+ * @brief Check current parsing state related to quotes or delimiters.
  *
- * This function analyzes the character at the current `bd->pos` position
- *  to determine whether to:
- * 
- * - Close an open quote (e.g., closing " or ')
- * - Open a new quote (if no quote is currently active and the character
- *  is ' or ")
- * 
- * - End the reading of a word when encountering a delimiter (space, tab,
- *  pipe, etc.)
- * 
- * - Report a syntax error if there is an unclosed quote at the end of the
- *  input.
+ * This function checks if the current character opens or closes a quote,
+ * or if it hits a word-breaking delimiter (like space, tab, pipe, etc.).
+ * It also returns an error if there's an unclosed quote at the end.
  *
- * @param bd Pointer to the token builder structure (`t_token_builder`),
- * 
- *           which contains the input, current position, and active delimiter.
- * @return int
- * - -1: Syntax error (e.g., unclosed quote).
- * -  0: Normal state, continue reading.
- * 
- * -  1: Word is complete (delimiter found outside of quotes).
- * -  2: State change (opened or closed a quote).
+ * @param bd Pointer to the token builder structure.
+ * @param start Pointer to the starting index of the word.
+ * @return int:
+ *   - STATE_ERROR (-1): Unclosed quote or syntax error.
+ *   - STATE_CONTINUE (0): Keep reading.
+ *   - STATE_BREAK (1): Word is finished.
+ *   - STATE_QUOTE_CHANGE (2): Opened or closed a quote.
  */
 static int	check_state(t_token_builder *bd, int *start)
 {
@@ -66,14 +54,15 @@ static int	check_state(t_token_builder *bd, int *start)
 }
 
 /**
- * @brief Appends a part to the word, dynamically allocating memory as needed.
- * 
- * This function checks if the word is currently NULL, in which case it 
- * assigns the part directly
- * or appends the part to the existing word.
- * @param word Pointer to the word string that will be modified.
- * @param part The part to be appended to the word.
- * @return 1 on success, 0 on failure (memory allocation error).
+ * @brief Append a part to the current word, handling memory allocation.
+ *
+ * If the word is NULL, assigns the part directly. Otherwise,
+ * it joins the existing word with the new part using ft_strjoin,
+ * and frees the old memory.
+ *
+ * @param word Pointer to the current word string.
+ * @param part String to append to the word.
+ * @return int: 1 on success, 0 on memory allocation failure.
  */
 static int	word_append(char **word, char *part)
 {
@@ -98,20 +87,15 @@ static int	word_append(char **word, char *part)
 }
 
 /**
- * @brief Extracts a word from the input string based on the current 
- * position and delimiter.
- * 
- * This function reads characters from the input string until it encounters
- *  a delimiter
- * 
- * or the end of the string. It constructs a word by appending characters to it,
- * 
- * taking care of special cases like quotes and dollar signs.
- * @param bd Pointer to the token builder containing the input string and
- *  current position.
- * @param start The starting position of the word in the input string.
- * @return A dynamically allocated string containing the extracted word, or
- *  NULL on failure.
+ * @brief Extract a word from the input based on current position and state.
+ *
+ * Reads characters from the input string while respecting the current quote
+ * and delimiter state. Handles dollar expansion and ends when a valid
+ * delimiter or special character is found.
+ *
+ * @param bd Pointer to the token builder.
+ * @param start Pointer to the starting index of the word.
+ * @return char*: The extracted word, or NULL on failure.
  */
 static char	*extract_word(t_token_builder **bd, int *start)
 {
@@ -142,6 +126,18 @@ static char	*extract_word(t_token_builder **bd, int *start)
 	return (NULL);
 }
 
+/**
+ * @brief Extract a word and append it to the current token being built.
+ *
+ * Uses `extract_word()` and `word_append()` to assemble a full word
+ * part-by-part. Handles syntax errors and quote state changes.
+ *
+ * @param tokens Token list to which the new token will be added.
+ * @param bd Pointer to the token builder structure.
+ * @param word Pointer to the current word being assembled.
+ * @param start Pointer to the starting index of the word.
+ * @return int: One of the STATE_ constants indicating the current parsing state.
+ */
 static int	extract_and_append(t_token **tokens, t_token_builder *bd,
 					char **word, int *start)
 {
@@ -163,23 +159,14 @@ static int	extract_and_append(t_token **tokens, t_token_builder *bd,
 }
 
 /**
- * @brief Handles the extraction of a word from the input string and adds it
- *  as a token.
- * 
- * This function reads characters from the input string until it encounters a 
- * delimiter
- * 
- * or the end of the string. It constructs a word by appending characters to it,
- * 
- * taking care of special cases like quotes and dollar signs.
- * 
- * check first character after quote, in variable RES = check_state.
- * 
- * Because its ERROR, if only one quote.
- * @param tokens Pointer to the list of tokens where the new token will be added.
- * @param bd Pointer to the token builder containing the input string and current
- *  position.
- * @return void
+ * @brief Extract and handle a word token from the input.
+ *
+ * Reads the input string, identifies words and handles quote
+ * logic and dollar expansion. Once the word is complete, adds
+ * it as a new token to the token list.
+ *
+ * @param tokens Pointer to the list of tokens.
+ * @param bd Pointer to the token builder.
  */
 void	handle_word(t_token **tokens, t_token_builder *bd)
 {

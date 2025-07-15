@@ -6,12 +6,22 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 10:10:19 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:41:55 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Cleans up word building resources and handles syntax error messages.
+ *
+ * This function frees the current word and token list if needed.
+ * If `res == -1`, it prints an unclosed quote error message.
+ *
+ * @param tk Pointer to the token list.
+ * @param word Word buffer to free.
+ * @param res Result code indicating error state.
+ */
 void	clean_words(t_token **tk, char *word, int res)
 {
 	if (res == -1)
@@ -25,15 +35,13 @@ void	clean_words(t_token **tk, char *word, int res)
 /**
  * @brief Extracts the value of an environment variable from the input string.
  *
- * This function parses the variable name after the '$' character.
- * 
- * If the variable is `$?`, it returns the exit status as a string.
- * 
- * Otherwise, it fetches the value from the environment using `getenv`.
+ * Parses the input after the `$` character to get the variable name.
+ * - If the variable is `$?`, it returns the last status code.
+ * - Otherwise, it fetches the value from the environment list.
  *
- * @param bd Pointer to the token builder containing the input and position.
- * @return A dynamically allocated string with the variable's value, or an 
- * empty string if not found.
+ * @param bd Pointer to the token builder containing the input and environment.
+ * @return A dynamically allocated string with the variable's value,
+ *         or an empty string if not found or invalid.
  */
 static char	*extract_variable(t_token_builder *bd)
 {
@@ -63,15 +71,14 @@ static char	*extract_variable(t_token_builder *bd)
 }
 
 /**
- * @brief Appends a text segment from the input to the current part of the word.
+ * @brief Appends a slice of the input string to the current partial word.
  *
- * This function takes the substring from `*start` to the current position and
- * 
- * appends it to `*part`, reallocating memory as needed.
+ * Extracts the substring from `*start` to current `pos`, and appends
+ * it to `*part`. Handles memory allocation and replacement.
  *
  * @param bd Pointer to the token builder.
- * @param part Pointer to the current partial word being built.
- * @param start Pointer to the start index of the substring to append.
+ * @param part Pointer to the partial word being built.
+ * @param start Pointer to the index where the slice begins.
  */
 static void	append_text(t_token_builder **bd, char **part, int *start)
 {
@@ -95,23 +102,20 @@ static void	append_text(t_token_builder **bd, char **part, int *start)
 }
 
 /**
- * @brief Handles the appending of text and/or environment variable
- *  values to the current word part.
+ * @brief Appends text and/or variable values to the current partial word.
  *
- * This function appends plain text if `flag == 0`, or resolves and
- *  appends a variable value if `flag == 1`. 
- * 
- * It handles memory allocation and updating of the input position.
+ * If `flag == 1`, extracts a variable and appends its value after appending
+ * the plain text from `*start` to `pos`. If `flag == 0`, only the text is appended.
  *
  * @param bd Pointer to the token builder.
- * @param part Pointer to the current partial word being built.
- * @param start Pointer to the start index for appending.
- * @param flag Determines the operation:
- *  - 0: Only append text from `*start` to `pos`.
- *  - 1: Also resolve and append the variable value.
- * @return int
- * - 1: Success.
- * - 0: Memory allocation failure.
+ * @param part Pointer to the partial word being built.
+ * @param start Pointer to the starting index for appending.
+ * @param flag Flag controlling what to append:
+ *  - 0: append only text.
+ *  - 1: append text and resolve a variable.
+ * @return int:
+ *  - 1 on success.
+ *  - 0 on memory error or invalid variable.
  */
 int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 {
@@ -142,27 +146,18 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 }
 
 /**
- * @brief Handles different cases when encountering a '$' character.
+ * @brief Handles parsing logic when encountering a '$' character.
  *
- * This function decides how to process a dollar sign in the input:
- * 
- * - Ignores invalid or standalone `$`.
- * 
- * - Ignores positional parameters (e.g., `$1`).
- * 
- * - Resolves and appends the environment variable value if not 
- * inside single quotes.
+ * Decides whether to process, skip, or ignore the dollar sign depending on
+ * the context (e.g., inside quotes or invalid next characters).
  *
  * @param bd Pointer to the token builder.
- * @param part Pointer to the current partial word being built.
- * @param start Pointer to the start index for the current word part.
- * @return int
- * 
- * - 0: No special handling required, continue processing.
- * 
- * - 1: Variable processed or skipped, word should continue or break.
- * 
- * - 2: Standalone or invalid `$` was skipped.
+ * @param part Pointer to the partial word being built.
+ * @param start Pointer to the starting index for the current part.
+ * @return int:
+ *  - STATE_CONTINUE (0): No special handling, keep going.
+ *  - STATE_BREAK (1): Stop current word.
+ *  - STATE_NULL (2): Variable was invalid, skip.
  */
 int	check_dollar_cases(t_token_builder **bd, char **part, int *start)
 {

@@ -43,7 +43,8 @@ static int	valid_key(char *cmd)
  * 
  * @param cmd   Pointer to the parsed command structure containing arguments.
  * @param envp  Double pointer to the environment variable linked list.
- * @return int  Returns 0 on success, 1 if an error occurs (e.g., invalid input).
+ * @return int  Returns 0 on success, 1 if an error occurs
+ *  (e.g., invalid input).
  */
 int	ft_export(t_cmd *cmd, t_envp **envp, t_shell *shell)
 {

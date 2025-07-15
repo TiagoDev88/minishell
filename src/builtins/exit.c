@@ -90,6 +90,25 @@ static int	is_overflow(char *arg)
 		return (compare_overflow(num, "9223372036854775808"));
 }
 
+/**
+ * @brief Implements the builtin `exit` command with argument validation
+ *  and proper exit codes.
+ * 
+ * Prints "exit" to stdout. If no argument or "--" is given, 
+ * exits with status 0.
+ * If the first argument is not a valid numeric string or is out of range,
+ * prints an error and exits with status 2.
+ * If more than one argument is given, prints an error message,
+ * sets the shell's last status to 1 and does not exit.
+ * Otherwise, converts the argument to a number and exits with that status.
+ * 
+ * @param cmd Double pointer to the current command structure,
+ *  which contains the arguments.
+ * @param sh Pointer to the shell structure, used for cleanup and exit.
+ * 
+ * @return Returns 1 if too many arguments are provided (does not exit).
+ *         Does not return on successful exit or fatal error exit.
+ */
 int	ft_exit(t_cmd **cmd, t_shell *sh)
 {
 	long long	code;
