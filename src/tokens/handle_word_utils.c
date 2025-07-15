@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 16:41:55 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 19:49:47 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -67,7 +67,7 @@ static char	*extract_variable(t_token_builder *bd)
 	value = get_env_value(var, bd->envp);
 	if (!value)
 		return (NULL);
-	return (ft_strdup(value));
+	return (value);
 }
 
 /**
