@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_cleaner.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:33:46 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 21:13:03 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
@@ -56,8 +56,6 @@ void	close_last_fds(t_exec *exec)
 
 void	exit_clean(t_shell *shell, int exit_s)
 {
-	if (shell->envp && exit_s == 0)
-		free_envp(&shell->envp);
 	if (shell->tokens)
 		free_tokens(&shell->tokens);
 	if (shell->parser.cmd_lst)
@@ -70,6 +68,8 @@ void	exit_clean(t_shell *shell, int exit_s)
 		clean_proccess_s(&shell->exec.procc_lst);
 	if (exit_s >= 0)
 	{
+		if (shell->envp)
+			free_envp(&shell->envp);
 		if (shell->underscore)
 			free(shell->underscore);
 		if (exit_s == ENOMEM)

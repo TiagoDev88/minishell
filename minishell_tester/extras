@@ -15,3 +15,46 @@ README.md
 "" cat ./README.md
 "" echo hello
 test_files/
+
+a
+42
+echo $s$USER
+echo $USER$s
+echo "$s$USER"
+echo "$USER$s"
+echo "$42"
+echo "$?"
+echo "$?HELLO"
+echo "$!HELLO"
+echo "$!$USER"
+echo "$!$USER!"
+echo '$PWD'
+echo ""''""''"''"'""'
+echo $42
+echo $!
+echo $?!
+export ==hello
+export HELLO=123 A- B
+export ZZ$=hello
+export ZZ+=hello world
+export ZZ+=hello world!
+cd path path
+cd .
+cd pathinvalid
+cd ../pathinvalid
+cd /pathinvalid
+cd /pathinvalid/..
+cd /pathinvalid/../pathinvalid
+exit -256
+exit -255
+exit -250
+exit -100
+exit -10
+exit 0
+exit 1
+exit -+
+exit +-
+exit +=+=+=+=+=+=+=+=+=+=+=+=+=+=
+exit ++42
+exit --42
+exit 42 42
