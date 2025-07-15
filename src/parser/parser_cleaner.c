@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:31:28 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:19:32 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 00:01:39 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
  * @split: The array to free.
  * @status: Status code to return after cleanup.
  *
- * Iterates over the string array, freeing each string, then frees the array itself.
+ * Iterates over the string array, freeing each string,
+ * then frees the array itself.
  *
  * Return: The provided status value.
  */

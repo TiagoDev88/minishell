@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:30:56 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:56:22 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
  * @shell: Pointer to the shell structure containing the environment.
  * @cmd: Command string used for error reporting if PATH is missing.
  *
- * Fetches the PATH variable from the environment, splits it by ':' into directories,
+ * Fetches the PATH variable from the environment,
+ * splits it by ':' into directories,
  * frees the original PATH string, and returns the split array.
  * Prints a command error if PATH is not found.
  *
@@ -74,7 +75,8 @@ static char	*build_cmd_path(char *dir, char *cmd)
  * @path_split: Array of directories from PATH variable.
  * @cmd: Command name string.
  *
- * Iterates over PATH directories, builds candidate paths, and checks for existence
+ * Iterates over PATH directories, builds candidate paths,
+ * and checks for existence
  * and executability. Frees path_split array after use. Prints error messages if
  * command is not found or is not executable.
  *

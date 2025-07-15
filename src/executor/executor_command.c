@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:36:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:56:44 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ static void	redirect(int redir_type, t_shell *shell, int fd)
  * handle_redirects - Applies input/output redirections for the current command.
  * @shell: Pointer to the shell struct which contains file descriptors.
  *
- * Redirects stdin and stdout to the last input/output fds stored in files_container.
+ * Redirects stdin and stdout to the last input/output fds
+ * stored in files_container.
  */
 void	handle_redirects(t_shell *shell)
 {

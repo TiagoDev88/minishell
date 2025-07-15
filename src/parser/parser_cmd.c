@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 01:17:32 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:10:54 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 00:00:50 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 /**
  * cmd_create_node - Allocates and initializes a new command node.
  *
- * Allocates memory for a new t_cmd structure, initializing all its fields to NULL.
+ * Allocates memory for a new t_cmd structure, initializing 
+ * all its fields to NULL.
  *
  * Return: Pointer to the newly created node, or NULL if allocation fails.
  */
@@ -61,13 +62,16 @@ void	cmd_add_back(t_cmd	**lst, t_cmd *new)
 }
 
 /**
- * add_mode_two - Creates and adds a new command (mode 2) with args and redirects.
+ * add_mode_two - Creates and adds a new command (mode 2) 
+ * with args and redirects.
  * @cmd_lst: Pointer to the list of commands.
  * @prev: Pointer to the previous token pointer.
  * @curr: Pointer to the current token pointer.
  *
- * Used when a WORD token is found and expected to contain both arguments and redirections.
- * It creates a command node, saves arguments and redirections, and converts the args list to an array.
+ * Used when a WORD token is found and expected to 
+ * contain both arguments and redirections.
+ * It creates a command node, saves arguments and redirections,
+ * and converts the args list to an array.
  *
  * Return: 1 on success, 0 on error.
  */
@@ -88,9 +92,9 @@ int	add_mode_two(t_cmd **cmd_lst, t_token **prev, t_token **curr)
 	return (lst_to_arr(new->args_lst, &new->cmd_args));
 }
 
-
 /**
- * add_mode_one - Creates and adds a new command (mode 1) starting with a redirection.
+ * add_mode_one - Creates and adds a new command (mode 1) 
+ * starting with a redirection.
  * @cmd_lst: Pointer to the list of commands.
  * @prev: Pointer to the previous token pointer.
  * @curr: Pointer to the current token pointer.

@@ -6,14 +6,15 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:53:38 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 00:04:13 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
- * check_prompt_syntax - Checks the syntax of the input tokens and builds the command list.
+ * check_prompt_syntax - Checks the syntax of the input tokens and
+ * builds the command list.
  * @parser_s: Pointer to the parser structure (double pointer).
  * @cmds_lst: Pointer to the command list to be populated.
  * @tokens: Linked list of tokens parsed from the input line.
@@ -25,28 +26,28 @@
  *
  * Return: 1 if syntax is valid, 0 otherwise.
 */
-static int	check_prompt_syntax(t_parser **parser_s, t_cmd **cmds_lst, t_token *tokens)
+static int	check_prompt_syntax(t_parser **pars_s, t_cmd **cmds, t_token *tks)
 {
 	t_token	*curr;
 	t_token	*prev;
 
-	curr = tokens;
+	curr = tks;
 	prev = NULL;
 	while (curr)
 	{
 		if (curr && curr->type == TOKEN_PIPE
-			&& !is_valid_pipe(&prev, &curr, &(*parser_s)->n_pipes))
+			&& !is_valid_pipe(&prev, &curr, &(*pars_s)->n_pipes))
 			return (0);
 		if (curr && curr->type >= TOKEN_REDIR_OUT
 			&& curr->type <= TOKEN_HEREDOC)
 		{
 			if (!is_valid_redirect(curr))
 				return (0);
-			if (!add_cmd(cmds_lst, &prev, &curr, 1))
+			if (!add_cmd(cmds, &prev, &curr, 1))
 				return (0);
 		}
 		if (curr && curr->type == TOKEN_WORD
-			&& !add_cmd(cmds_lst, &prev, &curr, 2))
+			&& !add_cmd(cmds, &prev, &curr, 2))
 			return (0);
 	}
 	return (1);
@@ -57,9 +58,11 @@ static int	check_prompt_syntax(t_parser **parser_s, t_cmd **cmds_lst, t_token *t
  * @parser_s: Pointer to the parser structure containing the command list.
  * @shell: Pointer to the shell structure where the underscore will be updated.
  *
- * Sets the shell's underscore variable to the last argument of the most recent command.
+ * Sets the shell's underscore variable to the 
+ * last argument of the most recent command.
  * If no commands are present, sets it to an empty string.
- * This is often used to replicate shell behavior for the special "$_" variable.
+ * This is often used to replicate shell behavior for the 
+ * special "$_" variable.
  *
  * Exits the program with ENOMEM if memory allocation fails.
  */
@@ -84,14 +87,16 @@ void	update_underscore_exp(t_parser *parser_s, t_shell *shell)
 
 /**
  * parser - Main parsing function that validates tokens and prepares commands.
- * @parser_s: Pointer to the parser structure, which tracks command list and pipe count.
+ * @parser_s: Pointer to the parser structure, 
+ * which tracks command list and pipe count.
  * @tokens: Linked list of tokens generated from the user input.
  * @shell: Pointer to the shell structure holding runtime state.
  *
  * Performs high-level validation:
  * - Handles edge case where only "." is passed as input.
  * - Calls check_prompt_syntax() to ensure command structure is valid.
- * - If there are no pipes, updates the shell's "_" variable with update_underscore_exp().
+ * - If there are no pipes, updates the shell's "_" variable
+ * with update_underscore_exp().
  *
  * Return: 1 on successful parsing, 0 if an error occurred.
  */

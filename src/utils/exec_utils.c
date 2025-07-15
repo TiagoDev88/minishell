@@ -47,7 +47,8 @@ void	add_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, char *lcenv_val)
 }
 
 /**
- * update_last_cmd_env - Updates the "_" environment variable based on the last command.
+ * update_last_cmd_env - Updates the "_" environment 
+ * variable based on the last command.
  * @shell: Pointer to the shell structure.
  * @last_cmd_env: Pointer to the last command environment node (can be NULL).
  * @cmd: Pointer to the command structure.
@@ -89,7 +90,7 @@ void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
  *
  * Returns a pointer to the matching environment node, or NULL if not found.
  */
-t_envp *get_envp_node(char *envp, t_envp *lst_envp)
+t_envp	*get_envp_node(char *envp, t_envp *lst_envp)
 {
 	t_envp	*curr;
 

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:16:31 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:29:29 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:55:40 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,14 @@ static void	add_pipe_back(t_pipe **pipe_lst, t_pipe *new)
 }
 
 /**
- * save_pipe - Creates a new pipe node, initializes it, and adds it to the shell's pipe list.
+ * save_pipe - Creates a new pipe node, initializes it, 
+ * and adds it to the shell's pipe list.
  * @shell: Pointer to the main shell structure.
  *
- * Allocates memory for a new t_pipe, creates a new pipe using pipe(2) system call,
- * stores the read and write file descriptors, and appends it to the shell's pipe list.
+ * Allocates memory for a new t_pipe, 
+ * creates a new pipe using pipe(2) system call,
+ * stores the read and write file descriptors, 
+ * and appends it to the shell's pipe list.
  * On failure, prints an error and exits cleanly.
  *
  * Return: Pointer to the newly created t_pipe node.
@@ -102,7 +105,8 @@ static t_pipe	*save_pipe(t_shell *shell)
 /**
  * handle_pipe - Handles a pipe token by creating and saving a pipe node.
  * @shell: Pointer to the main shell structure.
- * @curr_token: Pointer to the current token pointer, expected to be at a pipe token.
+ * @curr_token: Pointer to the current token pointer, 
+ * expected to be at a pipe token.
  *
  * Calls save_pipe to create a pipe node, updates shell's file descriptors for
  * last output, advances the token pointer past the pipe token, and returns

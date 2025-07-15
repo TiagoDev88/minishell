@@ -6,14 +6,15 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:35:47 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:08:29 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 00:01:13 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
- * print_redir_sintax_err - Prints syntax error messages related to redirection tokens.
+ * print_redir_sintax_err - Prints syntax error messages 
+ * related to redirection tokens.
  * @curr: Pointer to the current token (expected to be a redirection operator).
  * @status: Status code to return after printing the error.
  *
@@ -69,10 +70,12 @@ int	is_valid_pipe(t_token **prev, t_token **curr, int *n_pipes)
 }
 
 /**
- * is_valid_redirect - Validates that a redirection token is followed by a valid word.
+ * is_valid_redirect - Validates that a redirection token 
+ * is followed by a valid word.
  * @curr: Pointer to the current token (a redirection operator).
  *
- * Checks if the redirection is properly followed by a WORD token (e.g., a filename).
+ * Checks if the redirection is properly followed 
+ * by a WORD token (e.g., a filename).
  * If not, prints an appropriate syntax error message.
  *
  * Return: 1 if the redirect is valid, 0 otherwise.

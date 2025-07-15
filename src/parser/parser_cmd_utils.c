@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:45:55 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:18:21 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 00:02:40 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	save_cmd_args(t_list **args_lst, t_token **prev, t_token **curr)
 	{
 		arg = ft_strdup((*curr)->value);
 		if (!arg)
-			return (0);e
+			return (0);
 		new = ft_lstnew(arg);
 		if (!new)
 		{
@@ -112,9 +112,10 @@ void	redir_add_back(t_redir **redir_lst, t_redir *new)
  * @curr: Pointer to the current token pointer.
  *
  * Validates the redirect syntax, allocates a t_redir struct, sets the type,
- * duplicates the associated filename (or heredoc delimiter), and appends the node.
- *
- * Return: 1 on success, 0 on error (invalid redirect or memory allocation failure).
+ * duplicates the associated filename
+ * (or heredoc delimiter), and appends the node.
+ * Return: 1 on success, 0 on error 
+ * (invalid redirect or memory allocation failure).
  */
 int	add_redir(t_redir **redir_lst, t_token **prev, t_token **curr)
 {
