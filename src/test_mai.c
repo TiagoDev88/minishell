@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/14 02:34:25 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 01:50:05 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,13 @@ int main(int argc, char *argv[], char **envp)
 		if (g_signal > 0)
 			shell.last_status_code = g_signal;
 		g_signal = 0;
-		add_history(line);
 		shell.tokens = tokenize(line, &shell.envp, &shell);
+		if (!shell.tokens)
+		{
+			free(line);
+			continue ;
+		}
+		add_history(line);
 		if (parser(&shell.parser, shell.tokens, &shell))
 			executor(&shell, envp);
 		exit_clean(&shell, -1);
