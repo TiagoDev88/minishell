@@ -60,7 +60,7 @@ int	ft_cd(t_cmd *cmd, t_envp *envp, t_shell *shell)
 
 	if (!cmd || !cmd->cmd_args || !envp)
 		return (1);
-	if (cmd->cmd_args[2])
+	if (cmd->cmd_args[1] && cmd->cmd_args[2])
 		return (ft_putstr_fd("bash: cd: too many arguments\n", 2), 1);
 	if (!cmd->cmd_args[1] || cmd->cmd_args[1][0] == '~')
 		path = get_home_path(cmd->cmd_args[1], envp);
