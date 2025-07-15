@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 17:37:24 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:30:47 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -122,8 +122,8 @@ static char	*extract_word(t_token_builder **bd, int *start)
 	if ((*bd)->pos > *start)
 		return (append_dollar(bd, &part, start, 0), part);
 	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->startbefdol != '$')
-		return (ft_strdup(""));
-	return (NULL);
+		return (free(part), ft_strdup(""));
+	return (free(part), NULL);
 }
 
 /**
@@ -148,7 +148,7 @@ static int	extract_and_append(t_token **tokens, t_token_builder *bd,
 	if (!part)
 		return (STATE_ERROR);
 	if (!word_append(word, part))
-		return (free(word), STATE_ERROR);
+		return (free(*word), STATE_ERROR);
 	res = check_state(bd, start);
 	if (res == STATE_ERROR)
 	{
@@ -188,7 +188,7 @@ void	handle_word(t_token **tokens, t_token_builder *bd)
 		start = bd->pos;
 		res = extract_and_append(tokens, bd, &word, &start);
 		if (res == STATE_ERROR)
-			return ;
+			return (clean_words(NULL, word, 0));
 		if (res == STATE_BREAK)
 			break ;
 		if (res == STATE_CONTINUE)

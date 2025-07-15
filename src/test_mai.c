@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   test_mai.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 01:50:05 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:11:50 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../includes/minishell.h"
 
@@ -84,6 +84,12 @@ int main(int argc, char *argv[], char **envp)
 			free(line);
 			continue ;
 		}
+		// t_token *tmp1 = shell.tokens;
+		// while (tmp1)
+		// {
+		// 	printf("Token: [%d] |%s|\n", tmp1->type, tmp1->value);
+		// 	tmp1 = tmp1->next;
+		// }
 		add_history(line);
 		if (parser(&shell.parser, shell.tokens, &shell))
 			executor(&shell, envp);
