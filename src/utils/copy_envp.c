@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:41:05 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 16:48:57 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:02:38 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -51,11 +51,11 @@ void	assign_indexes(t_envp *env_list)
  * @brief Builds a linked list from the environment variables array.
  *
  * This function takes each string from the original `envp` array and splits it 
- * into key and value pairs. If the string contains `'='`, the key and value are 
- * separated accordingly. If not, only the key is stored and the value is set to NULL.
- * After processing the full array, it calls `assign_indexes` to compute the sort index
- * of each variable.
- *
+ * into key and value pairs. If the string contains `'='`, the key and value
+ *  are separated accordingly. If not, only the key is stored and the value
+ *  is set to NULL. After processing the full array, it calls `assign_indexes`
+ *  to compute the sort index of each variable.
+ * 
  * @param envp Environment array received from main.
  * @param env_list Pointer to the linked list of environment variables.
  */
@@ -96,7 +96,8 @@ void	copy_env(char **envp, t_envp **env_list)
  *
  * @param name The name of the environment variable to search for.
  * @param lst_envp The environment list to search in.
- * @return A newly allocated string with the variable value, or NULL if not found.
+ * @return A newly allocated string with the variable value, or
+ *  NULL if not found.
  */
 char	*get_env_value(char *name, t_envp *lst_envp)
 {
@@ -113,6 +114,6 @@ char	*get_env_value(char *name, t_envp *lst_envp)
 			return (ft_strdup(envp->value));
 		envp = envp->next;
 		i++;
-    }
+	}
 	return (NULL);
 }

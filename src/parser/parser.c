@@ -1,19 +1,20 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:42:12 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 22:55:43 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
 // Check Prompt line syntax
-static int	check_prompt_syntax(t_parser **parser_s, t_cmd **cmds_lst, t_token *tokens)
+static int	check_prompt_syntax(t_parser **parser_s, t_cmd **cmds_lst,
+	t_token *tokens)
 {
 	t_token	*curr;
 	t_token	*prev;

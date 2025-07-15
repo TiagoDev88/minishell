@@ -14,13 +14,10 @@ int	is_built_in(char *cmd)
 {
 	if (ft_strchr(cmd, '/'))
 		return (0);
-	return (!ft_strcmp(cmd, "cd") ||
-			!ft_strcmp(cmd, "echo") ||
-			!ft_strcmp(cmd, "env") ||
-			!ft_strcmp(cmd, "exit") ||
-			!ft_strcmp(cmd, "export") ||
-			!ft_strcmp(cmd, "pwd") ||
-			!ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "echo")
+		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit")
+		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "pwd")
+		|| !ft_strcmp(cmd, "unset"));
 }
 
 /**
@@ -112,7 +109,7 @@ void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
  * @param lst_envp Head of the environment variable linked list.
  * @return t_envp* Pointer to the matching node or NULL if not found.
  */
-t_envp *get_envp_node(char *envp, t_envp *lst_envp)
+t_envp	*get_envp_node(char *envp, t_envp *lst_envp)
 {
 	t_envp	*curr;
 

@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 16:01:29 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/13 23:29:29 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 22:56:46 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #ifndef PARSER_H
 
@@ -46,7 +46,7 @@ typedef struct s_parser
 }	t_parser;
 
 /* Main function */
-int			parser(t_parser *parser_s, t_token *tokens, t_shell *shell);
+int		parser(t_parser *parser_s, t_token *tokens, t_shell *shell);
 /* Command struct utils */
 int		add_cmd(t_cmd **cmd_lst, t_token **prev, t_token **curr, int mode);
 int		is_valid_redirect(t_token *curr);

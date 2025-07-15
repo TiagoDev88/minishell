@@ -1,19 +1,19 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 00:57:23 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:01:27 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-typedef struct s_shell t_shell;
+typedef struct s_shell	t_shell;
 
 typedef struct s_file
 {
@@ -61,7 +61,6 @@ typedef struct s_exec
 	int					cmd_exit_code;
 }	t_exec;
 
-
 /* Main */
 void		executor(t_shell *shell, char **envp);
 /* Cleaner */
@@ -71,19 +70,23 @@ int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
 void		exit_clean_child(t_shell *shell, int exit_s);
 /* Command execution */
-void		execute_command(t_shell *shell, t_exec *exec, t_cmd *curr_cmd, char **envp);
+void		execute_command(t_shell *shell, t_exec *exec, t_cmd *curr_cmd,
+				char **envp);
 void		handle_redirects(t_shell *shell);
-void		update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd);
+void		update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env,
+				t_cmd *cmd);
 /* Error */
 void		print_error_msg(char *cmd, char *error, int mode);
 void		print_cmd_err(char *cmd, int mode, int exit_s, t_shell *shell);
 int			print_file_err(char *filename, char *error, int exit_s);
-int			file_has_error(t_shell *shell, t_token **curr_token, int exit_status);
+int			file_has_error(t_shell *shell, t_token **curr_token,
+				int exit_status);
 /* File struct */
 void		clean_files_s(t_file **file_lst);
 t_file		*create_file_node(void);
 void		add_file_back(t_file **file_lst, t_file *new_file);
-int			add_file(t_files_container *f_con, char *filename, int redir_type, t_shell *shell);
+int			add_file(t_files_container *f_con, char *filename, int redir_type,
+				t_shell *shell);
 /* Heredoc */
 int			heredoc(t_file **new, char *delimiter, t_files_container **f_con);
 /* Path */
@@ -102,6 +105,5 @@ int			validate_abs_cmd(char *cmd_path, t_shell *shell);
 int			is_valid_cmd(t_shell *shell, t_cmd *cmd);
 /* Built-ins */
 int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
-
 
 #endif

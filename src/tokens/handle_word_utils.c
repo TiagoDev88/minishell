@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 19:49:47 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/15 22:49:25 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -105,7 +105,8 @@ static void	append_text(t_token_builder **bd, char **part, int *start)
  * @brief Appends text and/or variable values to the current partial word.
  *
  * If `flag == 1`, extracts a variable and appends its value after appending
- * the plain text from `*start` to `pos`. If `flag == 0`, only the text is appended.
+ * the plain text from `*start` to `pos`. If `flag == 0`, only
+ *  the text is appended.
  *
  * @param bd Pointer to the token builder.
  * @param part Pointer to the partial word being built.

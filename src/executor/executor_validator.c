@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor_validator.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/14 01:48:11 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/15 22:47:12 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../../includes/minishell.h"
 
@@ -74,8 +74,8 @@ int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 	exit_s = 0;
 	while (*curr_token && is_redirect(*curr_token))
 	{
-		exit_s = add_file(&shell->exec.files_container, \
-			(*curr_token)->next->value, (*curr_token)->type, shell);
+		exit_s = add_file(&shell->exec.files_container,
+				(*curr_token)->next->value, (*curr_token)->type, shell);
 		if (exit_s == -1)
 		{
 			print_error_msg(NULL, strerror(ENOMEM), 1);
