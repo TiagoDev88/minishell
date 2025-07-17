@@ -114,7 +114,8 @@ int	ft_exit(t_cmd **cmd, t_shell *sh)
 	long long	code;
 	char		*arg;
 
-	ft_putendl_fd("exit", 1);
+	if (sh->exec.procc_lst == NULL)
+		ft_putendl_fd("exit", 1);
 	if (!(*cmd)->cmd_args[1] || ft_strcmp((*cmd)->cmd_args[1], "--") == 0)
 		exit_clean(sh, EXIT_SUCCESS);
 	arg = (*cmd)->cmd_args[1];
