@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   envp_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:03:39 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 16:55:31 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/17 10:40:43 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
@@ -142,12 +142,10 @@ static void	util_print_export_envp(t_envp *envp, int size)
 void	print_export_envp(t_envp *envp)
 {
 	t_envp	*tmp;
-	int		i;
 	int		size;
 
 	assign_indexes(envp);
 	tmp = envp;
-	i = 0;
 	size = 0;
 	while (tmp)
 	{

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 01:02:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:53:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:53:28 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	is_valid_cmd(t_shell *shell, t_cmd *cmd)
 	{
 		cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
 		if (!cmd->cmd_path)
-			exit_clean(shell, ENOMEM);
+			exit_clean(shell, ENOMEM, 1);
 		if (!validate_abs_cmd(cmd->cmd_path, shell))
 			return (0);
 	}
@@ -120,7 +120,7 @@ int	validate_and_open_files(t_token **curr_token, t_shell *shell)
 		if (exit_s == -1)
 		{
 			print_error_msg(NULL, strerror(ENOMEM), 1);
-			exit_clean(shell, ENOMEM);
+			exit_clean(shell, ENOMEM, 1);
 		}
 		if (exit_s > 0)
 			return (file_has_error(shell, curr_token, exit_s));

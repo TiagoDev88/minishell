@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:16:31 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:55:40 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:58:08 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,14 @@ static t_pipe	*save_pipe(t_shell *shell)
 	if (!new_pipe)
 	{
 		print_error_msg(NULL, strerror(ENOMEM), 1);
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 	}
 	new_pipe->next = NULL;
 	add_pipe_back(&shell->exec.pipe_lst, new_pipe);
 	if (pipe(pipe_fds) == -1)
 	{
 		print_error_msg(NULL, strerror(errno), 1);
-		exit_clean(shell, errno);
+		exit_clean(shell, errno, 1);
 	}
 	new_pipe->write_fd = pipe_fds[1];
 	new_pipe->read_fd = pipe_fds[0];

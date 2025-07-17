@@ -27,8 +27,15 @@ static void	get_dup_original_stds(int *dup_ori_std)
 	dup_ori_std[1] = ori_std_out;
 }
 
+void sigpipe_handler(int sig)
+{
+	(void)sig;
+	g_signal = 128 + SIGPIPE;
+}
+
 static void	execute(t_shell *shell, t_cmd *curr_cmd)
 {
+	signal(SIGPIPE, sigpipe_handler);
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
 		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
@@ -43,20 +50,19 @@ static void	execute(t_shell *shell, t_cmd *curr_cmd)
 		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
+	if (g_signal == 128 + SIGPIPE)
+		exit_clean(shell, g_signal, 0);
 }
 
 /**
  * exec_built_in - Executes a built-in command, handling redirections and pipes.
  * @shell: Shell context.
  * @curr_cmd: Command to execute.
- * @single_cmd: Flag indicating if this is a single command (no pipes).
- *
  * Returns 1 if command is built-in and executed, else 0.
  */
-int	exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd)
+int	exec_built_in(t_shell *shell, t_cmd *curr_cmd)
 {
 	int		dup_ori_stds[2];
-	t_envp	*under_envp;
 
 	if (!is_built_in(curr_cmd->cmd_args[0]))
 		return (0);

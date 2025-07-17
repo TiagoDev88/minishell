@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:56:44 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:56:29 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	redirect(int redir_type, t_shell *shell, int fd)
 			if (dup2(fd, STDIN_FILENO) == -1)
 			{
 				print_error_msg(NULL, strerror(errno), 1);
-				exit_clean(shell, errno);
+				exit_clean(shell, errno, 0);
 			}
 		}
 	}
@@ -40,7 +40,7 @@ static void	redirect(int redir_type, t_shell *shell, int fd)
 			if (dup2(fd, STDOUT_FILENO) == -1)
 			{
 				print_error_msg(NULL, strerror(errno), 1);
-				exit_clean(shell, errno);
+				exit_clean(shell, errno, 0);
 			}
 		}
 	}
@@ -73,6 +73,7 @@ void	handle_redirects(t_shell *shell)
 static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 {
 	execve(cmd_path, cmd->cmd_args, envp);
+	printf("Execve error\n");
 	print_error_msg(NULL, strerror(errno), 1);
 	shell->last_status_code = errno;
 	if (cmd_path && ft_strchr(cmd->cmd_args[0], '/'))
@@ -92,7 +93,7 @@ static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
  */
 void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 {
-	signal(SIGINT, sigint_handler);
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	handle_redirects(shell);
 	close_last_fds(exec);
@@ -100,13 +101,10 @@ void	fork_proccess(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 	if (ft_strchr(cmd->cmd_args[0], '/'))
 		exec_cmd(cmd->cmd_path, shell, cmd, envp);
 	else if (is_built_in(cmd->cmd_args[0]))
-	{
-		exec_built_in(shell, cmd, 0);
-		exit_clean_child(shell, shell->last_status_code);
-	}
+		exec_built_in(shell, cmd);
 	else
 		exec_cmd(cmd->cmd_path, shell, cmd, envp);
-	exit_clean_child(shell, shell->last_status_code);
+	exit_clean(shell, shell->last_status_code, 0);
 }
 
 /**
@@ -124,7 +122,7 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 	t_proccess	*new;
 
 	if (is_built_in(cmd->cmd_args[0]) && !shell->parser.n_pipes)
-		exec_built_in(shell, cmd, 1);
+		exec_built_in(shell, cmd);
 	else
 	{
 		if (!is_valid_cmd(shell, cmd))
@@ -140,7 +138,7 @@ void	execute_command(t_shell *shell, t_exec *exec, t_cmd *cmd, char **envp)
 		if (new->pid == -1)
 		{
 			print_error_msg(NULL, strerror(errno), 1);
-			exit_clean(shell, EXIT_FAILURE);
+			exit_clean(shell, EXIT_FAILURE, 1);
 		}
 		else if (new->pid == 0)
 			fork_proccess(shell, exec, cmd, envp);

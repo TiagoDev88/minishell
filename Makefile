@@ -2,7 +2,7 @@
 NAME = minishell
 
 CC = cc -g
-#CFLAGS = -Wall -Wextra -Werror -I includes -I libft
+CFLAGS = -Wall -Wextra -Werror -I includes -I libft
 
 LDFLAGS = -lreadline
 
@@ -15,7 +15,7 @@ SRC_DIR = src
 SRC_BUILTIN	=	$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c unset.c)
 #SRC_MAIN	=	main.c
 #SRC_MAIN	=	test_main2.c
-SRC_MAIN	=	test_mai.c
+SRC_MAIN	=	mainn.c
 #SRC_MAIN	=	test_main_env.c
 SRC_EXECUTOR =	$(addprefix executor/, executor.c)
 SRC_UTILS	=	$(addprefix utils/, utils.c envp_utils.c copy_envp.c export_utils.c)

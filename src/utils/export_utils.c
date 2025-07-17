@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 16:52:04 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/16 23:05:43 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/utils.h"
@@ -72,13 +72,11 @@ static void	update_export_env(char *envp, t_envp **node, int conc)
 {
 	char	*value;
 	char	*equal;
-	int		key_len;
 	char	*tmp;
 
 	equal = ft_strchr(envp, '=');
 	if (!equal || !node)
 		return ;
-	key_len = equal - envp;
 	value = ft_strdup(equal + 1);
 	if (conc == 2 && (*node)->value != NULL)
 	{

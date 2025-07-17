@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 23:03:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:52:50 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:50:59 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	close_last_fds(t_exec *exec)
  * Prints an error message if exiting due to ENOMEM.
  * Frees the underscore variable if present.
  */
-void	exit_clean(t_shell *shell, int exit_s)
+void	exit_clean(t_shell *shell, int exit_s, int is_exit)
 {
 	if (shell->envp && exit_s >= 0)
 		free_envp(&shell->envp);
@@ -101,13 +101,13 @@ void	exit_clean(t_shell *shell, int exit_s)
 		clean_proccess_s(&shell->exec.procc_lst);
 	if (exit_s >= 0)
 	{
-		if (shell->envp)
-			free_envp(&shell->envp);
 		if (shell->underscore)
 			free(shell->underscore);
 		if (exit_s == ENOMEM)
 			print_error_msg(NULL, strerror(ENOMEM), 1);
 		shell->last_status_code = exit_s;
+		if (is_exit)
+			rl_clear_history();
 		exit(exit_s);
 	}
 }
