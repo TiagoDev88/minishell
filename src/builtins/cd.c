@@ -1,4 +1,3 @@
-
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
@@ -38,12 +37,10 @@ static int	update_pwd_and_oldpwd(t_envp **envp)
 	char	*oldpwd;
 	char	*pwd;
 	char	*cwd;
-	char	*check_oldpwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (1);
-	check_oldpwd = get_env_value("OLDPWD", *envp);
 	oldpwd = ft_strjoin("OLDPWD=", get_env_value("PWD", *envp));
 	pwd = ft_strjoin("PWD=", cwd);
 	free(cwd);

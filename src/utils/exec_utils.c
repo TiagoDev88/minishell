@@ -36,13 +36,13 @@ int	is_redirect(t_token *token)
  * Adds or updates the "_" environment variable with the given value.
  * Exits on memory allocation failure.
  */
-void	add_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, char *lcenv_val)
+void	add_last_cmd_env(t_shell *shell, char *lcenv_val)
 {
 	char	*key_value;
 
 	key_value = ft_strjoin("_=", lcenv_val);
 	if (!key_value)
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 	is_update_or_add_env(key_value, &shell->envp, 1);
 }
 
@@ -73,14 +73,14 @@ void	update_last_cmd_env(t_shell *shell, t_envp *last_cmd_env, t_cmd *cmd)
 	else
 		lc_env_value = ft_strdup(cmd->cmd_path);
 	if (!lc_env_value)
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 	if (last_cmd_env)
 	{
 		free(last_cmd_env->value);
 		last_cmd_env->value = lc_env_value;
 	}
 	else
-		add_last_cmd_env(shell, last_cmd_env, lc_env_value);
+		add_last_cmd_env(shell, lc_env_value);
 }
 
 /**

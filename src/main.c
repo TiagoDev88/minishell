@@ -6,13 +6,11 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/07 22:46:08 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:16:56 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// usar para leaks valgrind --leak-check=full --show-leak-kinds=definite  ./minishell
 
 void sigint_handler(int sig)
 {

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:54:10 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/16 00:04:13 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:57:38 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	update_underscore_exp(t_parser *parser_s, t_shell *shell)
 		shell->underscore = ft_strdup(parser_s->cmd_lst->cmd_args[i]);
 	}
 	if (!shell->underscore)
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 }
 
 /**
@@ -112,7 +112,10 @@ int	parser(t_parser *parser_s, t_token *tokens, t_shell *shell)
 		return (0);
 	}
 	if (!check_prompt_syntax(&parser_s, &parser_s->cmd_lst, tokens))
+	{
+		shell->last_status_code = 2;
 		return (0);
+	}
 	if (!parser_s->n_pipes)
 		update_underscore_exp(parser_s, shell);
 	return (1);

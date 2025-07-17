@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:01:27 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:55:30 by edfreder         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
@@ -65,7 +65,7 @@ typedef struct s_exec
 void		executor(t_shell *shell, char **envp);
 /* Cleaner */
 void		close_pipes(t_pipe **pipe_lst);
-void		exit_clean(t_shell *shell, int exit_s);
+void		exit_clean(t_shell *shell, int exit_s, int is_exit);
 int			clean_mem(void *p1, void *p2, void *p3, int exit_s);
 void		close_last_fds(t_exec *exec);
 void		exit_clean_child(t_shell *shell, int exit_s);
@@ -104,6 +104,6 @@ int			has_cmd(t_token **curr);
 int			validate_abs_cmd(char *cmd_path, t_shell *shell);
 int			is_valid_cmd(t_shell *shell, t_cmd *cmd);
 /* Built-ins */
-int			exec_built_in(t_shell *shell, t_cmd *curr_cmd, int single_cmd);
+int			exec_built_in(t_shell *shell, t_cmd *curr_cmd);
 
 #endif

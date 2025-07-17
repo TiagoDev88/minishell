@@ -1,4 +1,3 @@
-
 #include "../../includes/minishell.h"
 #include "../../includes/builtins.h"
 
@@ -114,16 +113,17 @@ int	ft_exit(t_cmd **cmd, t_shell *sh)
 	long long	code;
 	char		*arg;
 
-	ft_putendl_fd("exit", 1);
+	if (!sh->exec.procc_lst)
+		ft_putendl_fd("exit", 1);
 	if (!(*cmd)->cmd_args[1] || ft_strcmp((*cmd)->cmd_args[1], "--") == 0)
-		exit_clean(sh, EXIT_SUCCESS);
+		exit_clean(sh, EXIT_SUCCESS, 1);
 	arg = (*cmd)->cmd_args[1];
 	if (!only_num(arg) || is_overflow(arg))
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
-		exit_clean(sh, 2);
+		exit_clean(sh, 2, 1);
 	}
 	if ((*cmd)->cmd_args[2])
 	{
@@ -132,6 +132,6 @@ int	ft_exit(t_cmd **cmd, t_shell *sh)
 		return (1);
 	}
 	code = ft_atoll(arg);
-	exit_clean(sh, (unsigned char)code);
+	exit_clean(sh, (unsigned char)code, 1);
 	return (0);
 }

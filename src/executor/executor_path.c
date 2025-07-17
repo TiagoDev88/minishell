@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:03:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:56:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:53:55 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**get_path_env_splitted(t_shell *shell, char *cmd)
 	path_split = ft_split(path_envp, ':');
 	free(path_envp);
 	if (!path_split)
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 	return (path_split);
 }
 
@@ -92,7 +92,7 @@ static char	*get_path_from_path_env(t_shell *sh, char **path_split, char *cmd)
 	{
 		path = build_cmd_path(path_split[i], cmd);
 		if (!path)
-			exit_clean(sh, ENOMEM);
+			exit_clean(sh, ENOMEM, 1);
 		if (access(path, F_OK) == 0 && ft_strcmp("..", cmd) != 0)
 			break ;
 		free(path);
@@ -134,7 +134,7 @@ static char	*get_path_from_curr_dir(t_shell *shell, char *cmd)
 	}
 	cmd_path = build_cmd_path(curr_dir, cmd);
 	if (!cmd_path)
-		exit_clean(shell, ENOMEM);
+		exit_clean(shell, ENOMEM, 1);
 	if (access(cmd_path, F_OK) != 0)
 	{
 		free(cmd_path);

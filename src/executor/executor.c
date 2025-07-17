@@ -6,30 +6,58 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:21:44 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:01:26 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+ * save_last_cmd_exit_code - Waits for a child process and saves its exit code.
+ * @shell: Pointer to the shell structure containing execution context.
+ * @proccess: Pointer to the process structure representing the child process.
+ *
+ * Waits for the specified child process to finish using waitpid.
+ * If the process exited normally, stores its exit status 
+ * in shell->last_status_code.
+ * If terminated by a signal, stores 128 + signal number.
+ * If the signal was SIGQUIT and the process is the last in the list,
+ * prints "Quit (core dumped)" message followed by a newline.
+ */
 static void	save_last_cmd_exit_code(t_shell *shell, t_proccess *proccess)
 {
 	int			status;
 	int			sig;
 
+	if (proccess->pid == -1)
+		return ;
 	waitpid(proccess->pid, &status, 0);
-	signal(SIGINT, sigint_handler);
 	if (WIFEXITED(status))
 		shell->last_status_code = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-			ft_putstr_fd("\n", 1);
+		if (!proccess->next)
+		{
+			if (sig == SIGQUIT || sig == SIGINT)
+			{
+				if (sig == SIGQUIT)
+					printf("Quit (core dumped)");
+				printf("\n");
+			}
+		}
 		shell->last_status_code = 128 + sig;
 	}
 }
 
+/**
+ * get_last_cmd_exit_code - Collects exit codes from all child processes.
+ * @shell: Pointer to the shell structure containing execution context.
+ *
+ * Iterates through the list of child processes and calls
+ * save_last_cmd_exit_code for each to update shell->last_status_code.
+ * Also closes open file descriptors and pipes after execution.
+ */
 static void	get_last_cmd_exit_code(t_shell *shell)
 {
 	t_proccess	*curr_proccess;
@@ -46,6 +74,17 @@ static void	get_last_cmd_exit_code(t_shell *shell)
 	}
 }
 
+/**
+ * handle_cmds_redirs - Handles commands and redirections for execution.
+ * @exec: Pointer to the execution context.
+ * @cmd: Pointer to the current command structure.
+ * @token: Double pointer to the current token list.
+ * @sh: Pointer to the shell structure.
+ *
+ * Checks for command presence and validates file redirections.
+ * Updates execution flags regarding errors and command execution readiness.
+ * Returns 0 if execution should not continue for current tokens, 1 otherwise.
+ */
 int	handle_cmds_redirs(t_exec *exec, t_cmd *cmd, t_token **token, t_shell *sh)
 {
 	t_token	*tmp_token;
@@ -67,24 +106,14 @@ int	handle_cmds_redirs(t_exec *exec, t_cmd *cmd, t_token **token, t_shell *sh)
 }
 
 /**
- * executor - Main function to handle the execution phase of the shell.
- * @shell: Pointer to the main shell structure containing all execution context.
- * @envp: Environment variables passed to execve.
+ * exec_line - Executes the parsed command line.
+ * @shell: Pointer to the shell structure containing all context.
+ * @exec: Pointer to the execution context.
+ * @envp: Environment variables array.
  *
- * This function:
- * - Initializes I/O defaults (stdin and stdout).
- * - Iterates through the token and command lists, dispatching execution logic.
- * - Handles redirections, file opening errors, and command execution.
- * - Tracks child process exit statuses and updates the shell’s last status code.
- *
- * Logic flow:
- * - Calls exec_line() to iterate through the parsed command list and tokens.
- * - Waits for child processes and captures their exit codes.
- * - Updates shell->last_status_code based on:
- *    - Command execution result
- *    - File redirection failure
- *
- * Return: void
+ * Iterates over tokens and commands, handling redirections, pipes,
+ * and command execution. Manages file descriptor state and cleans
+ * temporary resources after each command.
  */
 static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 {
@@ -113,6 +142,28 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 	}
 }
 
+/**
+ * executor - Main function to handle the execution phase of the shell.
+ * @shell: Pointer to the main shell structure containing 
+ * all execution context.
+ * @envp: Environment variables passed to execve.
+ *
+ * This function:
+ * - Initializes I/O defaults (stdin and stdout).
+ * - Iterates through the token and command lists, dispatching execution logic.
+ * - Handles redirections, file opening errors, and command execution.
+ * - Tracks child process exit statuses and 
+ * updates the shell’s last status code.
+ * Logic flow:
+ * - Calls exec_line() to iterate through the parsed command list and tokens.
+ * - Waits for child processes and captures their exit codes.
+ * - Updates shell->last_status_code based on:
+ *    - Command execution result
+ *    - File redirection failure
+ *
+ * Return: void
+ */
+
 void	executor(t_shell *shell, char **envp)
 {
 	shell->exec.files_container.last_in_fd = 0;
@@ -124,4 +175,7 @@ void	executor(t_shell *shell, char **envp)
 		shell->last_status_code = shell->exec.cmd_exit_code;
 	if (shell->exec.file_exit_code)
 		shell->last_status_code = shell->exec.file_exit_code;
+	shell->exec.cmd_exit_code = 0;
+	shell->exec.file_exit_code = 0;
+	signal(SIGINT, sigint_handler);
 }
