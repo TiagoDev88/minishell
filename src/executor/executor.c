@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/17 11:01:26 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 19:32:01 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 		exec->files_container.last_out_fd = 1;
 		if (curr_cmd)
 			curr_cmd = curr_cmd->next;
+		signal(SIGPIPE, SIG_DFL);
 	}
 }
 

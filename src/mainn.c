@@ -31,6 +31,8 @@ char	*get_prompt_line(t_shell *shell, char *dir)
 {
 	char	*line;
 
+	line = readline(dir);
+	/*
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
 		line = readline(dir);
 	else
@@ -38,6 +40,7 @@ char	*get_prompt_line(t_shell *shell, char *dir)
 		line = get_next_line(STDIN_FILENO);
 		line[ft_strlen(line) - 1] = '\0';
 	}
+	*/
 	free(dir);
 	if (line)
 	{

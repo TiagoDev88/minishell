@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 19:35:47 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/16 00:01:13 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/17 19:50:09 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	print_redir_sintax_err(t_token *curr, int status)
  */
 int	is_valid_pipe(t_token **prev, t_token **curr, int *n_pipes)
 {
-	if (!prev || !(*curr)->next || (*curr)->next->type == TOKEN_PIPE)
+	if (!(*prev) || !(*curr)->next || (*curr)->next->type == TOKEN_PIPE)
 	{
 		ft_putendl_fd(ERR_NEAR_PIPE, 2);
 		return (0);

@@ -30,7 +30,7 @@ static void	get_dup_original_stds(int *dup_ori_std)
 void sigpipe_handler(int sig)
 {
 	(void)sig;
-	g_signal = 131;
+	g_signal = 128 + SIGPIPE;
 }
 
 static void	execute(t_shell *shell, t_cmd *curr_cmd)
@@ -50,7 +50,7 @@ static void	execute(t_shell *shell, t_cmd *curr_cmd)
 		shell->last_status_code = ft_pwd(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "unset"))
 		shell->last_status_code = ft_unset(curr_cmd, &shell->envp);
-	if (g_signal == 131)
+	if (g_signal == 128 + SIGPIPE)
 		exit_clean(shell, g_signal, 0);
 }
 
