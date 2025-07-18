@@ -68,8 +68,9 @@ int main(int argc, char *argv[], char **envp)
 	char	*line;
 	char	*dir;
 
+	if (argc != 1)
+		return (ft_putstr_fd("Arguments are not accepted!\n", 2), 1);
 	initiate_minishell(argc, argv, &shell, envp);
-	dir = NULL;
 	while (1)
 	{
 		dir = get_actual_dir(&shell);
@@ -77,7 +78,7 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break ;
 		shell.tokens = tokenize(line, &shell.envp, &shell);
-		if (!shell.tokens)
+		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))	
 			continue ;
 		add_history(line);
 		free(line);
