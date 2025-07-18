@@ -33,6 +33,20 @@ echo ""''""''"''"'""'
 echo $42
 echo $!
 echo $?!
+echo Hello"my friend $USER$S! from 42?"'are you ok?'$USER
+echo Hello"my friend $USER$S from 42?"'are you ok?'$USER
+echo Hello"my friend $S$USER$S from 42?"'are you ok?'$USER
+echo Hello"my friend $S$USER$S'from' 42?"'are you ok?'$USER
+echo Hello"my friend$S$USER$S'from' 42?"'are you ok?'$USER
+echo Hello"my friend$S$USER$S$!'from' 42?"'are you ok?'$USER
+echo Hello"my friend$S$USER$S$!='from' 42?"'are you ok?'$USER
+echo Hello"my friend$S$USER$S$='from' 42?"'are you ok?'$USER
+echo Hello my friend$S$USER$S$1'from' 42?'are you ok?'$USER
+echo Hello my friend$S$USER$S$='from' 42?'are you ok?'$USER
+echo Hello my friend$S$USER$S$1from 42?'are you ok?'$USER
+echo Hello my friend$S$USER$S$=from 42?are you ok?$USER
+echo Hello my friend$S$USER$S$1from 42?are you ok?$USER
+echo Hello my friend$S$USER$S$=from 42?are you ok?$USER
 export ==hello
 export HELLO=123 A- B
 export ZZ$=hello

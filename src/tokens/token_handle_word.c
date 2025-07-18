@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/18 12:43:41 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:37:22 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -37,7 +37,7 @@ static int	check_state(t_token_builder *bd, int *start)
 			return (STATE_BREAK);
 		return (STATE_QUOTE_CHANGE);
 	}
-	if (bd->del == ' ' && ft_strchr("'\" \t><|$", bd->input[bd->pos]))
+	if (bd->del == ' ' && ft_strchr("'\" \t><|", bd->input[bd->pos]))
 	{
 		if ((bd->input[bd->pos] == '\'' || bd->input[bd->pos] == '"'))
 		{
@@ -116,12 +116,12 @@ static char	*extract_word(t_token_builder **bd, int *start)
 			break ;
 		if ((*bd)->del != ' ' && (*bd)->input[(*bd)->pos] == (*bd)->del)
 			break ;
-		if ((*bd)->del == ' ' && ft_strchr("\"$ '\t><|",
+		if ((*bd)->del == ' ' && ft_strchr("\" '\t><|",
 				(*bd)->input[(*bd)->pos]))
 			break ;
 		(*bd)->pos++;
 	}
-	if ((*bd)->pos > *start)
+	if ((*bd)->pos > *start || part[0] != '\0')
 		return (append_dollar(bd, &part, start, 0), part);
 	if ((*bd)->pos == *start && (*bd)->del == ' ' && (*bd)->startbefdol != '$')
 		return (free(part), ft_strdup(""));
@@ -147,6 +147,8 @@ static int	extract_and_append(t_token **tokens, t_token_builder *bd,
 	int		res;
 
 	part = extract_word(&bd, start);
+	if (!part && *word[0] != '\0')
+		return (STATE_CONTINUE);
 	if (!part)
 		return (STATE_ERROR);
 	if (!word_append(word, part))

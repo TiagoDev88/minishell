@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/18 12:48:51 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:40:31 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -29,7 +29,7 @@ void	clean_words(t_token **tk, char *word, int res)
 	if (word)
 	{
 		free(word);
-		word == NULL;
+		word = NULL;
 	}
 	if (tk && *tk)
 		free_tokens(tk);
