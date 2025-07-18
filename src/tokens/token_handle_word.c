@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:45:21 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 20:30:47 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:43:41 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -33,6 +33,8 @@ static int	check_state(t_token_builder *bd, int *start)
 	{
 		bd->pos++;
 		bd->del = ' ';
+		if (bd->input[bd->pos] == ' ')
+			return (STATE_BREAK);
 		return (STATE_QUOTE_CHANGE);
 	}
 	if (bd->del == ' ' && ft_strchr("'\" \t><|$", bd->input[bd->pos]))
@@ -152,7 +154,7 @@ static int	extract_and_append(t_token **tokens, t_token_builder *bd,
 	res = check_state(bd, start);
 	if (res == STATE_ERROR)
 	{
-		clean_words(tokens, *word, STATE_ERROR);
+		clean_words(tokens, NULL, STATE_ERROR);
 		return (STATE_ERROR);
 	}
 	return (res);

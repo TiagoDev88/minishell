@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:37:36 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/15 22:49:25 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:48:51 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -27,7 +27,10 @@ void	clean_words(t_token **tk, char *word, int res)
 	if (res == -1)
 		ft_putendl_fd("bash: syntax error: unclosed quote", STDERR_FILENO);
 	if (word)
+	{
 		free(word);
+		word == NULL;
+	}
 	if (tk && *tk)
 		free_tokens(tk);
 }
@@ -131,7 +134,7 @@ int	append_dollar(t_token_builder **bd, char **part, int *start, int flag)
 		if (!env_val)
 		{
 			if ((*bd)->del == '"')
-				return (env_val = ft_strdup(""), 1);
+				return (1);
 			else
 				return (0);
 		}
