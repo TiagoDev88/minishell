@@ -78,7 +78,7 @@ int main(int argc, char *argv[], char **envp)
 		if (!line)
 			break ;
 		shell.tokens = tokenize(line, &shell.envp, &shell);
-		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))	
+		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))
 			continue ;
 		add_history(line);
 		free(line);
