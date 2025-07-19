@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 12:00:08 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/17 10:46:39 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/19 15:43:36 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	n_flag(char *arg)
  * @param cmd Command struct containing arguments.
  * @return int Always returns 0.
  */
-int	ft_echo(t_cmd *cmd)
+int	ft_echo(t_cmd *cmd, t_envp *envp)
 {
 	int	i;
 	int	nl;
@@ -65,7 +65,10 @@ int	ft_echo(t_cmd *cmd)
 	}
 	while (cmd->cmd_args[i])
 	{
-		printf("%s", cmd->cmd_args[i]);
+		if (cmd->cmd_args[i][0] == '~' && cmd->cmd_args[i][1] == '\0')
+			printf("%s", get_home_path(cmd->cmd_args[i], envp));
+		else
+			printf("%s", cmd->cmd_args[i]);
 		if (cmd->cmd_args[i + 1])
 			printf(" ");
 		i++;

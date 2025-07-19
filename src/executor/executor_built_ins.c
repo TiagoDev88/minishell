@@ -39,7 +39,7 @@ static void	execute(t_shell *shell, t_cmd *curr_cmd)
 	if (!ft_strcmp(curr_cmd->cmd_args[0], "cd"))
 		shell->last_status_code = ft_cd(curr_cmd, shell->envp, shell);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "echo"))
-		shell->last_status_code = ft_echo(curr_cmd);
+		shell->last_status_code = ft_echo(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "env"))
 		shell->last_status_code = ft_env(curr_cmd, shell->envp);
 	else if (!ft_strcmp(curr_cmd->cmd_args[0], "exit"))
