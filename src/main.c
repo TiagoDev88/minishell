@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mainn.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/19 15:24:02 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/19 15:25:14 by edfreder         ###   ########.fr       */
+/*   Created: 2025/07/19 16:27:46 by edfreder          #+#    #+#             */
+/*   Updated: 2025/07/19 16:27:49 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ char	*get_prompt_line(t_shell *shell, char *dir)
 	else
 	{
 		line = get_next_line(STDIN_FILENO);
-		line[ft_strlen(line) - 1] = '\0';
+		if (line)
+			line[ft_strlen(line) - 1] = '\0';
 	}
 	free(dir);
 	if (line)
@@ -89,13 +90,13 @@ int	main(int argc, char *argv[], char **envp)
 		shell.tokens = tokenize(line, &shell.envp, &shell);
 		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))
 			continue ;
-		add_history(line);
 		free(line);
 		line = NULL;
 		if (parser(&shell.parser, shell.tokens, &shell))
 			executor(&shell, envp);
 		exit_clean(&shell, -1, 0);
 	}
-	ft_putendl_fd("exit", 1);
-	exit_clean(&shell, 0, 1);
+	if (!isatty(STDIN_FILENO) && !isatty(STDOUT_FILENO))
+		ft_putendl_fd("exit", 1);
+	exit_clean(&shell, shell.last_status_code, 1);
 }

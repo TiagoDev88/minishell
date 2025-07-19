@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/16 19:32:28 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:28:20 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,5 +113,8 @@ t_token	*tokenize(char *input, t_envp **envp, t_shell *shell)
 			break ;
 		help_tokenize(&tk, &bd, substr);
 	}
+	if (tk && (input[0] != ' ' || input[0] != '\t')
+		&& (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO)))
+		add_history(input);
 	return (tk);
 }
