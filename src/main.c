@@ -1,67 +1,101 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   mainn.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/18 16:17:00 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/16 22:16:56 by edfreder         ###   ########.fr       */
+/*   Created: 2025/07/19 15:24:02 by edfreder          #+#    #+#             */
+/*   Updated: 2025/07/19 15:25:14 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void sigint_handler(int sig)
+int	g_signal = 0;
+
+void	sigint_handler(int sig)
 {
-    (void)sig;
-	clear_history();
-	rl_clear_signals();
- 	write(1, "\nShell encerrada por SIGINT (Ctrl+C)\n", 37);
-	exit(EXIT_SUCCESS);
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	g_signal = 130;
 }
 
-int main(int argc, char *argv[], char **envp)
+char	*get_actual_dir(t_shell *shell)
+{
+	char	*tmp_dir;
+	char	*dir;
+
+	tmp_dir = getcwd(NULL, 0);
+	if (!tmp_dir)
+		exit_clean(shell, ENOMEM, 1);
+	dir = ft_strjoin(tmp_dir, "$ ");
+	free(tmp_dir);
+	if (!dir)
+		exit_clean(shell, ENOMEM, 1);
+	return (dir);
+}
+
+char	*get_prompt_line(t_shell *shell, char *dir)
+{
+	char	*line;
+
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+		line = readline(dir);
+	else
+	{
+		line = get_next_line(STDIN_FILENO);
+		line[ft_strlen(line) - 1] = '\0';
+	}
+	free(dir);
+	if (line)
+	{
+		if (g_signal > 0)
+			shell->last_status_code = g_signal;
+		g_signal = 0;
+	}
+	return (line);
+}
+
+void	initiate_minishell(int argc, char **argv, t_shell *shell, char **envp)
+
 {
 	(void)argc;
 	(void)argv;
-	(void)envp;
-	
-	char	*line;
-	char *dir = NULL;
-	char *cwd = NULL;
-	t_token	*tokens;
-
+	ft_memset(shell, 0, sizeof(t_shell));
 	signal(SIGINT, sigint_handler);
-
-	while (1)
-	{
-		free(dir);
-		cwd = getcwd(NULL, 0);  //dar free a dir, pk e alocado
-		if (!cwd)
-			break;
-		dir = ft_strjoin(cwd, "$ ");
-		free(cwd);
-		line = readline(dir);
-		if (!line)
-		{
-			printf("exit\n");
-			break;
-		}
-		if (*line)
-			add_history(line);
-			
-		tokens = tokenize(line, envp);
-		t_token *tmp = tokens;
-		while (tmp)
-		{
-			printf("Token: [%d] |%s|\n", tmp->type, tmp->value);
-			tmp = tmp->next;
-		}
-		free_tokens(&tokens);
-		free(line);
-	}
-	free(dir);
-	return (0);
+	signal(SIGQUIT, SIG_IGN);
+	copy_env(envp, &shell->envp);
 }
 
+int	main(int argc, char *argv[], char **envp)
+{
+	t_shell	shell;
+	char	*line;
+	char	*dir;
+
+	if (argc != 1)
+		return (ft_putstr_fd("Arguments are not accepted!\n", 2), 1);
+	initiate_minishell(argc, argv, &shell, envp);
+	while (1)
+	{
+		dir = get_actual_dir(&shell);
+		line = get_prompt_line(&shell, dir);
+		if (!line)
+			break ;
+		shell.tokens = tokenize(line, &shell.envp, &shell);
+		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))
+			continue ;
+		add_history(line);
+		free(line);
+		line = NULL;
+		if (parser(&shell.parser, shell.tokens, &shell))
+			executor(&shell, envp);
+		exit_clean(&shell, -1, 0);
+	}
+	ft_putendl_fd("exit", 1);
+	exit_clean(&shell, 0, 1);
+}

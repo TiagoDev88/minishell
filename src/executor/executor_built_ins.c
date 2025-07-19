@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor_built_ins.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/19 15:19:47 by edfreder          #+#    #+#             */
+/*   Updated: 2025/07/19 15:22:41 by edfreder         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 /**
@@ -27,7 +39,7 @@ static void	get_dup_original_stds(int *dup_ori_std)
 	dup_ori_std[1] = ori_std_out;
 }
 
-void sigpipe_handler(int sig)
+void	sigpipe_handler(int sig)
 {
 	(void)sig;
 	g_signal = 128 + SIGPIPE;
