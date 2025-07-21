@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 16:27:46 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/19 16:27:49 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:56:58 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,6 @@ int	main(int argc, char *argv[], char **envp)
 		if (!line)
 			break ;
 		shell.tokens = tokenize(line, &shell.envp, &shell);
-		if (!shell.tokens && (line[0] == ' ' || line[0] == '	'))
-			continue ;
 		free(line);
 		line = NULL;
 		if (parser(&shell.parser, shell.tokens, &shell))

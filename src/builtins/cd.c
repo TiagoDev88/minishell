@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:12 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/19 15:19:13 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:54:07 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static char	*get_oldpwd(t_envp *envp)
 	if (!oldpwd || oldpwd[0] == '\0')
 		return (ft_putstr_fd("bash: cd: OLDPWD not set\n", 2), NULL);
 	ft_putendl_fd(oldpwd, 1);
-	return (ft_strdup(oldpwd));
+	return (oldpwd);
 }
 
 /**
@@ -49,11 +49,14 @@ static int	update_pwd_and_oldpwd(t_envp **envp)
 	char	*oldpwd;
 	char	*pwd;
 	char	*cwd;
+	char	*get_env;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (1);
-	oldpwd = ft_strjoin("OLDPWD=", get_env_value("PWD", *envp));
+	get_env = get_env_value("PWD", *envp);
+	oldpwd = ft_strjoin("OLDPWD=", get_env);
+	free(get_env);
 	pwd = ft_strjoin("PWD=", cwd);
 	free(cwd);
 	if (!oldpwd || !pwd)
@@ -86,13 +89,14 @@ char	*get_home_path(char *arg, t_envp *envp)
 	if (!home)
 		return (ft_putstr_fd("bash: cd: HOME not set\n", 2), NULL);
 	if (!arg || arg[0] == '\0' || (arg[0] == '~' && arg[1] == '\0'))
-		return (ft_strdup(home));
+		return (home);
 	if (arg[0] == '~' && arg[1] == '/')
 	{
 		result = ft_strjoin(home, arg + 1);
+		free(home);
 		return (result);
 	}
-	return (ft_strdup(arg));
+	return (arg);
 }
 
 /**

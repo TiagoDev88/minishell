@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:34 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/19 15:19:34 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:46:43 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ int	ft_pwd(t_cmd *cmd, t_envp *envp)
 	if (!pwd)
 		return (1);
 	ft_putendl_fd(pwd, 1);
+	free(pwd);
 	return (0);
 }
