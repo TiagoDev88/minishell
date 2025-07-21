@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/19 16:28:20 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 10:28:58 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,24 @@ static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
 	}
 }
 
+static void	only_space_line(char *input)
+{
+	int	i;
+
+	i = 0;
+	if (!(isatty(STDIN_FILENO) && isatty(STDOUT_FILENO)))
+		return ;
+	while (input[i])
+	{
+		if (input[i] != ' ' && input[i] != '\t')
+		{
+			add_history(input);
+			break ;
+		}
+		i++;
+	}
+}
+
 /**
  * @brief Tokenizes the entire input string into a linked list of tokens.
  *
@@ -113,8 +131,6 @@ t_token	*tokenize(char *input, t_envp **envp, t_shell *shell)
 			break ;
 		help_tokenize(&tk, &bd, substr);
 	}
-	if (tk && (input[0] != ' ' || input[0] != '\t')
-		&& (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO)))
-		add_history(input);
+	only_space_line(input);
 	return (tk);
 }
