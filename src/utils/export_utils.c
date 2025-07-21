@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:26:31 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/16 23:05:43 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:15:34 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ static void	update_export_env(char *envp, t_envp **node, int conc)
 	if (conc == 2 && (*node)->value != NULL)
 	{
 		tmp = ft_strjoin((*node)->value, value);
+		free(value);
 		free((*node)->value);
 		(*node)->value = tmp;
 	}
