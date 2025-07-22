@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/22 00:26:38 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 15:47:00 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ static void	save_last_cmd_exit_code(t_shell *shell, t_proccess *proccess)
 			if (sig == SIGQUIT || sig == SIGINT)
 			{
 				if (sig == SIGQUIT)
-					printf("Quit (core dumped)");
-				printf("\n");
+					printf("Quit (core dumped)\n");
+				if (sig == SIGINT && shell->exec.files_container.heredocs == 0)
+					printf("\n");
 			}
 		}
 		shell->last_status_code = 128 + sig;
@@ -133,7 +134,10 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 		else if (exec->exec_h.err_file && exec->exec_h.exec_cmd)
 			exec->file_exit_code = 1;
 		if (exec->exec_h.last_pipe)
+		{
 			exec->files_container.last_in_fd = exec->exec_h.last_pipe->read_fd;
+			exec->files_container.is_pipe_fd = 1;
+		}
 		ft_memset(&exec->exec_h, 0, sizeof(t_exec_helper));
 		clean_files_s(&exec->files_container.lst);
 		exec->files_container.last_out_fd = 1;
@@ -169,6 +173,9 @@ void	executor(t_shell *shell, char **envp)
 {
 	shell->exec.files_container.last_in_fd = 0;
 	shell->exec.files_container.last_out_fd = 1;
+	shell->exec.files_container.last_in_is_heredoc = 0;
+	shell->exec.files_container.last_out_is_heredoc = 0;
+	shell->exec.files_container.heredocs = 0;
 	exec_line(shell, &shell->exec, envp);
 	if (shell->exec.procc_lst)
 		get_last_cmd_exit_code(shell);

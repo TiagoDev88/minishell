@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/21 23:45:51 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 15:15:10 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ typedef struct s_files_container
 {
 	int		last_out_fd;
 	int		last_in_fd;
+	int		last_out_is_heredoc;
+	int		last_in_is_heredoc;
+	int		is_pipe_fd;
 	int		heredocs;
 	t_file	*lst;
 }	t_files_container;
