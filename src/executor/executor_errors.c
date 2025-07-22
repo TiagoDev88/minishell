@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 23:06:44 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:35:08 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 00:56:06 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,15 @@
  */
 int	file_has_error(t_shell *shell, t_token **curr_token, int exit_status)
 {
-	shell->last_status_code = 1;
-	print_file_err((*curr_token)->next->value, strerror(exit_status), 0);
+	if (exit_status == 130)
+		shell->last_status_code = 130;
+	else if (exit_status == 131)
+		shell->last_status_code = 0;
+	else
+	{
+		shell->last_status_code = 1;
+		print_file_err((*curr_token)->next->value, strerror(exit_status), 0);
+	}
 	while (*curr_token && is_redirect(*curr_token))
 	{
 		*curr_token = (*curr_token)->next->next;

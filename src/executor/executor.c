@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/17 19:32:01 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 00:26:38 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,5 +178,6 @@ void	executor(t_shell *shell, char **envp)
 		shell->last_status_code = shell->exec.file_exit_code;
 	shell->exec.cmd_exit_code = 0;
 	shell->exec.file_exit_code = 0;
+	shell->exec.files_container.heredocs = 0;
 	signal(SIGINT, sigint_handler);
 }

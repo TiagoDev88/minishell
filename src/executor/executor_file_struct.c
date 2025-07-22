@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/15 23:33:30 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 00:55:09 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 	t_file	*new_file;
 
 	new_file = create_file_node();
+	add_file_back(&f_con->lst, new_file);
 	if (redir == TOKEN_REDIR_IN)
 		new_file->fd = open(filename, O_RDONLY);
 	else if (redir == TOKEN_HEREDOC)
@@ -119,13 +120,12 @@ int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 	else if (redir == TOKEN_APPEND)
 		new_file->fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (new_file->fd == -1)
-		return (clean_mem(new_file, NULL, NULL, errno));
+		return (errno);
 	if (redir == TOKEN_REDIR_IN || redir == TOKEN_HEREDOC)
 		f_con->last_in_fd = new_file->fd;
 	else
 		f_con->last_out_fd = new_file->fd;
 	new_file->filename = ft_strdup(filename);
-	add_file_back(&f_con->lst, new_file);
 	if (!new_file->filename)
 		return (-1);
 	sh->last_status_code = 0;

@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 00:42:50 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/17 13:56:29 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:21:51 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void	handle_redirects(t_shell *shell)
 static void	exec_cmd(char *cmd_path, t_shell *shell, t_cmd *cmd, char **envp)
 {
 	execve(cmd_path, cmd->cmd_args, envp);
-	printf("Execve error\n");
 	print_error_msg(NULL, strerror(errno), 1);
 	shell->last_status_code = errno;
 	if (cmd_path && ft_strchr(cmd->cmd_args[0], '/'))
