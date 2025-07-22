@@ -179,14 +179,13 @@ void	handle_word(t_token **tokens, t_token_builder *bd)
 	int		start;
 
 	word = ft_strdup("");
-	res = check_state(bd, &start);
-	if (res == STATE_ERROR)
-		return (clean_words(tokens, word, STATE_ERROR));
 	while (bd->input[bd->pos])
 	{
 		res = check_state(bd, &start);
 		if (res == STATE_ERROR)
 			return (clean_words(tokens, word, STATE_ERROR));
+		if (res == STATE_BREAK)
+			break ;
 		if (res == STATE_QUOTE_CHANGE)
 			continue ;
 		start = bd->pos;
@@ -198,5 +197,5 @@ void	handle_word(t_token **tokens, t_token_builder *bd)
 		if (res == STATE_CONTINUE)
 			continue ;
 	}
-	add_token(tokens, new_token(TOKEN_WORD, word));
+	add_token(tokens, new_token(TOKEN_WORD, word), check_state(bd, &start));
 }

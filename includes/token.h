@@ -56,7 +56,7 @@ typedef struct s_token_builder
 t_token	*tokenize(char *input, t_envp **envp, t_shell *shell);
 void	free_tokens(t_token **tk);
 void	handle_word(t_token **tokens, t_token_builder *bd);
-void	add_token(t_token **tk, t_token *new);
+void	add_token(t_token **tk, t_token *new, int res);
 t_token	*new_token(t_token_type type, char *value);
 int		append_dollar(t_token_builder **bd, char **part, int *start, int flag);
 int		check_dollar_cases(t_token_builder **bd, char **part, int *start);

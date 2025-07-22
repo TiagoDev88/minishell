@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:01 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/17 10:42:22 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 11:56:50 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,19 @@ t_token	*new_token(t_token_type type, char *value)
  * @param tk Pointer to the head of the token list.
  * @param new Token to append.
  */
-void	add_token(t_token **tk, t_token *new)
+void	add_token(t_token **tk, t_token *new, int res)
 {
 	t_token	*tmp;
 
+	if (res == STATE_ERROR)
+	{
+		clean_words(tk, NULL, -1);
+		if (new->value)
+			free(new->value);
+		if (new)
+			free(new);
+		return ;
+	}
 	if (!*tk)
 	{
 		*tk = new;

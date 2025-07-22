@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:49:57 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/21 10:28:58 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/22 12:04:47 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,15 @@ static void	help_tokenize(t_token **tk, t_token_builder *bd, char *substr)
 		|| !ft_strncmp(&bd->input[bd->pos], "<<", 2))
 	{
 		substr = ft_substr(bd->input, bd->pos, 2);
-		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
+		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr),
+			0);
 		bd->pos += 2;
 	}
 	else if (ft_strchr("><|", bd->input[bd->pos]))
 	{
 		substr = ft_substr(bd->input, bd->pos, 1);
-		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr));
+		add_token(tk, new_token(get_token_type(&bd->input[bd->pos]), substr),
+			0);
 		bd->pos++;
 	}
 	else
