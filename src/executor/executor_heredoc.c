@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:07:53 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/22 01:02:06 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/22 15:45:51 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,11 +127,16 @@ int	read_heredoc(int fd, char *del)
 int	heredoc(t_file **new, char *del, t_files_container **f_con)
 {
 	int	heredoc_status;
-	int	back_up_stdin;
+	int back_up_stdin;
 
-	heredoc_status = 0;
+	if ((*f_con)->is_pipe_fd == 1) 
+	{
+		close((*f_con)->last_in_fd);
+		(*f_con)->is_pipe_fd = 0;
+	}
 	signal(SIGINT, heredoc_sigint_handler);
 	back_up_stdin = dup(STDIN_FILENO);
+	heredoc_status = 0;
 	(*f_con)->heredocs++;
 	(*new)->filename = get_heredoc_filename((*f_con)->heredocs);
 	if (!(*new)->filename)
