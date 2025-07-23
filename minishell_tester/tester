@@ -26,6 +26,8 @@ else
 		"pipes"
 		"redirects"
 		"extras"
+		"syntax"
+		"os_specific"
 	)
 fi
 
