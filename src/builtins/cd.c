@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:12 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/21 14:54:07 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/23 10:52:55 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ char	*get_home_path(char *arg, t_envp *envp)
 		free(home);
 		return (result);
 	}
+	if (home)
+		free(home);
 	return (arg);
 }
 
@@ -121,7 +123,8 @@ int	ft_cd(t_cmd *cmd, t_envp *envp, t_shell *shell)
 		return (1);
 	if (cmd->cmd_args[1] && cmd->cmd_args[2])
 		return (ft_putstr_fd("bash: cd: too many arguments\n", 2), 1);
-	if (!cmd->cmd_args[1] || cmd->cmd_args[1][0] == '~')
+	if (!cmd->cmd_args[1] || (cmd->cmd_args[1][0] == '~'
+		&& (cmd->cmd_args[1][1] == '/' || cmd->cmd_args[1][1] == '\0')))
 		path = get_home_path(cmd->cmd_args[1], envp);
 	else if (ft_strncmp(cmd->cmd_args[1], "-", 2) == 0)
 		path = get_oldpwd(envp);

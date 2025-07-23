@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 12:00:08 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/19 15:55:16 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/23 10:52:12 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,20 @@ static int	n_flag(char *arg)
 	return (0);
 }
 
+static void	help_echo(char *arg, t_envp *envp)
+{
+	char	*home_path;
+
+	if (arg[0] == '~' && (arg[1] == '\0' || arg[1] == '/'))
+	{
+		home_path = get_home_path(arg, envp);
+		printf("%s", home_path);
+		free(home_path);
+	}
+	else
+		printf("%s", arg);
+}
+
 /**
  * @brief Implementation of the echo builtin command.
  * 
@@ -65,10 +79,7 @@ int	ft_echo(t_cmd *cmd, t_envp *envp)
 	}
 	while (cmd->cmd_args[i])
 	{
-		if (cmd->cmd_args[i][0] == '~' && cmd->cmd_args[i][1] == '\0')
-			printf("%s", get_home_path(cmd->cmd_args[i], envp));
-		else
-			printf("%s", cmd->cmd_args[i]);
+		help_echo(cmd->cmd_args[i], envp);
 		if (cmd->cmd_args[i + 1])
 			printf(" ");
 		i++;
