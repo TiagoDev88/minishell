@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/19 15:19:37 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:40:23 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,11 @@ int	ft_unset(t_cmd *cmd, t_envp **envp)
 
 	if (!cmd || !envp || !*envp)
 		return (1);
+	if (cmd->cmd_args[0] && cmd->cmd_args[1] != NULL)
+	{
+		if (cmd->cmd_args[1][0] == '-')
+			return (ft_putstr_fd("unset: options not allowed\n", 2), 2);
+	}
 	i = 1;
 	while (cmd->cmd_args[i])
 	{

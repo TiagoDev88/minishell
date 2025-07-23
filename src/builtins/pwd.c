@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:34 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/21 14:46:43 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:25:11 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,12 @@ int	ft_pwd(t_cmd *cmd, t_envp *envp)
 
 	if (!cmd->cmd_args || !cmd || !envp)
 		return (1);
-	pwd = get_env_value("PWD", envp);
-	if (!pwd)
-		pwd = getcwd(NULL, 0);
+	if (cmd->cmd_args[0] && cmd->cmd_args[1] != NULL)
+	{
+		if (cmd->cmd_args[1][0] == '-')
+			return (ft_putstr_fd("pwd: options not allowed\n", 2), 2);
+	}
+	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (1);
 	ft_putendl_fd(pwd, 1);

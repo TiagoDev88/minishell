@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:02:34 by tfilipe-          #+#    #+#             */
-/*   Updated: 2025/07/19 15:19:23 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:45:37 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,22 @@ int	ft_env(t_cmd *cmd, t_envp *envp)
 	if (!cmd || !envp)
 		return (1);
 	tmp = envp;
-	while (tmp && errno != EPIPE)
+	if (cmd->cmd_args[0] && (cmd->cmd_args[1] == NULL
+			|| cmd->cmd_args[1][0] == '|'))
 	{
-		if (tmp->flag == '=')
+		while (tmp && errno != EPIPE)
 		{
-			if (tmp->value)
-				printf("%s=%s\n", tmp->key, tmp->value);
-			else
-				printf("%s=\n", tmp->key);
+			if (tmp->flag == '=')
+			{
+				if (tmp->value)
+					printf("%s=%s\n", tmp->key, tmp->value);
+				else
+					printf("%s=\n", tmp->key);
+			}
+			tmp = tmp->next;
 		}
-		tmp = tmp->next;
 	}
+	else
+		return (ft_putstr_fd("env: options/args not allowed\n", 2), 2);
 	return (0);
 }

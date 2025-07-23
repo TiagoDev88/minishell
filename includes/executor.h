@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 02:37:55 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:47:47 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ typedef struct s_exec_helper
 
 typedef struct s_heredoc
 {
-	char	*del;
-	char	*filename;
-	struct 	s_heredoc *next;
+	char				*del;
+	char				*filename;
+	struct s_heredoc	*next;
 }	t_heredoc;
 
 typedef struct s_exec
@@ -115,9 +115,9 @@ int			is_valid_cmd(t_shell *shell, t_cmd *cmd);
 /* Built-ins */
 int			exec_built_in(t_shell *shell, t_cmd *curr_cmd);
 /* Main Heredoc */
-void	open_heredocs(t_shell *shell);
+void		open_heredocs(t_shell *shell);
 /* Heredoc reader */
-void	read_heredoc(t_shell *shell, char *filename, char *del);
-void	clean_heredocs_s(t_heredoc **hd_lst, int is_to_unlink);
+void		read_heredoc(t_shell *shell, char *filename, char *del);
+void		clean_heredocs_s(t_heredoc **hd_lst, int is_to_unlink);
 
 #endif
