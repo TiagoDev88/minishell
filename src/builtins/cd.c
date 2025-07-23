@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:12 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 10:52:55 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/23 15:20:14 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ static int	update_pwd_and_oldpwd(t_envp **envp)
 	if (!cwd)
 		return (1);
 	get_env = get_env_value("PWD", *envp);
+	if (!get_env)
+		get_env = get_env_value("OLDPWD", *envp);
 	oldpwd = ft_strjoin("OLDPWD=", get_env);
 	free(get_env);
 	pwd = ft_strjoin("PWD=", cwd);
