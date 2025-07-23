@@ -6,12 +6,21 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:07:53 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 02:48:04 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:03:41 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/**
+* clean_heredocs_s - Flushes the linked list of heredocs, 
+* optionally removing files.
+* @hd_lst: Pointer to the heredoc list pointer.
+* @is_to_unlink: If non-zero, deletes the associated files.
+*
+* Iterates through the list, flushes strings, files, and nodes, 
+* and resets the list.
+*/
 void	clean_heredocs_s(t_heredoc **hd_lst, int is_to_unlink)
 {
 	t_heredoc	*curr;
@@ -35,6 +44,13 @@ void	clean_heredocs_s(t_heredoc **hd_lst, int is_to_unlink)
 	*hd_lst = NULL;
 }
 
+/**
+ * get_heredoc_filename - Create a unique name to heredoc file.
+ * @n_heredocs: Pointer to heredoc count.
+ * Return a string in this format ".heredoc_<num>" and increments 
+ * heredoc count.
+ * Return NULL in case of allocation fail.
+ */
 static char	*get_heredoc_filename(int *n_heredocs)
 {
 	char	*n_heredocs_str;
@@ -49,6 +65,13 @@ static char	*get_heredoc_filename(int *n_heredocs)
 	return (filename);
 }
 
+/**
+ * add_heredoc_back - Add a new node to heredoc linked list
+ * @hd_lst: Pointer to first node of heredoc linked list
+ * @new: New node to insert
+ *
+ * If heredoc list is not empty, insert node in the end
+ */
 static void	add_heredoc_back(t_heredoc **hd_lst, t_heredoc *new)
 {
 	t_heredoc	*curr;
@@ -64,9 +87,20 @@ static void	add_heredoc_back(t_heredoc **hd_lst, t_heredoc *new)
 	}
 }
 
-static void create_heredoc(t_shell *shell, t_heredoc **hd_lst, char *del)
+/**
+* create_heredoc - Creates and adds a new heredoc to the list, 
+* reading its contents.
+* @shell: Pointer to the shell context.
+* @hd_lst: Pointer to the list of heredocs.
+* @del: Heredoc delimiter.
+*
+* Allocates a new node, copies the delimiter, generates a file,
+* and reads the heredoc.
+* Exits the program in case of a memory error.
+*/
+static void	create_heredoc(t_shell *shell, t_heredoc **hd_lst, char *del)
 {
-	t_heredoc *new;
+	t_heredoc	*new;
 
 	new = malloc(sizeof(t_heredoc));
 	if (!new)
@@ -85,6 +119,12 @@ static void create_heredoc(t_shell *shell, t_heredoc **hd_lst, char *del)
 	read_heredoc(shell, new->filename, new->del);
 }
 
+/**
+* open_heredocs - Iterates over shell tokens and processes all heredocs found.
+* @shell: Pointer to the shell context.
+*
+* For each heredoc-type token, creates the corresponding heredoc.
+*/
 void	open_heredocs(t_shell *shell)
 {
 	t_token	*curr;

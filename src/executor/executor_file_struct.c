@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 03:07:43 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:02:14 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,25 +88,14 @@ t_file	*create_file_node(void)
 }
 
 /**
- * add_file - Creates and adds a file node representing a redirection.
- * @f_con: Pointer to the files container managing open files.
- * @filename: The filename associated with the redirection.
- * @redir: The redirection token type (e.g., TOKEN_REDIR_IN).
- * @sh: Pointer to the shell struct (for error handling/status).
- *
- * Opens the file according to the redirection type:
- * - TOKEN_REDIR_IN: open for reading
- * - TOKEN_HEREDOC: handle heredoc input and file creation
- * - TOKEN_REDIR_OUT: open for writing (truncate)
- * - TOKEN_APPEND: open for appending
- *
- * Updates the last_in_fd or last_out_fd in f_con accordingly.
- * Adds the new file node to the files list.
- *
- * Return: 0 on success, -1 on failure.
+ * get_hd_fname - Get heredoc filename based on his index - h_index
+ * @hd_lst: Pointer to the files container managing open files.
+ * 
+ * Searh for heredoc file index and return filename.
+ * Return: filename on success, NULL on failure.
  */
 
-char *get_hd_fname(t_heredoc *hd_lst, int *hd_index)
+char	*get_hd_fname(t_heredoc *hd_lst, int *hd_index)
 {
 	int			i;
 	int			hd_index_tmp;
@@ -130,7 +119,26 @@ char *get_hd_fname(t_heredoc *hd_lst, int *hd_index)
 	}
 	return (NULL);
 }
- 
+
+/**
+ * add_file - Creates and adds a file node representing a redirection.
+ * @f_con: Pointer to the files container managing open files.
+ * @filename: The filename associated with the redirection.
+ * @redir: The redirection token type (e.g., TOKEN_REDIR_IN).
+ * @sh: Pointer to the shell struct (for error handling/status).
+ *
+ * Opens the file according to the redirection type:
+ * - TOKEN_REDIR_IN: open for reading
+ * - TOKEN_HEREDOC: handle heredoc input and file creation
+ * - TOKEN_REDIR_OUT: open for writing (truncate)
+ * - TOKEN_APPEND: open for appending
+ *
+ * Updates the last_in_fd or last_out_fd in f_con accordingly.
+ * Adds the new file node to the files list.
+ *
+ * Return: 0 on success, -1 on failure.
+ */
+
 int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 {
 	t_file	*new;
@@ -141,7 +149,7 @@ int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 		new->fd = open(filename, O_RDONLY);
 	else if (redir == TOKEN_HEREDOC)
 		new->fd = open(get_hd_fname(sh->exec.heredocs_lst,
-			&f_con->heredocs_index), O_RDONLY);
+					&f_con->heredocs_index), O_RDONLY);
 	else if (redir == TOKEN_REDIR_OUT)
 		new->fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir == TOKEN_APPEND)

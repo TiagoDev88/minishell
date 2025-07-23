@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 00:55:03 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 02:46:18 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:05:53 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,15 @@ static int	is_delimiter(char *line, char *delimiter)
 	return (0);
 }
 
+/**
+
+	heredoc_sigint_handler - Handles SIGINT signal during heredoc input.
+    @sig: Signal number (ignored).
+
+    Writes a newline, sets global signal flag to 130, 
+	and closes stdin to interrupt heredoc.
+
+*/
 static void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
@@ -41,12 +50,17 @@ static void	heredoc_sigint_handler(int sig)
 	close(0);
 }
 
-static void	heredoc_sigpipe_handler(int sig)
-{
-	(void)sig;
-	g_signal = 128 + SIGPIPE;
-}
+/**
 
+    write_heredoc - Reads lines until the heredoc delimiter is found or EOF.
+
+    @fd: File descriptor to write heredoc content.
+
+    @del: Delimiter string indicating end of heredoc.
+
+    Reads user input with prompt "> ", writes lines to fd, stops at delimiter.
+
+*/
 static void	write_heredoc(int fd, char *del)
 {
 	char	*line;
@@ -67,6 +81,19 @@ static void	write_heredoc(int fd, char *del)
 	close(dup_stdin);
 }
 
+/**
+
+    wait_heredoc_fork - Waits for heredoc child process and 
+	checks its exit status.
+
+    @pid: PID of the heredoc child process.
+
+    @shell: Pointer to shell state structure.
+
+    Sets shell flags if heredoc was interrupted by SIGINT or 
+	exited with code 130.
+
+*/
 static void	wait_heredoc_fork(pid_t pid, t_shell *shell)
 {
 	int	status;
@@ -84,6 +111,21 @@ static void	wait_heredoc_fork(pid_t pid, t_shell *shell)
 	}
 }
 
+/**
+
+    read_heredoc - Orchestrates heredoc reading with fork, signal handling,
+	and file writing.
+
+    @shell: Pointer to shell state structure.
+
+    @filename: Temporary file to save heredoc input.
+
+    @del: Delimiter string indicating end of heredoc.
+
+    Forks a child to read heredoc lines; parent waits 
+	and handles signals accordingly.
+
+*/
 void	read_heredoc(t_shell *shell, char *filename, char *del)
 {
 	int		fd;
@@ -101,17 +143,13 @@ void	read_heredoc(t_shell *shell, char *filename, char *del)
 		exit_clean(shell, errno, 1);
 	else if (pid == 0)
 	{
-		signal(SIGPIPE, heredoc_sigpipe_handler);
 		signal(SIGINT, heredoc_sigint_handler);
 		write_heredoc(fd, del);
 		close(fd);
 		clean_heredocs_s(&shell->exec.heredocs_lst, 0);
 		exit_clean(shell, g_signal, 1);
 	}
-	else
-	{
-		close(fd);
-		wait_heredoc_fork(pid, shell);
-		signal(SIGINT, sigint_handler);
-	}
+	close(fd);
+	wait_heredoc_fork(pid, shell);
+	signal(SIGINT, sigint_handler);
 }
