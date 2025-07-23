@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 19:25:05 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/22 15:15:10 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 02:37:55 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,9 @@ typedef struct s_files_container
 {
 	int		last_out_fd;
 	int		last_in_fd;
-	int		last_out_is_heredoc;
-	int		last_in_is_heredoc;
 	int		is_pipe_fd;
 	int		heredocs;
+	int		heredocs_index;
 	t_file	*lst;
 }	t_files_container;
 
@@ -54,14 +53,23 @@ typedef struct s_exec_helper
 	int		err_file;
 }	t_exec_helper;
 
+typedef struct s_heredoc
+{
+	char	*del;
+	char	*filename;
+	struct 	s_heredoc *next;
+}	t_heredoc;
+
 typedef struct s_exec
 {
 	t_proccess			*procc_lst;
 	t_files_container	files_container;
 	t_pipe				*pipe_lst;
 	t_exec_helper		exec_h;
+	t_heredoc			*heredocs_lst;
 	int					file_exit_code;
 	int					cmd_exit_code;
+	int					heredoc_signed;
 }	t_exec;
 
 /* Main */
@@ -90,8 +98,6 @@ t_file		*create_file_node(void);
 void		add_file_back(t_file **file_lst, t_file *new_file);
 int			add_file(t_files_container *f_con, char *filename, int redir_type,
 				t_shell *shell);
-/* Heredoc */
-int			heredoc(t_file **new, char *delimiter, t_files_container **f_con);
 /* Path */
 char		*get_cmd_path(t_shell *shell, char *cmd);
 /* Pipes */
@@ -108,5 +114,10 @@ int			validate_abs_cmd(char *cmd_path, t_shell *shell);
 int			is_valid_cmd(t_shell *shell, t_cmd *cmd);
 /* Built-ins */
 int			exec_built_in(t_shell *shell, t_cmd *curr_cmd);
+/* Main Heredoc */
+void	open_heredocs(t_shell *shell);
+/* Heredoc reader */
+void	read_heredoc(t_shell *shell, char *filename, char *del);
+void	clean_heredocs_s(t_heredoc **hd_lst, int is_to_unlink);
 
 #endif

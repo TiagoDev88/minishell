@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:51:27 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/22 15:05:46 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:02:14 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,39 @@ t_file	*create_file_node(void)
 }
 
 /**
+ * get_hd_fname - Get heredoc filename based on his index - h_index
+ * @hd_lst: Pointer to the files container managing open files.
+ * 
+ * Searh for heredoc file index and return filename.
+ * Return: filename on success, NULL on failure.
+ */
+
+char	*get_hd_fname(t_heredoc *hd_lst, int *hd_index)
+{
+	int			i;
+	int			hd_index_tmp;
+	t_heredoc	*curr;
+
+	hd_index_tmp = *hd_index;
+	(*hd_index)++;
+	if (hd_index_tmp == 0 && hd_lst)
+		return (hd_lst->filename);
+	else
+	{
+		i = 0;
+		curr = hd_lst;
+		while (curr && i != hd_index_tmp)
+		{
+			curr = curr->next;
+			i++;
+		}
+		if (curr)
+			return (curr->filename);
+	}
+	return (NULL);
+}
+
+/**
  * add_file - Creates and adds a file node representing a redirection.
  * @f_con: Pointer to the files container managing open files.
  * @filename: The filename associated with the redirection.
@@ -105,29 +138,31 @@ t_file	*create_file_node(void)
  *
  * Return: 0 on success, -1 on failure.
  */
+
 int	add_file(t_files_container *f_con, char *filename, int redir, t_shell *sh)
 {
-	t_file	*new_file;
+	t_file	*new;
 
-	new_file = create_file_node();
-	add_file_back(&f_con->lst, new_file);
+	new = create_file_node();
+	add_file_back(&f_con->lst, new);
 	if (redir == TOKEN_REDIR_IN)
-		new_file->fd = open(filename, O_RDONLY);
+		new->fd = open(filename, O_RDONLY);
 	else if (redir == TOKEN_HEREDOC)
-		return (heredoc(&new_file, filename, &f_con));
+		new->fd = open(get_hd_fname(sh->exec.heredocs_lst,
+					&f_con->heredocs_index), O_RDONLY);
 	else if (redir == TOKEN_REDIR_OUT)
-		new_file->fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		new->fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir == TOKEN_APPEND)
-		new_file->fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (new_file->fd == -1)
+		new->fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (new->fd == -1)
 		return (errno);
 	if (redir == TOKEN_REDIR_IN || redir == TOKEN_HEREDOC)
-		f_con->last_in_fd = new_file->fd;
+		f_con->last_in_fd = new->fd;
 	else
-		f_con->last_out_fd = new_file->fd;
-	new_file->filename = ft_strdup(filename);
-	if (!new_file->filename)
-		return (-1);
+		f_con->last_out_fd = new->fd;
+	new->filename = ft_strdup(filename);
+	if (!new->filename)
+		exit_clean(sh, ENOMEM, 1);
 	sh->last_status_code = 0;
 	return (0);
 }

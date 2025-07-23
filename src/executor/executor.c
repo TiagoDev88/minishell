@@ -6,7 +6,7 @@
 /*   By: edfreder <edfreder@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:41:17 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/22 15:47:00 by edfreder         ###   ########.fr       */
+/*   Updated: 2025/07/23 02:41:30 by edfreder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,10 +134,7 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 		else if (exec->exec_h.err_file && exec->exec_h.exec_cmd)
 			exec->file_exit_code = 1;
 		if (exec->exec_h.last_pipe)
-		{
 			exec->files_container.last_in_fd = exec->exec_h.last_pipe->read_fd;
-			exec->files_container.is_pipe_fd = 1;
-		}
 		ft_memset(&exec->exec_h, 0, sizeof(t_exec_helper));
 		clean_files_s(&exec->files_container.lst);
 		exec->files_container.last_out_fd = 1;
@@ -147,35 +144,17 @@ static void	exec_line(t_shell *shell, t_exec *exec, char **envp)
 	}
 }
 
-/**
- * executor - Main function to handle the execution phase of the shell.
- * @shell: Pointer to the main shell structure containing 
- * all execution context.
- * @envp: Environment variables passed to execve.
- *
- * This function:
- * - Initializes I/O defaults (stdin and stdout).
- * - Iterates through the token and command lists, dispatching execution logic.
- * - Handles redirections, file opening errors, and command execution.
- * - Tracks child process exit statuses and 
- * updates the shell’s last status code.
- * Logic flow:
- * - Calls exec_line() to iterate through the parsed command list and tokens.
- * - Waits for child processes and captures their exit codes.
- * - Updates shell->last_status_code based on:
- *    - Command execution result
- *    - File redirection failure
- *
- * Return: void
- */
-
 void	executor(t_shell *shell, char **envp)
 {
-	shell->exec.files_container.last_in_fd = 0;
-	shell->exec.files_container.last_out_fd = 1;
-	shell->exec.files_container.last_in_is_heredoc = 0;
-	shell->exec.files_container.last_out_is_heredoc = 0;
-	shell->exec.files_container.heredocs = 0;
+	ft_memset(&shell->exec, 0, sizeof(t_exec));
+	shell->exec.files_container.last_in_fd = STDIN_FILENO;
+	shell->exec.files_container.last_out_fd = STDOUT_FILENO;
+	open_heredocs(shell);
+	if (shell->exec.heredoc_signed == 1)
+	{
+		clean_heredocs_s(&shell->exec.heredocs_lst, 1);
+		return ;
+	}
 	exec_line(shell, &shell->exec, envp);
 	if (shell->exec.procc_lst)
 		get_last_cmd_exit_code(shell);
@@ -183,8 +162,10 @@ void	executor(t_shell *shell, char **envp)
 		shell->last_status_code = shell->exec.cmd_exit_code;
 	if (shell->exec.file_exit_code)
 		shell->last_status_code = shell->exec.file_exit_code;
-	shell->exec.cmd_exit_code = 0;
+	clean_heredocs_s(&shell->exec.heredocs_lst, 1);
 	shell->exec.file_exit_code = 0;
-	shell->exec.files_container.heredocs = 0;
+	shell->exec.cmd_exit_code = 0;
+	shell->exec.heredoc_signed = 0;
+	ft_memset(&shell->exec.exec_h, 0, sizeof(t_exec_helper));
 	signal(SIGINT, sigint_handler);
 }
