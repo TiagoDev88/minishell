@@ -6,7 +6,7 @@
 /*   By: tfilipe- <tfilipe-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:19:36 by edfreder          #+#    #+#             */
-/*   Updated: 2025/07/23 14:40:23 by tfilipe-         ###   ########.fr       */
+/*   Updated: 2025/07/24 18:12:17 by tfilipe-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	ft_unset(t_cmd *cmd, t_envp **envp)
 	{
 		if (unset_first_envp(cmd->cmd_args[i], envp))
 			continue ;
-		curr = (*envp)->next;
+		curr = (*envp);
 		unset_next_envp(cmd->cmd_args[i], &curr);
 		i++;
 	}
